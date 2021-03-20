@@ -370,7 +370,7 @@
 		<Unit filename="src/minemon/engine/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/minemon/main.cpp" />
+		<Unit filename="src/minemon/App.cpp" />
 		<Unit filename="src/minemon/engine/shader/shader_fragment.glsl" />
 		<Unit filename="src/minemon/engine/shader/shader_vertex.glsl" />
 		<Extensions>
