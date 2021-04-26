@@ -373,9 +373,14 @@ int main(int argc, char* argv[])
     ComputeNormals(&mayamodel);
     BuildTrianglesAndAddToVirtualScene(&mayamodel);
 
-    ObjModel bunnymodel("../../data/bunny.obj");
+    /*ObjModel bunnymodel("../../data/bunny.obj");
     ComputeNormals(&bunnymodel);
     BuildTrianglesAndAddToVirtualScene(&bunnymodel);
+*/
+
+    ObjModel pokeball("../../data/pokeball.obj");
+    ComputeNormals(&pokeball);
+    BuildTrianglesAndAddToVirtualScene(&pokeball);
 
     ObjModel planemodel("../../data/plane.obj");
     ComputeNormals(&planemodel);
@@ -516,7 +521,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
         #define SPHERE 0
-        #define BUNNY  1
+        #define POKEBALL  1
         #define PLANE  2
         #define SKY 3
         #define PLAYER 4
@@ -532,11 +537,19 @@ int main(int argc, char* argv[])
         DrawVirtualObject("sphere");
 */
         // Desenhamos o modelo do coelho
+        /*
         model = Matrix_Translate(1.0f,0.0f,0.0f)
               * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, BUNNY);
         DrawVirtualObject("bunny");
+        */
+        model = Matrix_Translate(1.0f,0.0f,2.0f)
+              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f)
+              * Matrix_Scale(0.2, 0.2, 0.2);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, POKEBALL);
+        DrawVirtualObject("pokeball");
 
         float currentTime = (float)glfwGetTime();
         if (currentTime - lastSecond >= 0.2)
