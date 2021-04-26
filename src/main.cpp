@@ -15,6 +15,7 @@
 //  vira
 //    #include <cstdio> // Em C++
 //
+#include <iostream>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -79,6 +80,70 @@ struct ObjModel
         printf("OK.\n");
     }
 };
+
+
+/// --- BEZIER ---
+//Point class for taking the points
+class Point {
+public:
+    float x, y;
+    Point(float x, float y)
+    {
+        this->x = x;
+        this->y = y;
+    }
+    Point() {};
+    void setxy(float x2, float y2)
+    {
+        x = x2; y = y2;
+    }
+    //operator overloading for '=' sign
+    const Point & operator=(const Point &rPoint)
+    {
+        x = rPoint.x;
+        y = rPoint.y;
+        return *this;
+    }
+
+    //std::ostream& operator<<(std::ostream& outs, const Point &p)
+    friend std::ostream& operator<<(std::ostream &outs, const Point &p)
+    {
+      return outs << "(" << p.x << "," << p.y << ")";
+    }
+
+};
+
+int factorial(int n)
+{
+    if (n<=1)
+        return(1);
+    else
+        n=n*factorial(n-1);
+    return n;
+}
+
+float binomial_coff(float n,float k)
+{
+    float ans;
+    ans = factorial(n) / (factorial(k)*factorial(n-k));
+    return ans;
+}
+
+//Calculate the bezier point
+Point calculate_cubic_bezier(Point P0, Point P1, Point P2, Point P3, double t) {
+    Point P;
+    P.x = pow((1 - t), 3) * P0.x + 3 * t * pow((1 -t), 2) * P1.x + 3 * (1-t) * pow(t, 2)* P2.x + pow (t, 3)* P3.x;
+    P.y = pow((1 - t), 3) * P0.y + 3 * t * pow((1 -t), 2) * P1.y + 3 * (1-t) * pow(t, 2)* P2.y + pow (t, 3)* P3.y;
+
+    return P;
+}
+
+Point P0 = Point(0.0f, 0.0f);
+Point P1 = Point(0.0f, 0.9f);
+Point P2 = Point(1.0f, 0.2f);
+Point P3 = Point(1.0f, 1.0f);
+/// --- FIM BEZIER ---
+
 
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
@@ -214,12 +279,21 @@ bool FREE_MODE = true;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
+float g_offset_x_balbasaur = 0.0f;
+float g_offset_z_balbasaur = 0.0f;
 
 GLuint BuildTriangles();
 
 
 int main(int argc, char* argv[])
 {
+    std::cout << "----" << std::endl;
+    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.0f) << std::endl;
+    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.3f) << std::endl;
+    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.6f) << std::endl;
+    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 1.0f) << std::endl;
+    std::cout << "----" << std::endl;
+
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
     int success = glfwInit();
@@ -342,6 +416,10 @@ int main(int argc, char* argv[])
     glm::mat4 the_projection;
     glm::mat4 the_model;
     glm::mat4 the_view;
+
+    float lastSecond = 0;
+    double param_t = 0.0;
+    bool bezier_forward = true;
 
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -467,6 +545,25 @@ int main(int argc, char* argv[])
         glUniform1i(object_id_uniform, BUNNY);
         DrawVirtualObject("bunny");
 
+        float currentTime = (float)glfwGetTime();
+        if (currentTime - lastSecond > 1)
+        {
+            if (param_t <= 0.2)
+                bezier_forward = true;
+            else if (param_t >= 0.9)
+                bezier_forward = false;
+
+            if (bezier_forward)
+                param_t += 0.1;
+            else
+                param_t -= 0.1;
+
+
+
+            std::cout << "# " << param_t << std::endl;
+            lastSecond = currentTime;
+        }
+
         // Desenhamos o plano do chão
         model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(10.0f, 10.0f, 10.0f);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
@@ -490,7 +587,7 @@ int main(int argc, char* argv[])
         DrawVirtualObject("player");
 
         /// Desenha balbasaur
-        model = Matrix_Translate(0.0f, -1.4f, 0.0f) * Matrix_Scale(0.01, 0.01, 0.01);
+        model = Matrix_Translate(0.0f + g_offset_x_balbasaur, -1.4f, 0.0f + g_offset_z_balbasaur) * Matrix_Scale(0.01, 0.01, 0.01);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, BALBASAUR);
         DrawVirtualObject("balbasaur");
