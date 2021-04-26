@@ -369,7 +369,8 @@ int main(int argc, char* argv[])
     ComputeNormals(&spheremodel);
     BuildTrianglesAndAddToVirtualScene(&spheremodel);
 */
-    ObjModel mayamodel("../../data/player.obj");
+
+    ObjModel mayamodel("../../data/Ash_Ketchum/Ash_Ketchum.obj");
     ComputeNormals(&mayamodel);
     BuildTrianglesAndAddToVirtualScene(&mayamodel);
 
@@ -591,11 +592,12 @@ int main(int argc, char* argv[])
         //glBindVertexArray(vertex_array_object_id);
 
         /// Desenha jogador
+
         model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
                 * Matrix_Rotate_Y(g_player_direction);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
-        DrawVirtualObject("player");
+        DrawVirtualObject("Ash_Ketchum");
 
         /// Desenha balbasaur
         model = Matrix_Translate(0.0f + g_offset_x_balbasaur, -1.4f, 0.0f + g_offset_z_balbasaur) * Matrix_Scale(0.01, 0.01, 0.01);
