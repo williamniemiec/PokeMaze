@@ -279,8 +279,8 @@ bool FREE_MODE = true;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
-float g_offset_x_balbasaur = 0.0f;
-float g_offset_z_balbasaur = 0.0f;
+float g_offset_x_charizard = 0.0f;
+float g_offset_z_charizard = 0.0f;
 
 GLuint BuildTriangles();
 
@@ -387,9 +387,13 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
-    ObjModel balbasaur("../../data/balbasaur.obj");
-    ComputeNormals(&balbasaur);
-    BuildTrianglesAndAddToVirtualScene(&balbasaur);
+    ObjModel charizard("../../data/Charizard/Charizard.obj");
+    ComputeNormals(&charizard);
+    BuildTrianglesAndAddToVirtualScene(&charizard);
+
+    ObjModel pikachu("../../data/Pikachu/Pikachu.obj");
+    ComputeNormals(&pikachu);
+    BuildTrianglesAndAddToVirtualScene(&pikachu);
 
     //GLuint vertex_array_object_id = BuildTriangles();
 
@@ -526,7 +530,8 @@ int main(int argc, char* argv[])
         #define PLANE  2
         #define SKY 3
         #define PLAYER 4
-        #define BALBASAUR 5
+        #define CHARIZARD 5
+        #define PIKACHU 6
 
         // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -570,8 +575,8 @@ int main(int argc, char* argv[])
             //std::cout << "# " << param_t << std::endl;
             //std::cout << "# " << p << std::endl;
 
-            g_offset_x_balbasaur = p.x;
-            g_offset_z_balbasaur = p.y;
+            g_offset_x_charizard = p.x;
+            g_offset_z_charizard = p.y;
 
             lastSecond = currentTime;
         }
@@ -592,18 +597,24 @@ int main(int argc, char* argv[])
         //glBindVertexArray(vertex_array_object_id);
 
         /// Desenha jogador
-
         model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
                 * Matrix_Rotate_Y(g_player_direction);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
         DrawVirtualObject("Ash_Ketchum");
 
-        /// Desenha balbasaur
-        model = Matrix_Translate(0.0f + g_offset_x_balbasaur, -1.4f, 0.0f + g_offset_z_balbasaur) * Matrix_Scale(0.01, 0.01, 0.01);
+        /// Desenha charizard
+        model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
+                        * Matrix_Scale(0.01, 0.01, 0.01)
+                        * Matrix_Rotate_X(3.1416/4);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(object_id_uniform, BALBASAUR);
-        DrawVirtualObject("balbasaur");
+        glUniform1i(object_id_uniform, CHARIZARD);
+        DrawVirtualObject("Charizard");
+
+        model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.02, 0.02, 0.02);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, PIKACHU);
+        DrawVirtualObject("Pikachu");
         /*
         model = Matrix_Identity(); // Transformação inicial = identidade.
 

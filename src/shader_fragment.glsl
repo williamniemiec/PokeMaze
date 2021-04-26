@@ -24,7 +24,8 @@ uniform mat4 projection;
 #define PLANE  2
 #define SKY    3
 #define PLAYER    4
-#define BALBASAUR 5
+#define CHARIZARD 5
+#define PIKACHU 6
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -141,13 +142,19 @@ void main()
         float lambert = max(0,dot(n,l));
         color = Kd0 * (lambert + 0.01);
     }
-    else if ( object_id == BALBASAUR )
+    else if ( object_id == CHARIZARD )
     {
         vec3 Kd0 = vec3(0.5,0.5,0.5);
         float lambert = max(0,dot(n,l));
         color = Kd0 * (lambert + 0.01);
     }
     else if ( object_id == POKEBALL )
+    {
+        vec3 Kd0 = vec3(0.5,0.5,0.5);
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.01);
+    }
+    else if ( object_id == PIKACHU )
     {
         vec3 Kd0 = vec3(0.5,0.5,0.5);
         float lambert = max(0,dot(n,l));
