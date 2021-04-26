@@ -210,7 +210,7 @@ glm::vec4 camera_w_vector;
 glm::vec4 camera_u_vector;
 glm::vec4 offset = glm::vec4(-0.5f,1.5f,-2.0f,0.0f);
 float SPEED = 0.05f;
-bool FREE_MODE = false;
+bool FREE_MODE = true;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
@@ -314,6 +314,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
+    ObjModel balbasaur("../../data/balbasaur.obj");
+    ComputeNormals(&balbasaur);
+    BuildTrianglesAndAddToVirtualScene(&balbasaur);
+
     //GLuint vertex_array_object_id = BuildTriangles();
 
     if ( argc > 1 )
@@ -409,7 +413,7 @@ int main(int argc, char* argv[])
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
+        float farplane  = -25.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
@@ -445,6 +449,7 @@ int main(int argc, char* argv[])
         #define PLANE  2
         #define SKY 3
         #define PLAYER 4
+        #define BALBASAUR 5
 
         // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -483,6 +488,12 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
         DrawVirtualObject("player");
+
+        /// Desenha balbasaur
+        model = Matrix_Translate(0.0f, -1.4f, 0.0f) * Matrix_Scale(0.01, 0.01, 0.01);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, BALBASAUR);
+        DrawVirtualObject("balbasaur");
         /*
         model = Matrix_Identity(); // Transformação inicial = identidade.
 

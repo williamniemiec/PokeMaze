@@ -24,6 +24,7 @@ uniform mat4 projection;
 #define PLANE  2
 #define SKY    3
 #define PLAYER    4
+#define BALBASAUR 5
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -142,6 +143,12 @@ void main()
         color = texture(TextureImage2, vec2(U,V)).rgb;
     }
     else if ( object_id == PLAYER )
+    {
+        vec3 Kd0 = vec3(0.5,0.5,0.5);
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.01);
+    }
+    else if ( object_id == BALBASAUR )
     {
         vec3 Kd0 = vec3(0.5,0.5,0.5);
         float lambert = max(0,dot(n,l));
