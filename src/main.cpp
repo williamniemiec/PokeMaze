@@ -139,7 +139,7 @@ Point calculate_cubic_bezier(Point P0, Point P1, Point P2, Point P3, double t) {
 }
 
 Point P0 = Point(0.0f, 0.0f);
-Point P1 = Point(0.0f, 0.9f);
+Point P1 = Point(0.5f, 0.1f);
 Point P2 = Point(1.0f, 0.2f);
 Point P3 = Point(1.0f, 1.0f);
 /// --- FIM BEZIER ---
@@ -287,13 +287,6 @@ GLuint BuildTriangles();
 
 int main(int argc, char* argv[])
 {
-    std::cout << "----" << std::endl;
-    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.0f) << std::endl;
-    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.3f) << std::endl;
-    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 0.6f) << std::endl;
-    std::cout << calculate_cubic_bezier(P0, P1, P2, P3, 1.0f) << std::endl;
-    std::cout << "----" << std::endl;
-
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
     int success = glfwInit();
@@ -546,21 +539,26 @@ int main(int argc, char* argv[])
         DrawVirtualObject("bunny");
 
         float currentTime = (float)glfwGetTime();
-        if (currentTime - lastSecond > 1)
+        if (currentTime - lastSecond >= 0.2)
         {
-            if (param_t <= 0.2)
+            if (param_t <= 0.1)
                 bezier_forward = true;
             else if (param_t >= 0.9)
                 bezier_forward = false;
 
             if (bezier_forward)
-                param_t += 0.1;
+                param_t += 0.08;
             else
-                param_t -= 0.1;
+                param_t -= 0.08;
 
+            // param_t \in [0,1; 1]
+            Point p = calculate_cubic_bezier(P0, P1, P2, P3, param_t);
+            //std::cout << "# " << param_t << std::endl;
+            //std::cout << "# " << p << std::endl;
 
+            g_offset_x_balbasaur = p.x;
+            g_offset_z_balbasaur = p.y;
 
-            std::cout << "# " << param_t << std::endl;
             lastSecond = currentTime;
         }
 
