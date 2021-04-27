@@ -13,6 +13,9 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
+in vec2 texids;
+
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -36,7 +39,11 @@ uniform vec4 bbox_max;
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
-uniform sampler2D TextureImage3;
+
+uniform sampler2D ash_arms;
+uniform sampler2D ash_face;
+uniform sampler2D ash_body;
+uniform sampler2D ash_col;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
@@ -75,19 +82,6 @@ void main()
 
     if ( object_id == SPHERE || object_id == POKEBALL )
     {
-        // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
-        // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
-        // o slides 134-150 do documento Aula_20_Mapeamento_de_Texturas.pdf.
-        // A esfera que define a projeção deve estar centrada na posição
-        // "bbox_center" definida abaixo.
-
-        // Você deve utilizar:
-        //   função 'length( )' : comprimento Euclidiano de um vetor
-        //   função 'atan( , )' : arcotangente. Veja https://en.wikipedia.org/wiki/Atan2.
-        //   função 'asin( )'   : seno inverso.
-        //   constante M_PI
-        //   variável position_model
-
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
         float r = 1.0;
@@ -99,6 +93,7 @@ void main()
         U = (theta + M_PI)/(2*M_PI);
         V = (phi + M_PI_2)/M_PI;
     }
+
     /*else if ( object_id == BUNNY )
     {
         float minx = bbox_min.x;
@@ -126,6 +121,12 @@ void main()
         U = texcoords.x;
         V = texcoords.y;
     }
+    else if ( object_id == PLAYER )
+    {
+        // Coordenadas de textura do plano, obtidas do arquivo OBJ.
+        U = texcoords.x;
+        V = texcoords.y;
+    }
     else
     {
         U = texcoords.x;
@@ -135,12 +136,6 @@ void main()
     if ( object_id == SKY )
     {
         color = texture(TextureImage2, vec2(U,V)).rgb;
-    }
-    else if ( object_id == PLAYER )
-    {
-        vec3 Kd0 = vec3(0.5,0.5,0.5);
-        float lambert = max(0,dot(n,l));
-        color = Kd0 * (lambert + 0.01);
     }
     else if ( object_id == CHARIZARD )
     {
@@ -152,6 +147,25 @@ void main()
     {
         vec3 Kd0 = vec3(0.5,0.5,0.5);
         float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.01);
+    }
+    else if ( object_id == PLAYER )
+    {
+        vec3 Kd0;
+
+        if (texids.x == 0)
+            Kd0 = texture(ash_arms, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(ash_face, vec2(U,V)).rgb;
+        else if (texids.x == 2)
+            Kd0 = texture(ash_body, vec2(U,V)).rgb;
+        else if (texids.x == 3)
+            Kd0 = texture(ash_col, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
+
+        float lambert = max(0,dot(n,l));
+
         color = Kd0 * (lambert + 0.01);
     }
     else if ( object_id == PIKACHU )
