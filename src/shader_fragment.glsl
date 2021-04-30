@@ -45,6 +45,11 @@ uniform sampler2D ash_face;
 uniform sampler2D ash_body;
 uniform sampler2D ash_col;
 uniform sampler2D pokeball;
+uniform sampler2D pikachu_b;
+uniform sampler2D pikachu_c;
+uniform sampler2D pikachu_e;
+uniform sampler2D pikachu_m;
+
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
@@ -172,8 +177,21 @@ void main()
     }
     else if ( object_id == PIKACHU )
     {
-        vec3 Kd0 = vec3(0.5,0.5,0.5);
+        vec3 Kd0;
+
+        if (texids.x == 0)
+            Kd0 = texture(pikachu_b, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(pikachu_c, vec2(U,V)).rgb;
+        else if (texids.x == 2)
+            Kd0 = texture(pikachu_e, vec2(U,V)).rgb;
+        else if (texids.x == 3)
+            Kd0 = texture(pikachu_m, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
+
         float lambert = max(0,dot(n,l));
+
         color = Kd0 * (lambert + 0.01);
     }
     else

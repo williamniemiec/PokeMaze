@@ -470,6 +470,10 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_body_col.png", 5);
     LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_obj_col.png", 6);
     LoadObjTextureImage("../../data/Pokeball/ob0204_00.png", 7);
+    LoadObjTextureImage("../../data/Pikachu/Pikachu_B.png", 8);
+    LoadObjTextureImage("../../data/Pikachu/Pikachu_C.png", 9);
+    LoadObjTextureImage("../../data/Pikachu/Pikachu_E.png", 10);
+    LoadObjTextureImage("../../data/Pikachu/Pikachu_M.png", 11);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -498,7 +502,7 @@ int main(int argc, char* argv[])
     ComputeNormals(&charizard);
     BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
 
-    ObjModel pikachu("../../data/Pikachu/Pikachu.obj");
+    ObjModel pikachu("../../data/Pikachu/Pikachu.obj", "../../data/Pikachu/");
     ComputeNormals(&pikachu);
     BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
 
@@ -718,7 +722,7 @@ int main(int argc, char* argv[])
         glUniform1i(object_id_uniform, CHARIZARD);
         DrawVirtualObject("Charizard");
 
-        model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.02, 0.02, 0.02);
+        model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.1, 0.1, 0.1);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PIKACHU);
         DrawVirtualObject("Pikachu");
@@ -1434,6 +1438,10 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "ash_body"), 5);
     glUniform1i(glGetUniformLocation(program_id, "ash_col"), 6);
     glUniform1i(glGetUniformLocation(program_id, "pokeball"), 7);
+    glUniform1i(glGetUniformLocation(program_id, "pikachu_b"), 8);
+    glUniform1i(glGetUniformLocation(program_id, "pikachu_c"), 9);
+    glUniform1i(glGetUniformLocation(program_id, "pikachu_e"), 10);
+    glUniform1i(glGetUniformLocation(program_id, "pikachu_m"), 11);
     glUseProgram(0);
 }
 
@@ -1607,13 +1615,17 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
 
                     if (id_material == -1)
                         texture_id.push_back(-1);
-                    else if (model->materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png")
+                    else if (model->materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png"
+                             || model->materials[id_material].diffuse_texname == "Pikachu_B.png")
                         texture_id.push_back(0);
-                    else if (model->materials[id_material].diffuse_texname == "PokeTra_Ash_face.png")
+                    else if (model->materials[id_material].diffuse_texname == "PokeTra_Ash_face.png"
+                             || model->materials[id_material].diffuse_texname == "Pikachu_C.png")
                         texture_id.push_back(1);
-                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_body_col.png")
+                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_body_col.png"
+                             || model->materials[id_material].diffuse_texname == "Pikachu_E.png")
                         texture_id.push_back(2);
-                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_obj_col.png")
+                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_obj_col.png"
+                             || model->materials[id_material].diffuse_texname == "Pikachu_M.png")
                         texture_id.push_back(3);
                     else
                         texture_id.push_back(-1);
