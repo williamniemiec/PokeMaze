@@ -474,6 +474,8 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Pikachu/Pikachu_C.png", 9);
     LoadObjTextureImage("../../data/Pikachu/Pikachu_E.png", 10);
     LoadObjTextureImage("../../data/Pikachu/Pikachu_M.png", 11);
+    LoadObjTextureImage("../../data/Charizard/FitPokeLizardon.png", 12);
+    LoadObjTextureImage("../../data/Charizard/FitPokeLizardonEyeIris.png", 13);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -498,7 +500,7 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane");
 
-    ObjModel charizard("../../data/Charizard/Charizard.obj");
+    ObjModel charizard("../../data/Charizard/Charizard.obj", "../../data/Charizard/");
     ComputeNormals(&charizard);
     BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
 
@@ -669,7 +671,7 @@ int main(int argc, char* argv[])
         DrawVirtualObject("Pokeball");
 
         float currentTime = (float)glfwGetTime();
-        if (currentTime - lastSecond >= 0.2)
+        if (currentTime - lastSecond >= 0.04)
         {
             if (param_t <= 0.1)
                 bezier_forward = true;
@@ -677,9 +679,9 @@ int main(int argc, char* argv[])
                 bezier_forward = false;
 
             if (bezier_forward)
-                param_t += 0.08;
+                param_t += 0.01;
             else
-                param_t -= 0.08;
+                param_t -= 0.01;
 
             // param_t \in [0,1; 1]
             Point p = calculate_cubic_bezier(P0, P1, P2, P3, param_t);
@@ -716,7 +718,7 @@ int main(int argc, char* argv[])
 
         /// Desenha charizard
         model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
-                * Matrix_Scale(0.01, 0.01, 0.01)
+                * Matrix_Scale(0.1, 0.1, 0.1)
                 * Matrix_Rotate_X(3.1416/4);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CHARIZARD);
@@ -1442,6 +1444,8 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "pikachu_c"), 9);
     glUniform1i(glGetUniformLocation(program_id, "pikachu_e"), 10);
     glUniform1i(glGetUniformLocation(program_id, "pikachu_m"), 11);
+    glUniform1i(glGetUniformLocation(program_id, "charizard_body"), 12);
+    glUniform1i(glGetUniformLocation(program_id, "charizard_eye"), 13);
     glUseProgram(0);
 }
 
@@ -1562,7 +1566,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
 
 
 
-
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
                 tinyobj::index_t idx = model->shapes[shape].mesh.indices[3*triangle + vertex];
@@ -1612,14 +1615,15 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
                     texture_coefficients.push_back( u );
                     texture_coefficients.push_back( v );
 
-
                     if (id_material == -1)
                         texture_id.push_back(-1);
                     else if (model->materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_B.png")
+                             || model->materials[id_material].diffuse_texname == "Pikachu_B.png"
+                             || model->materials[id_material].diffuse_texname == "FitPokeLizardon.PNG")
                         texture_id.push_back(0);
                     else if (model->materials[id_material].diffuse_texname == "PokeTra_Ash_face.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_C.png")
+                             || model->materials[id_material].diffuse_texname == "Pikachu_C.png"
+                             || model->materials[id_material].diffuse_texname == "FitPokeLizardonEyeIris.PNG")
                         texture_id.push_back(1);
                     else if (model->materials[id_material].diffuse_texname == "trAsh_00_body_col.png"
                              || model->materials[id_material].diffuse_texname == "Pikachu_E.png")
