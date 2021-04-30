@@ -469,6 +469,7 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Ash_Ketchum/PokeTra_Ash_face.png", 4);
     LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_body_col.png", 5);
     LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_obj_col.png", 6);
+    LoadObjTextureImage("../../data/Pokeball/ob0204_00.png", 7);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -485,9 +486,9 @@ int main(int argc, char* argv[])
     BuildTrianglesAndAddToVirtualScene(&bunnymodel);
     */
 
-    ObjModel pokeball("../../data/pokeball.obj");
+    ObjModel pokeball("../../data/Pokeball/Pokeball.obj");
     ComputeNormals(&pokeball);
-    BuildTrianglesAndAddToVirtualScene(&pokeball, "pokeball");
+    BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
 
     ObjModel planemodel("../../data/plane.obj");
     ComputeNormals(&planemodel);
@@ -661,7 +662,7 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(0.2, 0.2, 0.2);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, POKEBALL);
-        DrawVirtualObject("pokeball");
+        DrawVirtualObject("Pokeball");
 
         float currentTime = (float)glfwGetTime();
         if (currentTime - lastSecond >= 0.2)
@@ -1432,6 +1433,7 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "ash_face"), 4);
     glUniform1i(glGetUniformLocation(program_id, "ash_body"), 5);
     glUniform1i(glGetUniformLocation(program_id, "ash_col"), 6);
+    glUniform1i(glGetUniformLocation(program_id, "pokeball"), 7);
     glUseProgram(0);
 }
 

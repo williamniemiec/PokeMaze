@@ -44,6 +44,7 @@ uniform sampler2D ash_arms;
 uniform sampler2D ash_face;
 uniform sampler2D ash_body;
 uniform sampler2D ash_col;
+uniform sampler2D pokeball;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
@@ -80,7 +81,7 @@ void main()
     float U = 0.0;
     float V = 0.0;
 
-    if ( object_id == SPHERE || object_id == POKEBALL )
+    if ( object_id == SPHERE )
     {
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
@@ -121,7 +122,7 @@ void main()
         U = texcoords.x;
         V = texcoords.y;
     }
-    else if ( object_id == PLAYER )
+    else if ( object_id == PLAYER || object_id == POKEBALL  )
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
@@ -145,8 +146,9 @@ void main()
     }
     else if ( object_id == POKEBALL )
     {
-        vec3 Kd0 = vec3(0.5,0.5,0.5);
         float lambert = max(0,dot(n,l));
+        vec3 Kd0 = texture(pokeball, vec2(U,V)).rgb;
+
         color = Kd0 * (lambert + 0.01);
     }
     else if ( object_id == PLAYER )
