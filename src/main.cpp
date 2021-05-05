@@ -48,6 +48,8 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
+#include "collisions.hpp"
+#include "SceneObject.hpp"
 
 #define PLAYER_DIRECTION_UP 0
 #define PLAYER_DIRECTION_DOWN 3.1416f
@@ -93,90 +95,6 @@ struct ObjModel
             throw std::runtime_error("Erro ao carregar modelo.");
 
         printf("OK.\n");
-
-
-
-/*
-        materials.push_back(tinyobj::material_t());
-
-        for (size_t i = 0; i < materials.size(); i++)
-        {
-            printf("material[%d].diffuse_texname = %s\n", int(i),
-                   materials[i].diffuse_texname.c_str());
-        }
-
-        for (size_t i = 0; i < shapes.size(); i++)
-        {
-            printf("shape[%d].name = %s\n", int(i),
-                   shapes[i].name.c_str());
-        }
-
-        // Load diffuse textures
-        {
-            for (size_t m = 0; m < materials.size(); m++)
-            {
-                tinyobj::material_t* mp = &materials[m];
-
-                if (mp->diffuse_texname.length() > 0)
-                {
-                    // Only load the texture if it is not already loaded
-                    if (textures.find(mp->diffuse_texname) == textures.end())
-                    {
-                        GLuint texture_id;
-                        int w, h;
-                        int comp;
-
-                        std::string texture_filename = mp->diffuse_texname;
-                        if (!FileExists(texture_filename))
-                        {
-                            // Append base dir.
-                            texture_filename = basepath + mp->diffuse_texname;
-                            if (!FileExists(texture_filename))
-                            {
-                                std::cerr << "Unable to find file: " << texture_filename
-                                          << std::endl;
-                                exit(1);
-                            }
-                        }
-
-                        unsigned char* image =
-                            stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
-                        if (!image)
-                        {
-                            std::cerr << "Unable to load texture: " << texture_filename
-                                      << std::endl;
-                            exit(1);
-                        }
-                        std::cout << "Loaded texture: " << texture_filename << ", w = " << w
-                                  << ", h = " << h << ", comp = " << comp << std::endl;
-
-                        glGenTextures(1, &texture_id);
-                        glBindTexture(GL_TEXTURE_2D, texture_id);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                        if (comp == 3)
-                        {
-                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
-                                         GL_UNSIGNED_BYTE, image);
-                        }
-                        else if (comp == 4)
-                        {
-                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
-                                         GL_UNSIGNED_BYTE, image);
-                        }
-                        else
-                        {
-                            assert(0);  // TODO
-                        }
-                        glBindTexture(GL_TEXTURE_2D, 0);
-                        stbi_image_free(image);
-                        textures.insert(std::make_pair(mp->diffuse_texname, texture_id));
-                        std::cout << "# " << mp->diffuse_texname << " -> " << texture_id << std::endl;
-                    }
-                }
-            }
-        }
-        */
     }
 };
 
@@ -299,18 +217,6 @@ void LoadBackground(const char* filename);
 void DrawCube(GLint render_as_black_uniform);
 
 
-// Definimos uma estrutura que armazenará dados necessários para renderizar
-// cada objeto da cena virtual.
-struct SceneObject
-{
-    std::string  name;        // Nome do objeto
-    size_t       first_index; // Índice do primeiro vértice dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
-    size_t       num_indices; // Número de índices do objeto dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
-    GLenum       rendering_mode; // Modo de rasterização (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc.)
-    GLuint       vertex_array_object_id; // ID do VAO onde estão armazenados os atributos do modelo
-    glm::vec3    bbox_min; // Axis-Aligned Bounding Box do objeto
-    glm::vec3    bbox_max;
-};
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
 
@@ -378,7 +284,7 @@ glm::vec4 camera_w_vector;
 glm::vec4 camera_u_vector;
 glm::vec4 offset = glm::vec4(-0.5f,1.5f,-2.0f,0.0f);
 float SPEED = 0.05f;
-bool FREE_MODE = true;
+bool FREE_MODE = false;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
@@ -669,6 +575,19 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, POKEBALL);
         DrawVirtualObject("Pokeball");
+        g_VirtualScene["Pokeball"].pos.x = 1.0;
+        g_VirtualScene["Pokeball"].pos.y = 0.0;
+        g_VirtualScene["Pokeball"].pos.z = 2.0;
+        g_VirtualScene["Pokeball"].scale.x = 0.2;
+        g_VirtualScene["Pokeball"].scale.y = 0.2;
+        g_VirtualScene["Pokeball"].scale.z = 0.2;
+        /*g_VirtualScene["Pokeball"].bbox_min_current.x = (g_VirtualScene["Pokeball"].bbox_min.x + 1.0f)*0.2;
+        g_VirtualScene["Pokeball"].bbox_min_current.y = (g_VirtualScene["Pokeball"].bbox_min.y + 0.0f)*0.2;
+        g_VirtualScene["Pokeball"].bbox_min_current.z = (g_VirtualScene["Pokeball"].bbox_min.z + 2.0f)*0.2;
+        g_VirtualScene["Pokeball"].bbox_max_current.x = (g_VirtualScene["Pokeball"].bbox_max.x + 1.0f)*0.2;
+        g_VirtualScene["Pokeball"].bbox_max_current.y = (g_VirtualScene["Pokeball"].bbox_max.y + 0.0f)*0.2;
+        g_VirtualScene["Pokeball"].bbox_max_current.z = (g_VirtualScene["Pokeball"].bbox_max.z + 2.0f)*0.2;
+        */
 
         float currentTime = (float)glfwGetTime();
         if (currentTime - lastSecond >= 0.04)
@@ -708,13 +627,38 @@ int main(int argc, char* argv[])
 
 
         //glBindVertexArray(vertex_array_object_id);
-
         /// Desenha jogador
         model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
                 * Matrix_Rotate_Y(g_player_direction);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
         DrawVirtualObject("Ash_Ketchum");
+        g_VirtualScene["Ash_Ketchum"].pos.x = -1.0f + g_offset_right;
+        g_VirtualScene["Ash_Ketchum"].pos.y = -1.4f;
+        g_VirtualScene["Ash_Ketchum"].pos.z = g_offset_up;
+        g_VirtualScene["Ash_Ketchum"].scale.x = 1.0;
+        g_VirtualScene["Ash_Ketchum"].scale.y = 1.0;
+        g_VirtualScene["Ash_Ketchum"].scale.z = 1.0;
+        g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
+        /*
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.x = g_VirtualScene["Ash_Ketchum"].bbox_min.x + -1.0f + g_offset_right;
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.y = g_VirtualScene["Ash_Ketchum"].bbox_min.y - 1.4f;
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.z = g_VirtualScene["Ash_Ketchum"].bbox_min.z + g_offset_up;
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.x = g_VirtualScene["Ash_Ketchum"].bbox_max.x + -1.0f + g_offset_right;
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.y = g_VirtualScene["Ash_Ketchum"].bbox_max.y - 1.4f;
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.z = g_VirtualScene["Ash_Ketchum"].bbox_max.z + g_offset_up;
+        */
+
+        /*
+        float c = cos(g_player_direction);
+        float s = sin(g_player_direction);
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.x = c*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.x) + s*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.z);
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.y = g_VirtualScene["Ash_Ketchum"].bbox_min_current.y;
+        g_VirtualScene["Ash_Ketchum"].bbox_min_current.z = c*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.z) -s*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.x);
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.x = c*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.x) + s*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.z);
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.y = g_VirtualScene["Ash_Ketchum"].bbox_max_current.y;
+        g_VirtualScene["Ash_Ketchum"].bbox_max_current.z = c*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.z) -s*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.x);
+        */
 
         /// Desenha charizard
         model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
@@ -723,11 +667,80 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CHARIZARD);
         DrawVirtualObject("Charizard");
+        g_VirtualScene["Charizard"].pos.x = 0.0f + g_offset_x_charizard;
+        g_VirtualScene["Charizard"].pos.y = 2.0f;
+        g_VirtualScene["Charizard"].pos.z = 0.0f + g_offset_z_charizard;
+        /*
+        g_VirtualScene["Charizard"].bbox_min_current.x = (g_VirtualScene["Charizard"].bbox_min.x + g_offset_x_charizard)*0.1;
+        g_VirtualScene["Charizard"].bbox_min_current.y = g_VirtualScene["Charizard"].bbox_min.y + 2.0f;
+        g_VirtualScene["Charizard"].bbox_min_current.z = (g_VirtualScene["Charizard"].bbox_min.z + g_offset_z_charizard)*0.1;
+        g_VirtualScene["Charizard"].bbox_max_current.x = (g_VirtualScene["Charizard"].bbox_max.x + g_offset_x_charizard)*0.1;
+        g_VirtualScene["Charizard"].bbox_max_current.y = g_VirtualScene["Charizard"].bbox_max.y + 2.0f;
+        g_VirtualScene["Charizard"].bbox_max_current.z = (g_VirtualScene["Charizard"].bbox_max.z + g_offset_z_charizard)*0.1;
+        */
 
         model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.1, 0.1, 0.1);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PIKACHU);
         DrawVirtualObject("Pikachu");
+        g_VirtualScene["Pikachu"].pos.x = 0.5f;
+        g_VirtualScene["Pikachu"].pos.y = -1.4f;
+        g_VirtualScene["Pikachu"].pos.z = 0.5f;
+        /*
+        g_VirtualScene["Pikachu"].bbox_min_current.x = (g_VirtualScene["Pikachu"].bbox_min.x + 0.5f)*0.1;
+        g_VirtualScene["Pikachu"].bbox_min_current.y = (g_VirtualScene["Pikachu"].bbox_min.y - 1.4f)*0.1;
+        g_VirtualScene["Pikachu"].bbox_min_current.z = (g_VirtualScene["Pikachu"].bbox_min.z + 0.5f)*0.1;
+        g_VirtualScene["Pikachu"].bbox_max_current.x = (g_VirtualScene["Pikachu"].bbox_max.x + 0.5f)*0.1;
+        g_VirtualScene["Pikachu"].bbox_max_current.y = (g_VirtualScene["Pikachu"].bbox_max.y - 1.4f)*0.1;
+        g_VirtualScene["Pikachu"].bbox_max_current.z = (g_VirtualScene["Pikachu"].bbox_max.z + 0.5f)*0.1;
+        */
+
+        for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
+        {
+            for (auto it2 = g_VirtualScene.begin(); it2 != g_VirtualScene.end(); it2++)
+            {
+                if (it->first == it2->first)
+                    continue;
+
+                if (it->first != "Ash_Ketchum")
+                    continue;
+
+                if (it2->first == "Pokeball")
+                {
+
+                    if (detectCollisionSphereAABB(it2->second, it->second))
+                    {
+                        std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
+                    }
+                    continue;
+                }
+                continue;
+                bool col = detectCollision(it->second, it2->second);
+
+                if (col)
+                {
+                    std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
+                    /*std::cout   << (it->second).bbox_min_current.x <<"|"
+                                << (it->second).bbox_min_current.y <<"|"
+                                << (it->second).bbox_min_current.z <<"|"
+                                <<"; "
+                                << (it->second).bbox_max_current.x <<"|"
+                                << (it->second).bbox_max_current.y <<"|"
+                                << (it->second).bbox_max_current.z
+                                << std::endl;
+                    std::cout   << (it2->second).bbox_min_current.x <<"|"
+                                << (it2->second).bbox_min_current.y <<"|"
+                                << (it2->second).bbox_min_current.z
+                                << "; "
+                                << (it2->second).bbox_max_current.x <<"|"
+                                << (it2->second).bbox_max_current.y <<"|"
+                                << (it2->second).bbox_max_current.z
+                                << std::endl<< std::endl<< std::endl;*/
+                }
+            }
+        }
+
+
         /*
         model = Matrix_Identity(); // Transformação inicial = identidade.
 
@@ -1130,6 +1143,7 @@ void DrawVirtualObject(const char* object_name)
     // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
     glm::vec3 bbox_min = g_VirtualScene[object_name].bbox_min;
     glm::vec3 bbox_max = g_VirtualScene[object_name].bbox_max;
+
     glUniform4f(bbox_min_uniform, bbox_min.x, bbox_min.y, bbox_min.z, 1.0f);
     glUniform4f(bbox_max_uniform, bbox_max.x, bbox_max.y, bbox_max.z, 1.0f);
 
