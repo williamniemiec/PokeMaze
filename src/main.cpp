@@ -52,12 +52,14 @@
 #include "collisions.hpp"
 #include "SceneObject.hpp"
 
+#define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
-#define PLAYER_DIRECTION_DOWN 3.1416f
-#define PLAYER_DIRECTION_LEFT 3.1416f/2
-#define PLAYER_DIRECTION_RIGHT -3.1416f/2
-#define PLAYER_SPEED 10.0f
+#define PLAYER_DIRECTION_DOWN PI
+#define PLAYER_DIRECTION_LEFT PI/2
+#define PLAYER_DIRECTION_RIGHT -PI/2
+#define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
+
 
 static bool FileExists(const std::string& abs_filename)
 {
@@ -254,9 +256,9 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
-float g_FreeModeCameraTheta = 3.1416f; // Ângulo no plano ZX em relação ao eixo Z
+float g_FreeModeCameraTheta = PI; // Ângulo no plano ZX em relação ao eixo Z
 float g_FreeModeCameraPhi = -0.4f;   // Ângulo em relação ao eixo Y
-float g_PlayerCameraTheta = 3.1416f; // Ângulo no plano ZX em relação ao eixo Z
+float g_PlayerCameraTheta = PI; // Ângulo no plano ZX em relação ao eixo Z
 float g_PlayerCameraPhi = -0.4f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
@@ -399,6 +401,7 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Pikachu/Pikachu_M.png", 11);
     LoadObjTextureImage("../../data/Charizard/FitPokeLizardon.png", 12);
     LoadObjTextureImage("../../data/Charizard/FitPokeLizardonEyeIris.png", 13);
+    LoadObjTextureImage("../../data/bricks.jpg", 14);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -460,7 +463,10 @@ int main(int argc, char* argv[])
     double param_t = 2.0;
     bool bezier_forward = true;
 
+    glm::vec4 player_position = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 free_camera_position_c  = glm::vec4(0.0f,6.0f,-14.0f,1.0f);
+    glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
+    glm::vec4 fp_camera_position_c = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -489,28 +495,20 @@ int main(int argc, char* argv[])
         previous_time = current_time;
 
         /// CAMERA
-        glm::vec4 lookat_camera_position_c;
+
         glm::vec4 camera_view_vector;
-        glm::vec4 camera_up_vector;
-        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-        // e ScrollCallback().
+
+        glm::vec4 camera_up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f);
+
         if (FREE_MODE)
         {
             float y = sin(g_FreeModeCameraPhi);
             float z = cos(g_FreeModeCameraPhi)*cos(g_FreeModeCameraTheta);
             float x = cos(g_FreeModeCameraPhi)*sin(g_FreeModeCameraTheta);
 
-            // Ponto "c", centro da câmera
-
-            //glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f) + offset; // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-            //camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-            camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
             camera_w_vector = -1.0f*camera_view_vector;
             camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
-
             camera_w_vector = camera_w_vector / norm(camera_w_vector);
             camera_u_vector = camera_u_vector / norm(camera_u_vector);
 
@@ -523,42 +521,56 @@ int main(int argc, char* argv[])
             if (d_key == true)
                 free_camera_position_c += camera_u_vector * CAMERA_SPEED * delta_time;
 
+            if (free_camera_position_c.y > 4.6f)
+                free_camera_position_c.y = 4.6f;
+            if (free_camera_position_c.y < -0.8f)
+                free_camera_position_c.y = -0.8f;
+            if (free_camera_position_c.x > 19.8f)
+                free_camera_position_c.x = 19.8f;
+            if (free_camera_position_c.x < -19.8f)
+                free_camera_position_c.x = -19.8f;
+            if (free_camera_position_c.z > 19.8f)
+                free_camera_position_c.z = 19.8f;
+            if (free_camera_position_c.z < -19.8f)
+                free_camera_position_c.z = -19.8f;
+
+            //printf("Y: %f", free_camera_position_c.y);
         }
         else
         {
 
-            float r = g_CameraDistance;
-            float y = r*sin(g_PlayerCameraPhi)+g_TorsoPositionY + 2.0f;
-            float z = r*cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta) + g_offset_up;
-            float x = r*cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta) + g_offset_right + g_TorsoPositionX - 1.0f;
+            float y = sin(g_PlayerCameraPhi);
+            float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
+            float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
 
-            // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-            // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-            lookat_camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-            //glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-            glm::vec4 camera_lookat_l    = glm::vec4(g_offset_right + g_TorsoPositionX - 1.0f,g_TorsoPositionY,g_offset_up,1.0f);
-            camera_view_vector = camera_lookat_l - lookat_camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-            camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+            camera_view_vector = glm::vec4(x,y,-z,0.0f);
+            camera_w_vector = -1.0f*camera_view_vector;
+            camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
+            camera_w_vector = camera_w_vector / norm(camera_w_vector);
+            camera_u_vector = camera_u_vector / norm(camera_u_vector);
+
             if (w_key == true)
-            {
-                g_offset_up += PLAYER_SPEED * delta_time;
-                g_player_direction = PLAYER_DIRECTION_UP;
-            }
+                fp_camera_position_c += -camera_w_vector * CAMERA_SPEED * delta_time;
             if (a_key == true)
-            {
-                g_offset_right += PLAYER_SPEED * delta_time;
-                g_player_direction = PLAYER_DIRECTION_LEFT;
-            }
+                fp_camera_position_c += -camera_u_vector * CAMERA_SPEED * delta_time;
             if (s_key == true)
-            {
-                g_offset_up -= PLAYER_SPEED * delta_time;
-                g_player_direction = PLAYER_DIRECTION_DOWN;
-            }
+                fp_camera_position_c += camera_w_vector * CAMERA_SPEED * delta_time;
             if (d_key == true)
-            {
-                g_offset_right -= PLAYER_SPEED * delta_time;
-                g_player_direction = PLAYER_DIRECTION_RIGHT;
-            }
+                fp_camera_position_c += camera_u_vector * CAMERA_SPEED * delta_time;
+
+            if (fp_camera_position_c.y > 4.6f)
+                fp_camera_position_c.y = 4.6f;
+            if (fp_camera_position_c.y < -0.8f)
+                fp_camera_position_c.y = -0.8f;
+            if (fp_camera_position_c.x > 19.8f)
+                fp_camera_position_c.x = 19.8f;
+            if (fp_camera_position_c.x < -19.8f)
+                fp_camera_position_c.x = -19.8f;
+            if (fp_camera_position_c.z > 19.8f)
+                fp_camera_position_c.z = 19.8f;
+            if (fp_camera_position_c.z < -19.8f)
+                fp_camera_position_c.z = -19.8f;
+            fp_camera_position_c.y = 0.70f;
         }
 
 /// FIM CAMERA
@@ -570,7 +582,7 @@ int main(int argc, char* argv[])
         if(FREE_MODE)
             view = Matrix_Camera_View(free_camera_position_c, camera_view_vector, camera_up_vector);
         else
-            view = Matrix_Camera_View(lookat_camera_position_c, camera_view_vector, camera_up_vector);
+            view = Matrix_Camera_View(fp_camera_position_c, camera_view_vector, camera_up_vector);
 
 // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
@@ -584,7 +596,7 @@ int main(int argc, char* argv[])
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = 3.141592 / 3.0f;
+            float field_of_view = PI / 3.0f;
             projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
         else
@@ -617,6 +629,7 @@ int main(int argc, char* argv[])
 #define PLAYER 4
 #define CHARIZARD 5
 #define PIKACHU 6
+#define WALL 7
 
 // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -679,21 +692,25 @@ int main(int argc, char* argv[])
         }
 
 // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(10.0f, 10.0f, 10.0f);
+        model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(20.0f, 10.0f, 20.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLANE);
         DrawVirtualObject("plane");
 
 // Desenhamos o plano do ceu
-        model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(10.0f, 10.0f, 10.0f);
+        model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(100.0f, 10.0f, 100.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
         DrawVirtualObject("plane");
 
 
+
 //glBindVertexArray(vertex_array_object_id);
 /// Desenha jogador
-        model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
+
+        //model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
+        //      * Matrix_Rotate_Y(g_player_direction);
+        model = Matrix_Translate(player_position.x,player_position.y,player_position.z)
                 * Matrix_Rotate_Y(g_player_direction);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
@@ -728,7 +745,7 @@ int main(int argc, char* argv[])
 /// Desenha charizard
         model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
                 * Matrix_Scale(0.1, 0.1, 0.1)
-                * Matrix_Rotate_X(3.1416/4);
+                * Matrix_Rotate_X(PI/4);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CHARIZARD);
         DrawVirtualObject("Charizard");
@@ -806,7 +823,35 @@ int main(int argc, char* argv[])
         }
 
 
+        model = Matrix_Translate(0.0f, 1.f, 20.0f)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 5.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane");
 
+        model = Matrix_Translate(0.0f, 1.f, -20.0f)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 5.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane");
+
+        model = Matrix_Translate(20.0f, 1.f, 0.0f)
+                * Matrix_Rotate_Y(PI/2)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 5.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane");
+
+        model = Matrix_Translate(-20.0f, 1.f, 0.0f)
+                * Matrix_Rotate_Y(PI/2)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 5.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane");
 
 // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
 // passamos por todos os sistemas de coordenadas armazenados nas
@@ -1374,6 +1419,7 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "pikachu_m"), 11);
     glUniform1i(glGetUniformLocation(program_id, "charizard_body"), 12);
     glUniform1i(glGetUniformLocation(program_id, "charizard_eye"), 13);
+    glUniform1i(glGetUniformLocation(program_id, "wall"), 14);
     glUseProgram(0);
 }
 
@@ -1913,7 +1959,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
             g_PlayerCameraPhi   -= 0.01f*dy;
         }
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
+        float phimax = PI/2;
         float phimin = -phimax;
 
 
@@ -2011,7 +2057,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     //   Se apertar tecla Z       então g_AngleZ += delta;
     //   Se apertar tecla shift+Z então g_AngleZ -= delta;
 
-    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
+    float delta = PI / 16; // 22.5 graus, em radianos.
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {

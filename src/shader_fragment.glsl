@@ -29,6 +29,7 @@ uniform mat4 projection;
 #define PLAYER    4
 #define CHARIZARD 5
 #define PIKACHU 6
+#define WALL 7
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -39,7 +40,6 @@ uniform vec4 bbox_max;
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
-
 uniform sampler2D ash_arms;
 uniform sampler2D ash_face;
 uniform sampler2D ash_body;
@@ -51,6 +51,7 @@ uniform sampler2D pikachu_e;
 uniform sampler2D pikachu_m;
 uniform sampler2D charizard_body;
 uniform sampler2D charizard_eye;
+uniform sampler2D wall;
 
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
@@ -136,14 +137,18 @@ void main()
         V = texcoords.y;
     }
     else
-    {
-        U = texcoords.x;
-        V = texcoords.y;
-    }
+{
+    U = texcoords.x;
+    V = texcoords.y;
+}
 
-    if ( object_id == SKY )
+if ( object_id == SKY )
     {
         color = texture(TextureImage2, vec2(U,V)).rgb;
+    }
+    else if ( object_id == WALL )
+    {
+        color = texture(wall, vec2(U*8,V*3)).rgb;
     }
     else if ( object_id == CHARIZARD )
     {
