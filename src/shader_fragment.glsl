@@ -30,6 +30,10 @@ uniform mat4 projection;
 #define CHARIZARD 5
 #define PIKACHU 6
 #define WALL 7
+#define CUBE 8
+#define ZCUBE 9
+#define XCUBE 10
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -80,10 +84,23 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+    vec4 l = normalize(vec4(-1.0,1.0,-1.0,0.0));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
+
+    // Vetor meio termo entre v e l
+    vec4 h = normalize(v+l);
+
+    // Vetor que define o sentido da reflexão especular ideal.
+    vec4 r = -l + 2*n*dot(n,l);
+
+    // Espectro da fonte de luz
+    vec3 I = vec3(1.0f,1.0f,1.0f);
+
+    vec3 Ia = vec3(0.2f,0.2f,0.2f);
+
+
 
     // Coordenadas de textura U e V
     float U = 0.0;
@@ -137,18 +154,56 @@ void main()
         V = texcoords.y;
     }
     else
-{
-    U = texcoords.x;
-    V = texcoords.y;
-}
+    {
+        U = texcoords.x;
+        V = texcoords.y;
+    }
 
-if ( object_id == SKY )
+    if ( object_id == SKY )
     {
         color = texture(TextureImage2, vec2(U,V)).rgb;
     }
     else if ( object_id == WALL )
     {
-        color = texture(wall, vec2(U*8,V*3)).rgb;
+        vec3 Kd0 = texture(wall, vec2(U*5.5f,V*3)).rgb;
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.5);
+    }
+    else if ( object_id == ZCUBE )
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        V = (position_model.y-miny)/(maxy-miny);
+        U = (position_model.z-minz)/(maxz-minz);
+
+        vec3 Kd0 = texture(wall, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.04);
+    }
+    else if ( object_id == XCUBE )
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x-minx)/(maxx-minx);
+        V = (position_model.y-miny)/(maxy-miny);
+
+        vec3 Kd0 = texture(wall, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.04);
     }
     else if ( object_id == CHARIZARD )
     {
@@ -161,18 +216,25 @@ if ( object_id == SKY )
         else
             Kd0 = vec3(0.5,0.5,0.5);
 
+        float q = 60;
+        // Refletância especular
+        vec3 Ks = vec3(0.3f,0.3f,0.3f);
+        vec3 Ka = Ks/6;
         float lambert = max(0,dot(n,l));
 
-        color = Kd0 * (lambert + 0.01);
+        color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
     }
     else if ( object_id == POKEBALL )
     {
         vec3 Kd0 = texture(pokeball, vec2(U,V)).rgb;
 
+        float q = 70;
 
+        vec3 Ks = vec3(0.3f,0.3f,0.3f);
+        vec3 Ka = Ks/10;
         float lambert = max(0,dot(n,l));
 
-        color = Kd0 * (lambert + 0.01);
+        color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
     }
     else if ( object_id == PLAYER )
     {
@@ -222,7 +284,7 @@ if ( object_id == SKY )
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
 
-        color = Kd0 * (lambert + 0.01);
+        color = Kd0 * (lambert + 0.8);
     }
 
 
