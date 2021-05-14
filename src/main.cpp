@@ -434,6 +434,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&pikachu);
     BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
 
+    ObjModel cube("../../data/cube.obj");
+    ComputeNormals(&cube);
+    BuildTrianglesAndAddToVirtualScene(&cube, "cube");
+
     //GLuint vertex_array_object_id = BuildTriangles();
 
     /*if ( argc > 1 )
@@ -534,7 +538,7 @@ int main(int argc, char* argv[])
             if (free_camera_position_c.z < -19.8f)
                 free_camera_position_c.z = -19.8f;
 
-            //printf("Y: %f", free_camera_position_c.y);
+            printf("X: %f, Y: %f, Z: %f\n", free_camera_position_c.x, free_camera_position_c.y, free_camera_position_c.z);
         }
         else
         {
@@ -542,6 +546,8 @@ int main(int argc, char* argv[])
             float y = sin(g_PlayerCameraPhi);
             float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
             float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
+
+            g_player_direction = PI - g_PlayerCameraTheta;
 
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
             camera_w_vector = -1.0f*camera_view_vector;
@@ -630,6 +636,7 @@ int main(int argc, char* argv[])
 #define CHARIZARD 5
 #define PIKACHU 6
 #define WALL 7
+#define CUBE 8
 
 // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -710,7 +717,7 @@ int main(int argc, char* argv[])
 
         //model = Matrix_Translate(-1.0f + g_offset_right,-1.4f,g_offset_up)
         //      * Matrix_Rotate_Y(g_player_direction);
-        model = Matrix_Translate(player_position.x,player_position.y,player_position.z)
+        model = Matrix_Translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z)
                 * Matrix_Rotate_Y(g_player_direction);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
@@ -777,6 +784,8 @@ int main(int argc, char* argv[])
         g_VirtualScene["Pikachu"].bbox_max_current.z = (g_VirtualScene["Pikachu"].bbox_max.z + 0.5f)*0.1;
         */
 
+
+
         for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
         {
             for (auto it2 = g_VirtualScene.begin(); it2 != g_VirtualScene.end(); it2++)
@@ -821,6 +830,17 @@ int main(int argc, char* argv[])
                 }
             }
         }
+
+
+        //walls
+        model = Matrix_Translate(0.0f,2.0f,0.0f)
+        *Matrix_Scale(0.5f, 5.0f, 14.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, CUBE);
+        DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
 
         model = Matrix_Translate(0.0f, 1.f, 20.0f)
