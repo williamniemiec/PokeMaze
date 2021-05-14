@@ -6,15 +6,24 @@
 //e um teste ponto-esfera
 
 // FONTE: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
-// teste ponto-ponto
-bool detectCollision(SceneObject obj1, SceneObject obj2)
+// teste plano-plano (paredes e jogador)
+bool has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
 {
     return  (obj1.bbox_min.x <= obj2.bbox_max.x && obj1.bbox_max.x >= obj2.bbox_min.x) &&
             (obj1.bbox_min.y <= obj2.bbox_max.y && obj1.bbox_max.y >= obj2.bbox_min.y) &&
             (obj1.bbox_min.z <= obj2.bbox_max.z && obj1.bbox_max.z >= obj2.bbox_min.z);
 }
 
-bool detectCollisionSphereAABB(SceneObject sphere, SceneObject aabb)
+// teste ponto-plano (camera livre e paredes)
+bool has_collision_point_plane(glm::vec3 point, SceneObject plane)
+{
+    return  (point.x >= plane.bbox_min.x && point.x <= plane.bbox_max.x) &&
+            (point.y >= plane.bbox_min.y && point.y <= plane.bbox_max.y) &&
+            (point.z >= plane.bbox_min.z && point.z <= plane.bbox_max.z);
+}
+
+// teste esfera-plano (pokebola e jogador)
+bool has_collision_sphere_plane(SceneObject sphere, SceneObject aabb)
 {
     float aabbMinX;
     float aabbMinY;
@@ -23,36 +32,12 @@ bool detectCollisionSphereAABB(SceneObject sphere, SceneObject aabb)
     float aabbMaxY;
     float aabbMaxZ;
 
-
-    if (aabb.rotateY > 0)
-    {
-        float c = cos(aabb.rotateY);
-        float s = sin(aabb.rotateY);
-
-        aabbMinX = c*aabb.bbox_min.x + s*aabb.bbox_min.z;
-        aabbMinY = aabb.bbox_min.y;
-        aabbMinZ = c*aabb.bbox_min.z - s*aabb.bbox_min.x;
-        aabbMaxX = c*aabb.bbox_max.x + s*aabb.bbox_max.z;
-        aabbMaxY = aabb.bbox_max.y;
-        aabbMaxZ = c*aabb.bbox_max.z - s*aabb.bbox_max.x;
-
-        aabbMinX = aabbMinX + aabb.pos.x;
-        aabbMinY = aabbMinY + aabb.pos.y;
-        aabbMinZ = aabbMinZ + aabb.pos.z;
-        aabbMaxX = aabbMaxX + aabb.pos.x;
-        aabbMaxY = aabbMaxY + aabb.pos.y;
-        aabbMaxZ = aabbMaxZ + aabb.pos.z;
-    }
-    else
-    {
-        aabbMinX = aabb.bbox_min.x + aabb.pos.x;
-        aabbMinY = aabb.bbox_min.y + aabb.pos.y;
-        aabbMinZ = aabb.bbox_min.z + aabb.pos.z;
-        aabbMaxX = aabb.bbox_max.x + aabb.pos.x;
-        aabbMaxY = aabb.bbox_max.y + aabb.pos.y;
-        aabbMaxZ = aabb.bbox_max.z + aabb.pos.z;
-    }
-
+    aabbMinX = aabb.bbox_min.x + aabb.pos.x;
+    aabbMinY = aabb.bbox_min.y + aabb.pos.y;
+    aabbMinZ = aabb.bbox_min.z + aabb.pos.z;
+    aabbMaxX = aabb.bbox_max.x + aabb.pos.x;
+    aabbMaxY = aabb.bbox_max.y + aabb.pos.y;
+    aabbMaxZ = aabb.bbox_max.z + aabb.pos.z;
 
     // get box closest point to sphere center by clamping
     double x = std::max(aabbMinX, std::min(sphere.pos.x, aabbMaxX));

@@ -547,6 +547,10 @@ int main(int argc, char* argv[])
             float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
             float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
 
+            player_position.x = x;
+            player_position.y = y;
+            player_position.z = z;
+
             g_player_direction = PI - g_PlayerCameraTheta;
 
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
@@ -722,32 +726,13 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
         DrawVirtualObject("Ash_Ketchum");
-        g_VirtualScene["Ash_Ketchum"].pos.x = -1.0f + g_offset_right;
-        g_VirtualScene["Ash_Ketchum"].pos.y = -1.4f;
-        g_VirtualScene["Ash_Ketchum"].pos.z = g_offset_up;
+        g_VirtualScene["Ash_Ketchum"].pos.x = fp_camera_position_c.x;
+        g_VirtualScene["Ash_Ketchum"].pos.y = fp_camera_position_c.y-2.1f;
+        g_VirtualScene["Ash_Ketchum"].pos.z = fp_camera_position_c.z;
         g_VirtualScene["Ash_Ketchum"].scale.x = 1.0;
         g_VirtualScene["Ash_Ketchum"].scale.y = 1.0;
         g_VirtualScene["Ash_Ketchum"].scale.z = 1.0;
         g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
-        /*
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.x = g_VirtualScene["Ash_Ketchum"].bbox_min.x + -1.0f + g_offset_right;
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.y = g_VirtualScene["Ash_Ketchum"].bbox_min.y - 1.4f;
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.z = g_VirtualScene["Ash_Ketchum"].bbox_min.z + g_offset_up;
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.x = g_VirtualScene["Ash_Ketchum"].bbox_max.x + -1.0f + g_offset_right;
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.y = g_VirtualScene["Ash_Ketchum"].bbox_max.y - 1.4f;
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.z = g_VirtualScene["Ash_Ketchum"].bbox_max.z + g_offset_up;
-        */
-
-        /*
-        float c = cos(g_player_direction);
-        float s = sin(g_player_direction);
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.x = c*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.x) + s*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.z);
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.y = g_VirtualScene["Ash_Ketchum"].bbox_min_current.y;
-        g_VirtualScene["Ash_Ketchum"].bbox_min_current.z = c*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.z) -s*(g_VirtualScene["Ash_Ketchum"].bbox_min_current.x);
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.x = c*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.x) + s*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.z);
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.y = g_VirtualScene["Ash_Ketchum"].bbox_max_current.y;
-        g_VirtualScene["Ash_Ketchum"].bbox_max_current.z = c*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.z) -s*(g_VirtualScene["Ash_Ketchum"].bbox_max_current.x);
-        */
 
 /// Desenha charizard
         model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
@@ -759,14 +744,6 @@ int main(int argc, char* argv[])
         g_VirtualScene["Charizard"].pos.x = 0.0f + g_offset_x_charizard;
         g_VirtualScene["Charizard"].pos.y = 2.0f;
         g_VirtualScene["Charizard"].pos.z = 0.0f + g_offset_z_charizard;
-        /*
-        g_VirtualScene["Charizard"].bbox_min_current.x = (g_VirtualScene["Charizard"].bbox_min.x + g_offset_x_charizard)*0.1;
-        g_VirtualScene["Charizard"].bbox_min_current.y = g_VirtualScene["Charizard"].bbox_min.y + 2.0f;
-        g_VirtualScene["Charizard"].bbox_min_current.z = (g_VirtualScene["Charizard"].bbox_min.z + g_offset_z_charizard)*0.1;
-        g_VirtualScene["Charizard"].bbox_max_current.x = (g_VirtualScene["Charizard"].bbox_max.x + g_offset_x_charizard)*0.1;
-        g_VirtualScene["Charizard"].bbox_max_current.y = g_VirtualScene["Charizard"].bbox_max.y + 2.0f;
-        g_VirtualScene["Charizard"].bbox_max_current.z = (g_VirtualScene["Charizard"].bbox_max.z + g_offset_z_charizard)*0.1;
-        */
 
         model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.1, 0.1, 0.1);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
@@ -775,17 +752,8 @@ int main(int argc, char* argv[])
         g_VirtualScene["Pikachu"].pos.x = 0.5f;
         g_VirtualScene["Pikachu"].pos.y = -1.4f;
         g_VirtualScene["Pikachu"].pos.z = 0.5f;
-        /*
-        g_VirtualScene["Pikachu"].bbox_min_current.x = (g_VirtualScene["Pikachu"].bbox_min.x + 0.5f)*0.1;
-        g_VirtualScene["Pikachu"].bbox_min_current.y = (g_VirtualScene["Pikachu"].bbox_min.y - 1.4f)*0.1;
-        g_VirtualScene["Pikachu"].bbox_min_current.z = (g_VirtualScene["Pikachu"].bbox_min.z + 0.5f)*0.1;
-        g_VirtualScene["Pikachu"].bbox_max_current.x = (g_VirtualScene["Pikachu"].bbox_max.x + 0.5f)*0.1;
-        g_VirtualScene["Pikachu"].bbox_max_current.y = (g_VirtualScene["Pikachu"].bbox_max.y - 1.4f)*0.1;
-        g_VirtualScene["Pikachu"].bbox_max_current.z = (g_VirtualScene["Pikachu"].bbox_max.z + 0.5f)*0.1;
-        */
 
-
-
+        // Verifica se existem colisões entre objetos da cena
         for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
         {
             for (auto it2 = g_VirtualScene.begin(); it2 != g_VirtualScene.end(); it2++)
@@ -799,34 +767,18 @@ int main(int argc, char* argv[])
                 if (it2->first == "Pokeball")
                 {
 
-                    if (detectCollisionSphereAABB(it2->second, it->second))
+                    if (has_collision_sphere_plane(it2->second, it->second))
                     {
                         std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
                     }
                     continue;
                 }
                 continue;
-                bool col = detectCollision(it->second, it2->second);
+                bool col = has_collision_plane_plane(it->second, it2->second);
 
                 if (col)
                 {
                     std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
-                    /*std::cout   << (it->second).bbox_min_current.x <<"|"
-                                << (it->second).bbox_min_current.y <<"|"
-                                << (it->second).bbox_min_current.z <<"|"
-                                <<"; "
-                                << (it->second).bbox_max_current.x <<"|"
-                                << (it->second).bbox_max_current.y <<"|"
-                                << (it->second).bbox_max_current.z
-                                << std::endl;
-                    std::cout   << (it2->second).bbox_min_current.x <<"|"
-                                << (it2->second).bbox_min_current.y <<"|"
-                                << (it2->second).bbox_min_current.z
-                                << "; "
-                                << (it2->second).bbox_max_current.x <<"|"
-                                << (it2->second).bbox_max_current.y <<"|"
-                                << (it2->second).bbox_max_current.z
-                                << std::endl<< std::endl<< std::endl;*/
                 }
             }
         }
