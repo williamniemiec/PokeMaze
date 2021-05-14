@@ -60,6 +60,16 @@
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
 
+#define SPHERE 0
+#define POKEBALL  1
+#define PLANE  2
+#define SKY 3
+#define PLAYER 4
+#define CHARIZARD 5
+#define PIKACHU 6
+#define WALL 7
+#define CUBE 8
+
 
 static bool FileExists(const std::string& abs_filename)
 {
@@ -426,6 +436,22 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane");
 
+    ObjModel planemodel1("../../data/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane1");
+
+    ObjModel planemode2("../../data/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane2");
+
+    ObjModel planemodel3("../../data/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane3");
+
+    ObjModel planemodel4("../../data/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane4");
+
     ObjModel charizard("../../data/Charizard/Charizard.obj", "../../data/Charizard/");
     ComputeNormals(&charizard);
     BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
@@ -472,6 +498,30 @@ int main(int argc, char* argv[])
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     // Ficamos em loop, renderizando, até que o usuário feche a janela
+
+
+
+
+
+
+    /*g_VirtualScene["plane1"].scale(20.0f, 0.0f, 3.0f);
+    g_VirtualScene["plane1"].rotate_x(-PI/2);
+    g_VirtualScene["plane1"].translate(0.0f, 1.f, 20.0f);
+    g_VirtualScene["plane2"].scale(20.0f, 0.0f, 3.0f);*/
+    /*g_VirtualScene["plane2"].rotate_x(-PI/2);
+    g_VirtualScene["plane2"].translate(0.0f, 1.f, -20.0f);
+    g_VirtualScene["plane3"].scale(20.0f, 0.0f, 3.0f);
+    g_VirtualScene["plane3"].rotate_x(-PI/2);
+    g_VirtualScene["plane3"].rotate_y(-PI/2);
+    g_VirtualScene["plane3"].translate(20.0f, 1.f, 0.0f);*/
+    //g_VirtualScene["plane4"].scale(20.0f, 0.0f, 3.0f);
+    //g_VirtualScene["plane4"].rotate_x(PI/2);
+    //g_VirtualScene["plane4"].rotate_y(PI/2);
+    //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
+
+
+
+
     while (!glfwWindowShouldClose(window))
     {
         // Aqui executamos as operações de renderização
@@ -498,10 +548,16 @@ int main(int argc, char* argv[])
         delta_time = current_time - previous_time;
         previous_time = current_time;
 
+
+
+
+
+
+
+
         /// CAMERA
-
+        glm::vec4 movement;
         glm::vec4 camera_view_vector;
-
         glm::vec4 camera_up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f);
 
         if (FREE_MODE)
@@ -542,15 +598,11 @@ int main(int argc, char* argv[])
         }
         else
         {
-
             float y = sin(g_PlayerCameraPhi);
             float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
             float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
 
-            player_position.x = x;
-            player_position.y = y;
-            player_position.z = z;
-
+            movement = fp_camera_position_c;
             g_player_direction = PI - g_PlayerCameraTheta;
 
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
@@ -559,28 +611,64 @@ int main(int argc, char* argv[])
             camera_w_vector = camera_w_vector / norm(camera_w_vector);
             camera_u_vector = camera_u_vector / norm(camera_u_vector);
 
-            if (w_key == true)
-                fp_camera_position_c += -camera_w_vector * CAMERA_SPEED * delta_time;
-            if (a_key == true)
-                fp_camera_position_c += -camera_u_vector * CAMERA_SPEED * delta_time;
-            if (s_key == true)
-                fp_camera_position_c += camera_w_vector * CAMERA_SPEED * delta_time;
-            if (d_key == true)
-                fp_camera_position_c += camera_u_vector * CAMERA_SPEED * delta_time;
+            //fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z
 
+            if (w_key == true)
+            {
+                movement = fp_camera_position_c - camera_w_vector * CAMERA_SPEED * delta_time;
+                //fp_camera_position_c += -camera_w_vector * CAMERA_SPEED * delta_time;
+                //std::cout << Collisions::has_collision_point_plane_2d(movement, g_VirtualScene["plane1"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["plane2"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["plane3"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(movement, g_VirtualScene["plane4"]) << std::endl;
+                //std::cout << Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane4"]) << std::endl;
+            }
+            if (a_key == true)
+            {
+                movement = fp_camera_position_c - camera_u_vector * CAMERA_SPEED * delta_time;
+                //fp_camera_position_c += -camera_u_vector * CAMERA_SPEED * delta_time;
+            }
+            if (s_key == true)
+            {
+                movement = fp_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
+                //fp_camera_position_c += camera_w_vector * CAMERA_SPEED * delta_time;
+            }
+            if (d_key == true)
+            {
+                movement = fp_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
+                //fp_camera_position_c += camera_u_vector * CAMERA_SPEED * delta_time;
+
+            }
+
+/*
             if (fp_camera_position_c.y > 4.6f)
                 fp_camera_position_c.y = 4.6f;
             if (fp_camera_position_c.y < -0.8f)
                 fp_camera_position_c.y = -0.8f;
+
             if (fp_camera_position_c.x > 19.8f)
                 fp_camera_position_c.x = 19.8f;
             if (fp_camera_position_c.x < -19.8f)
                 fp_camera_position_c.x = -19.8f;
+
             if (fp_camera_position_c.z > 19.8f)
                 fp_camera_position_c.z = 19.8f;
             if (fp_camera_position_c.z < -19.8f)
                 fp_camera_position_c.z = -19.8f;
-            fp_camera_position_c.y = 0.70f;
+*/
+            //fp_camera_position_c.y = 0.70f;
+            movement.y = 0.70f;
+
+            fp_camera_position_c = movement;
+           if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane1"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane2"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane3"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane4"]))
+            {
+                //fp_camera_position_c = movement;
+                std::cout << "COLISSION WITH WALL\n";
+            }
+
         }
 
 /// FIM CAMERA
@@ -624,7 +712,7 @@ int main(int argc, char* argv[])
             projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
-        glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
+
 
 // Enviamos as matrizes "view" e "projection" para a placa de vídeo
 // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -641,7 +729,46 @@ int main(int argc, char* argv[])
 #define PIKACHU 6
 #define WALL 7
 #define CUBE 8
+        glm::mat4 model = Matrix_Identity();
 
+        // WALLS
+        model = Matrix_Translate(0.0f, 1.f, 20.0f)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+                //* Matrix_Scale(20.0f, 0.0f, 5.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane1");
+        g_VirtualScene["plane1"].apply(model);
+
+        model = Matrix_Translate(0.0f, 1.f, -20.0f)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane2");
+        g_VirtualScene["plane2"].apply(model);
+
+
+
+        model = Matrix_Translate(20.0f, 1.f, 0.0f)
+                * Matrix_Rotate_Y(PI/2)
+                * Matrix_Rotate_X(PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane3");
+        g_VirtualScene["plane3"].apply(model);
+
+
+        model = Matrix_Translate(-20.0f, 1.f, 0.0f)
+                * Matrix_Rotate_Y(-PI/2)
+                * Matrix_Rotate_X(-PI/2)
+                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, WALL);
+        DrawVirtualObject("plane4");
+        g_VirtualScene["plane4"].apply(model);
 // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
               * Matrix_Rotate_Z(0.6f)
@@ -665,12 +792,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, POKEBALL);
         DrawVirtualObject("Pokeball");
-        g_VirtualScene["Pokeball"].pos.x = 1.0;
-        g_VirtualScene["Pokeball"].pos.y = 0.0;
-        g_VirtualScene["Pokeball"].pos.z = 2.0;
-        g_VirtualScene["Pokeball"].scale.x = 0.2;
-        g_VirtualScene["Pokeball"].scale.y = 0.2;
-        g_VirtualScene["Pokeball"].scale.z = 0.2;
+        g_VirtualScene["Pokeball"].scale(0.2f, 0.2f, 0.2f);
+        g_VirtualScene["Pokeball"].rotate_x(g_AngleX + (float)glfwGetTime() * 0.1f);
+        g_VirtualScene["Pokeball"].translate(1.0f,0.0f,2.0f);
         /*g_VirtualScene["Pokeball"].bbox_min_current.x = (g_VirtualScene["Pokeball"].bbox_min.x + 1.0f)*0.2;
         g_VirtualScene["Pokeball"].bbox_min_current.y = (g_VirtualScene["Pokeball"].bbox_min.y + 0.0f)*0.2;
         g_VirtualScene["Pokeball"].bbox_min_current.z = (g_VirtualScene["Pokeball"].bbox_min.z + 2.0f)*0.2;
@@ -726,13 +850,10 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLAYER);
         DrawVirtualObject("Ash_Ketchum");
-        g_VirtualScene["Ash_Ketchum"].pos.x = fp_camera_position_c.x;
-        g_VirtualScene["Ash_Ketchum"].pos.y = fp_camera_position_c.y-2.1f;
-        g_VirtualScene["Ash_Ketchum"].pos.z = fp_camera_position_c.z;
-        g_VirtualScene["Ash_Ketchum"].scale.x = 1.0;
-        g_VirtualScene["Ash_Ketchum"].scale.y = 1.0;
-        g_VirtualScene["Ash_Ketchum"].scale.z = 1.0;
-        g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
+        //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
+        //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
+        g_VirtualScene["Ash_Ketchum"].apply(model);
+        //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
 /// Desenha charizard
         model = Matrix_Translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard)
@@ -741,17 +862,16 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CHARIZARD);
         DrawVirtualObject("Charizard");
-        g_VirtualScene["Charizard"].pos.x = 0.0f + g_offset_x_charizard;
-        g_VirtualScene["Charizard"].pos.y = 2.0f;
-        g_VirtualScene["Charizard"].pos.z = 0.0f + g_offset_z_charizard;
+        g_VirtualScene["Charizard"].rotate_x(PI/4);
+        g_VirtualScene["Charizard"].scale(0.1, 0.1, 0.1);
+        g_VirtualScene["Charizard"].translate(0.0f + g_offset_x_charizard, 2.0f, 0.0f + g_offset_z_charizard);
 
         model = Matrix_Translate(0.5f, -1.4f, 0.5f) * Matrix_Scale(0.1, 0.1, 0.1);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PIKACHU);
         DrawVirtualObject("Pikachu");
-        g_VirtualScene["Pikachu"].pos.x = 0.5f;
-        g_VirtualScene["Pikachu"].pos.y = -1.4f;
-        g_VirtualScene["Pikachu"].pos.z = 0.5f;
+        g_VirtualScene["Pikachu"].scale(0.1, 0.1, 0.1);
+        g_VirtualScene["Pikachu"].translate(0.5f, -1.4f, 0.5f);
 
         // Verifica se existem colisões entre objetos da cena
         for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
@@ -793,37 +913,11 @@ int main(int argc, char* argv[])
         g_VirtualScene["cube"].pos.x = 5.0f;
         g_VirtualScene["cube"].pos.y = 0.0f;
         g_VirtualScene["cube"].pos.z = 0.0f;
+        g_VirtualScene["cube"].scale(0.5f, 5.0f, 14.0f);
+        g_VirtualScene["cube"].translate(0.0f,2.0f,0.0f);
 
 
-        model = Matrix_Translate(0.0f, 1.f, 20.0f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane");
 
-        model = Matrix_Translate(0.0f, 1.f, -20.0f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane");
-
-        model = Matrix_Translate(20.0f, 1.f, 0.0f)
-                * Matrix_Rotate_Y(PI/2)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane");
-
-        model = Matrix_Translate(-20.0f, 1.f, 0.0f)
-                * Matrix_Rotate_Y(PI/2)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane");
 
 // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
 // passamos por todos os sistemas de coordenadas armazenados nas
