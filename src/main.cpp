@@ -48,9 +48,9 @@
 
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
+#include "SceneObject.hpp"
 #include "matrices.h"
 #include "collisions.hpp"
-#include "SceneObject.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -497,6 +497,7 @@ int main(int argc, char* argv[])
     glm::vec4 free_camera_position_c  = glm::vec4(10.0f,5.60f,-10.25f,1.0f);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
+    std::stack<glm::vec4> movements;
     // Ficamos em loop, renderizando, até que o usuário feche a janela
 
 
@@ -658,14 +659,21 @@ int main(int argc, char* argv[])
             //fp_camera_position_c.y = 0.80f;
             movement.y = 0.80f;
 
-            fp_camera_position_c = movement;
+
            if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane1"]) ||
                 Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane2"]) ||
                 Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane3"]) ||
                 Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane4"]))
             {
-                //fp_camera_position_c = movement;
-                std::cout << "COLISSION WITH WALL\n";
+                movements.pop();
+                fp_camera_position_c = movements.top();
+                movements.pop();
+                g_VirtualScene["Ash_Ketchum"].undo();
+            }
+            else
+            {
+                fp_camera_position_c = movement;
+                movements.push(fp_camera_position_c);
             }
         }
 
@@ -731,7 +739,7 @@ int main(int argc, char* argv[])
 #define XCUBE 10
 
         glm::mat4 model = Matrix_Identity();
-		
+
         // WALLS
         model = Matrix_Translate(0.0f, 1.f, 20.0f)
                 * Matrix_Rotate_X(PI/2)
