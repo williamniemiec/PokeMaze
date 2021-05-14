@@ -767,14 +767,14 @@ int main(int argc, char* argv[])
                 if (it2->first == "Pokeball")
                 {
 
-                    if (has_collision_sphere_plane(it2->second, it->second))
+                    if (Collisions::has_collision_sphere_plane(it2->second, it->second))
                     {
                         std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
                     }
                     continue;
                 }
                 continue;
-                bool col = has_collision_plane_plane(it->second, it2->second);
+                bool col = Collisions::has_collision_plane_plane(it->second, it2->second);
 
                 if (col)
                 {

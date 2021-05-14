@@ -7,7 +7,7 @@
 
 // FONTE: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
 // teste plano-plano (paredes e jogador)
-bool has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
+bool Collisions::has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
 {
     return  (obj1.bbox_min.x <= obj2.bbox_max.x && obj1.bbox_max.x >= obj2.bbox_min.x) &&
             (obj1.bbox_min.y <= obj2.bbox_max.y && obj1.bbox_max.y >= obj2.bbox_min.y) &&
@@ -15,7 +15,7 @@ bool has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
 }
 
 // teste ponto-plano (camera livre e paredes)
-bool has_collision_point_plane(glm::vec3 point, SceneObject plane)
+bool Collisions::has_collision_point_plane(glm::vec3 point, SceneObject plane)
 {
     return  (point.x >= plane.bbox_min.x && point.x <= plane.bbox_max.x) &&
             (point.y >= plane.bbox_min.y && point.y <= plane.bbox_max.y) &&
@@ -23,7 +23,7 @@ bool has_collision_point_plane(glm::vec3 point, SceneObject plane)
 }
 
 // teste esfera-plano (pokebola e jogador)
-bool has_collision_sphere_plane(SceneObject sphere, SceneObject aabb)
+bool Collisions::has_collision_sphere_plane(SceneObject sphere, SceneObject aabb)
 {
     float aabbMinX;
     float aabbMinY;
@@ -53,7 +53,7 @@ bool has_collision_sphere_plane(SceneObject sphere, SceneObject aabb)
     return distance < sphereRadius;
 }
 
-double is_vector_less_than_or_equal_to(glm::vec3 left, glm::vec3 right)
+double Collisions::is_vector_less_than_or_equal_to(glm::vec3 left, glm::vec3 right)
 {
     return  left.x <= right.x
             && left.y <= right.y
