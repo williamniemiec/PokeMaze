@@ -5,18 +5,23 @@
 //    INF01047 Fundamentos de Computação Gráfica
 //               Prof. Eduardo Gastal
 //
-//                   TRABALHO FINAL
-//    Alexandre Junior da Costa e William Niemiec
+//                   LABORATÓRIO 5
 //
 
-// Headers C
+// Arquivos "headers" padrões de C podem ser incluídos em um
+// programa C++, sendo necessário somente adicionar o caractere
+// "c" antes de seu nome, e remover o sufixo ".h". Exemplo:
+//    #include <stdio.h> // Em C
+//  vira
+//    #include <cstdio> // Em C++
+//
 #include <iostream>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <windows.h>
 
-// Headers C++
+// Headers abaixo são específicos de C++
 #include <map>
 #include <stack>
 #include <string>
@@ -27,7 +32,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-// Headers OpenGL
+// Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
 
@@ -38,6 +43,7 @@
 
 // Headers da biblioteca para carregar modelos obj
 #include <tiny_obj_loader.h>
+
 #include <stb_image.h>
 
 // Headers locais, definidos na pasta "include/"
@@ -46,74 +52,31 @@
 #include "collisions.hpp"
 #include "SceneObject.hpp"
 
-// Constantes
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
 #define PLAYER_DIRECTION_DOWN PI
 #define PLAYER_DIRECTION_LEFT PI/2
 #define PLAYER_DIRECTION_RIGHT -PI/2
-#define PLAYER_SPEED 6.0f
+#define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
-#define SPHERE 0
-#define POKEBALL  1
-#define PLANE  2
-#define SKY 3
-#define PLAYER 4
-#define CHARIZARD 5
-#define PIKACHU 6
-#define WALL 7
-#define CUBE 8
-
-// Declaração de funções utilizadas para pilha de matrizes de modelagem.
-void PushMatrix(glm::mat4 M);
-void PopMatrix(glm::mat4& M);
-
-// Declaração de várias funções utilizadas em main().  Essas estão definidas
-// logo após a definição de main() neste arquivo.
-void BuildTrianglesAndAddToVirtualScene(ObjModel*, std::string); // Constrói representação de um ObjModel como malha de triângulos para renderização
-void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
-void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
-void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
-void LoadObjTextureImage(const char* filename, GLuint textureunit);
-void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
-GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
-GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
-void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
-void PrintObjModelInfo(ObjModel*); // Função para debugging
-void LoadBackground(const char* filename);
-void DrawCube(GLint render_as_black_uniform);
-static bool FileExists(const std::string& abs_filename);
-
-// Declaração de funções auxiliares para renderizar texto dentro da janela
-// OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
-void TextRendering_Init();
-float TextRendering_LineHeight(GLFWwindow* window);
-float TextRendering_CharWidth(GLFWwindow* window);
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f);
-void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-
-// Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
-// outras informações do programa. Definidas após main().
-void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
-void TextRendering_ShowEulerAngles(GLFWwindow* window);
-void TextRendering_ShowProjection(GLFWwindow* window);
-void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
-
-// Funções callback para comunicação com o sistema operacional e interação do
-// usuário. Veja mais comentários nas definições das mesmas, abaixo.
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void ErrorCallback(int error, const char* description);
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 
+static bool FileExists(const std::string& abs_filename)
+{
+    bool ret;
+    FILE* fp = fopen(abs_filename.c_str(), "rb");
+    if (fp)
+    {
+        ret = true;
+        fclose(fp);
+    }
+    else
+    {
+        ret = false;
+    }
+
+    return ret;
+}
 
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
@@ -212,7 +175,55 @@ Point P3 = Point(1.0f, 1.0f);
 
 
 
+// Declaração de funções utilizadas para pilha de matrizes de modelagem.
+void PushMatrix(glm::mat4 M);
+void PopMatrix(glm::mat4& M);
 
+// Declaração de várias funções utilizadas em main().  Essas estão definidas
+// logo após a definição de main() neste arquivo.
+void BuildTrianglesAndAddToVirtualScene(ObjModel*, std::string); // Constrói representação de um ObjModel como malha de triângulos para renderização
+void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
+void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
+void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
+void LoadObjTextureImage(const char* filename, GLuint textureunit);
+void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
+GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
+GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
+void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
+GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
+void PrintObjModelInfo(ObjModel*); // Função para debugging
+
+
+// Declaração de funções auxiliares para renderizar texto dentro da janela
+// OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
+void TextRendering_Init();
+float TextRendering_LineHeight(GLFWwindow* window);
+float TextRendering_CharWidth(GLFWwindow* window);
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
+void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f);
+void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale = 1.0f);
+void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
+void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
+void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
+
+// Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
+// outras informações do programa. Definidas após main().
+void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
+void TextRendering_ShowEulerAngles(GLFWwindow* window);
+void TextRendering_ShowProjection(GLFWwindow* window);
+void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
+
+// Funções callback para comunicação com o sistema operacional e interação do
+// usuário. Veja mais comentários nas definições das mesmas, abaixo.
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+void ErrorCallback(int error, const char* description);
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+void LoadBackground(const char* filename);
+void DrawCube(GLint render_as_black_uniform);
 
 
 
@@ -285,7 +296,7 @@ glm::vec4 camera_u_vector;
 glm::vec4 offset = glm::vec4(-0.5f,1.5f,-2.0f,0.0f);
 
 bool FREE_MODE = false;
-float g_player_direction;
+float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
 float g_offset_x_charizard = 0.0f;
@@ -456,6 +467,7 @@ int main(int argc, char* argv[])
     double param_t = 2.0;
     bool bezier_forward = true;
 
+    glm::vec4 player_position = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 free_camera_position_c  = glm::vec4(0.0f,6.0f,-14.0f,1.0f);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
@@ -601,6 +613,15 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
 
+#define SPHERE 0
+#define POKEBALL  1
+#define PLANE  2
+#define SKY 3
+#define PLAYER 4
+#define CHARIZARD 5
+#define PIKACHU 6
+#define WALL 7
+#define CUBE 8
 
 // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -806,6 +827,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 3.5 Z 0 to z 7
         model = Matrix_Translate(3.5f,1.0f,3.5f)
@@ -813,6 +837,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X -7 Z 0 to z -7
         model = Matrix_Translate(-7.0f,1.0f,-3.5f)
@@ -820,6 +847,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 0 X -3.5 to Z 3.5
         model = Matrix_Translate(-3.5f,1.0f,1.750f)
@@ -827,6 +857,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 3.5 X -7 to Z 7
         model = Matrix_Translate(-7.0f,1.0f,5.25f)
@@ -834,6 +867,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 3.5 X 7 to Z 7
         model = Matrix_Translate(7.0f,1.0f,5.25f)
@@ -841,6 +877,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z -3.5 X 3.5 to Z -7
         model = Matrix_Translate(3.5f,1.0f,-5.25f)
@@ -848,6 +887,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 0 X 7 to Z -3.5
         model = Matrix_Translate(7.0f,1.0f,-1.75f)
@@ -855,6 +897,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 7 X -3.5 to Z 10.5
         model = Matrix_Translate(-3.5f,1.0f,8.75f)
@@ -862,6 +907,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from Z 0 to Z -3.5
         model = Matrix_Translate(0.0f,1.0f,-1.75f)
@@ -869,6 +917,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 0 to X 10.5
         model = Matrix_Translate(5.25f,1.0f,0.0f)
@@ -876,6 +927,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
         model = Matrix_Translate(5.25f,1.0f,3.5f)
@@ -883,6 +937,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 0 Z -7 to X -7
         model = Matrix_Translate(-3.5f,1.0f,-7.0f)
@@ -890,6 +947,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 0 Z -3.5 to X -3.5
         model = Matrix_Translate(-1.75f,1.0f,-3.5f)
@@ -897,6 +957,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 3.5 Z -3.5 to X 7
         model = Matrix_Translate(5.25f,1.0f,-3.5f)
@@ -904,6 +967,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 3.5 Z -7 to X 7
         model = Matrix_Translate(5.25f,1.0f,-7.0f)
@@ -911,6 +977,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X -7 to X -10.5
         model = Matrix_Translate(-8.75f,1.0f,0.0f)
@@ -918,6 +987,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 7 Z 7 to X 10.5
         model = Matrix_Translate(8.75f,1.0f,7.0f)
@@ -925,6 +997,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
         //Wall from X 0 Z 3.5 to X -7
         model = Matrix_Translate(-3.5f,1.0f,3.5f)
@@ -932,6 +1007,9 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        g_VirtualScene["cube"].pos.x = 5.0f;
+        g_VirtualScene["cube"].pos.y = 0.0f;
+        g_VirtualScene["cube"].pos.z = 0.0f;
 
 
         model = Matrix_Translate(0.0f, 1.f, 10.5f)
@@ -2598,19 +2676,6 @@ void PrintObjModelInfo(ObjModel* model)
     }
 }
 
-static bool FileExists(const std::string& abs_filename)
-{
-    bool ret;
-    FILE* fp = fopen(abs_filename.c_str(), "rb");
-    if (fp)
-    {
-        ret = true;
-        fclose(fp);
-    }
-    else
-    {
-        ret = false;
-    }
+// set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
+// vim: set spell spelllang=pt_br :
 
-    return ret;
-}
