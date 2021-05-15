@@ -521,7 +521,7 @@ int main(int argc, char* argv[])
     //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
 
 
-    PlaySound("C:\\Users\\william\\Documents\\workspace\\codeblocks\\MineMon\\media\\pokemon-piano-theme.wav", NULL, SND_LOOP | SND_ASYNC);
+    PlaySound("..\\..\\media\\pokemon-piano-theme.wav", NULL, SND_LOOP | SND_ASYNC);
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
     {
