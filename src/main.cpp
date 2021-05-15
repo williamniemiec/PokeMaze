@@ -771,9 +771,9 @@ int main(int argc, char* argv[])
 
 
         // WALLS
-        model = Matrix_Translate(0.0f, 1.f, 19.0f)
+        model = Matrix_Translate(0.0f, 1.f, 19.99f)
                 * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+                * Matrix_Scale(19.99f, 0.0f, 3.0f);
                 //* Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
@@ -783,9 +783,9 @@ int main(int argc, char* argv[])
         if (first_run)
             walls.push_back(g_VirtualScene["plane1"]);
 
-        model = Matrix_Translate(0.0f, 1.f, -19.0f)
+        model = Matrix_Translate(0.0f, 1.f, -19.99f)
                 * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+                * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
         DrawVirtualObject("plane2");
@@ -795,10 +795,10 @@ int main(int argc, char* argv[])
             walls.push_back(g_VirtualScene["plane2"]);
 
 
-        model = Matrix_Translate(19.0f, 1.f, 0.0f)
+        model = Matrix_Translate(19.99f, 1.f, 0.0f)
                 * Matrix_Rotate_Y(PI/2)
                 * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+                * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
         DrawVirtualObject("plane3");
@@ -809,10 +809,10 @@ int main(int argc, char* argv[])
 
 
 
-        model = Matrix_Translate(-19.0f, 1.f, 0.0f)
+        model = Matrix_Translate(-19.99f, 1.f, 0.0f)
                 * Matrix_Rotate_Y(-PI/2)
                 * Matrix_Rotate_X(-PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 3.0f);
+                * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
         DrawVirtualObject("plane4");
