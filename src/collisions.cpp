@@ -17,9 +17,9 @@ bool Collisions::has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
 // teste ponto-plano (camera livre e paredes)
 bool Collisions::has_collision_point_plane(glm::vec4 point, SceneObject plane)
 {
-    std::cout << "1: " <<  point.x << " " << plane.bbox_min_world.x << " && " << point.x << " " << plane.bbox_max_world.x << " x: " << (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) << std::endl;
-    std::cout << "2: " << point.y << " " << plane.bbox_min_world.y << " && " << point.y << " " << plane.bbox_max_world.y << " y: " << (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) << std::endl;
-    std::cout << "3: " << point.z << " " << plane.bbox_min_world.z << " && " << point.z << " " << plane.bbox_max_world.z << " z: " << (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z) << std::endl;
+    //std::cout << "1: " <<  point.x << " " << plane.bbox_min_world.x << " && " << point.x << " " << plane.bbox_max_world.x << " x: " << (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) << std::endl;
+    //std::cout << "2: " << point.y << " " << plane.bbox_min_world.y << " && " << point.y << " " << plane.bbox_max_world.y << " y: " << (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) << std::endl;
+    //std::cout << "3: " << point.z << " " << plane.bbox_min_world.z << " && " << point.z << " " << plane.bbox_max_world.z << " z: " << (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z) << std::endl;
 
     if (plane.bbox_min_world.x == plane.bbox_max_world.x)
     {

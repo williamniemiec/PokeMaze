@@ -600,6 +600,19 @@ int main(int argc, char* argv[])
                     movements_fc.pop();
                     movements_fc.pop();
                     movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
+                    movements_fc.pop();
                     free_camera_position_c = movements_fc.top();
                     movements_fc.pop();
                     collision = true;
@@ -612,20 +625,6 @@ int main(int argc, char* argv[])
                 free_camera_position_c = movement;
                 movements_fc.push(movement);
             }
-
-//            if (free_camera_position_c.y > 5.8f)
-//                free_camera_position_c.y = 5.8f;
-//            if (free_camera_position_c.y < -0.8f)
-//                free_camera_position_c.y = -0.8f;
-//            if (free_camera_position_c.x > 10.3f)
-//                free_camera_position_c.x = 10.3f;
-//            if (free_camera_position_c.x < -10.3f)
-//                free_camera_position_c.x = -10.3f;
-//            if (free_camera_position_c.z > 10.3f)
-//                free_camera_position_c.z = 10.3f;
-//            if (free_camera_position_c.z < -10.3f)
-//                free_camera_position_c.z = -10.3f;
-            //printf("X: %f, Y: %f, Z: %f\n", free_camera_position_c.x,free_camera_position_c.y,free_camera_position_c.z);
         }
         else
         {
@@ -862,6 +861,9 @@ int main(int argc, char* argv[])
         glUniform1i(object_id_uniform, PLANE);
         DrawVirtualObject("plane");
         g_VirtualScene["plane"].apply(model);
+
+        if (first_run)
+            walls.push_back(g_VirtualScene["plane"]);
 
 // Desenhamos o plano do ceu
         model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(20.0f, 10.0f, 20.0f);
@@ -1248,10 +1250,14 @@ int main(int argc, char* argv[])
 // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
 
+    if (pokeball_catched)
+    {
+        system("cls");
+        std::cout << "PARABENS! VOCE GANHOU O JOGO :D !!!" << std::endl;
+        system("PAUSE");
+    }
 
-    system("cls");
-    std::cout << "PARABENS! VOCE GANHOU O JOGO :D !!!" << std::endl;
-    system("PAUSE");
+
 // Fim do programa
     return 0;
 }
