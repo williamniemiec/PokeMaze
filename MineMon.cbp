@@ -95,7 +95,7 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
-			<Add option="lib\libglfw3.a -lgdi32 -lopengl32" />
+			<Add option="lib\libglfw3.a -lgdi32 -lopengl32 lib\Winmm.lib" />
 			<Add directory="lib" />
 		</Linker>
 		<Unit filename="include/GLFW/glfw3.h" />
@@ -371,6 +371,8 @@
 		<Unit filename="include/stb_image.h" />
 		<Unit filename="include/tiny_obj_loader.h" />
 		<Unit filename="include/utils.h" />
+		<Unit filename="src/Matrices.cpp" />
+		<Unit filename="src/SceneObject.cpp" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/glad.c">
 			<Option compilerVar="CC" />

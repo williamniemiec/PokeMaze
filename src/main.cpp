@@ -1,13 +1,3 @@
-//     Universidade Federal do Rio Grande do Sul
-//             Instituto de Informática
-//       Departamento de Informática Aplicada
-//
-//    INF01047 Fundamentos de Computação Gráfica
-//               Prof. Eduardo Gastal
-//
-//                   LABORATÓRIO 5
-//
-
 // Arquivos "headers" padrões de C podem ser incluídos em um
 // programa C++, sendo necessário somente adicionar o caractere
 // "c" antes de seu nome, e remover o sufixo ".h". Exemplo:
@@ -20,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <windows.h>
+#include <mmsystem.h>
 
 // Headers abaixo são específicos de C++
 #include <map>
@@ -530,14 +521,12 @@ int main(int argc, char* argv[])
     //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
 
 
-
+    PlaySound("C:\\Users\\william\\Documents\\workspace\\codeblocks\\MineMon\\media\\pokemon-piano-theme.wav", NULL, SND_LOOP | SND_ASYNC);
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
     {
 
         // Aqui executamos as operações de renderização
-
-
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
         // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
@@ -1249,7 +1238,7 @@ int main(int argc, char* argv[])
 
 // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
-
+    PlaySound(NULL, NULL,SND_SYNC);
     if (pokeball_catched)
     {
         system("cls");
