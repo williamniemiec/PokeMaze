@@ -856,7 +856,7 @@ int main(int argc, char* argv[])
         }
 
 // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(10.5f, 10.5f, 10.5f);
+        model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(20.5f, 10.5f, 20.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLANE);
         DrawVirtualObject("plane");
