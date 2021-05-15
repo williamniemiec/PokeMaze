@@ -33,6 +33,7 @@ uniform mat4 projection;
 #define CUBE 8
 #define ZCUBE 9
 #define XCUBE 10
+#define XDOOR 11
 
 uniform int object_id;
 
@@ -56,6 +57,7 @@ uniform sampler2D pikachu_m;
 uniform sampler2D charizard_body;
 uniform sampler2D charizard_eye;
 uniform sampler2D wall;
+uniform sampler2D door;
 
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
@@ -202,6 +204,24 @@ void main()
         V = (position_model.y-miny)/(maxy-miny);
 
         vec3 Kd0 = texture(wall, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.04);
+    }
+        else if ( object_id == XDOOR )
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x-minx)/(maxx-minx);
+        V = (position_model.y-miny)/(maxy-miny);
+
+        vec3 Kd0 = texture(door, vec2(U,V)).rgb;
         float lambert = max(0,dot(n,l));
         color = Kd0 * (lambert + 0.04);
     }

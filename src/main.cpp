@@ -52,15 +52,7 @@
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
 
-#define SPHERE 0
-#define POKEBALL  1
-#define PLANE  2
-#define SKY 3
-#define PLAYER 4
-#define CHARIZARD 5
-#define PIKACHU 6
-#define WALL 7
-#define CUBE 8
+
 
 
 static bool FileExists(const std::string& abs_filename)
@@ -297,7 +289,7 @@ glm::vec4 camera_w_vector;
 glm::vec4 camera_u_vector;
 glm::vec4 offset = glm::vec4(-0.5f,1.5f,-2.0f,0.0f);
 
-bool FREE_MODE = false;
+bool FREE_MODE = true;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
@@ -406,6 +398,7 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Charizard/FitPokeLizardon.png", 12);
     LoadObjTextureImage("../../data/Charizard/FitPokeLizardonEyeIris.png", 13);
     LoadObjTextureImage("../../data/bricks.jpg", 14);
+    LoadObjTextureImage("../../data/garagedoor.jpg", 15);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -462,6 +455,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&secret_wall);
     BuildTrianglesAndAddToVirtualScene(&secret_wall, "secret_wall");
 
+    ObjModel pikachu_door("../../data/cube.obj");
+    ComputeNormals(&pikachu_door);
+    BuildTrianglesAndAddToVirtualScene(&pikachu_door, "pikachu_door");
+
     //GLuint vertex_array_object_id = BuildTriangles();
 
     /*if ( argc > 1 )
@@ -500,6 +497,8 @@ int main(int argc, char* argv[])
     std::vector<SceneObject> walls;
     bool pikachu_catched = false;
     bool pokeball_catched = false;
+    bool door_touched = false;
+    float door_y = 3.5f;
     // Ficamos em loop, renderizando, até que o usuário feche a janela
 
 
@@ -678,6 +677,7 @@ int main(int argc, char* argv[])
                 movements_fp.push(fp_camera_position_c);
             }
 
+
             if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["Pikachu"]))
                 pikachu_catched = true;
 
@@ -746,6 +746,7 @@ int main(int argc, char* argv[])
 #define CUBE 8
 #define ZCUBE 9
 #define XCUBE 10
+#define XDOOR 11
 
         glm::mat4 model = Matrix_Identity();
 
@@ -765,7 +766,7 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 1.f, 19.99f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-                //* Matrix_Scale(20.0f, 0.0f, 5.0f);
+        //* Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
         DrawVirtualObject("plane1");
@@ -813,8 +814,8 @@ int main(int argc, char* argv[])
             walls.push_back(g_VirtualScene["plane4"]);
 
         model = Matrix_Translate(8.75f,0.0f,5.25f)
-        * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 1.0f)
-        * Matrix_Rotate_Z(g_AngleZ + (float)glfwGetTime() * 0.5f)
+                * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 1.0f)
+                * Matrix_Rotate_Z(g_AngleZ + (float)glfwGetTime() * 0.5f)
                 * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 1.5f)
                 * Matrix_Scale(0.2, 0.2, 0.2);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
@@ -884,8 +885,8 @@ int main(int argc, char* argv[])
         if (!pikachu_catched)
         {
             model = Matrix_Translate(8.75f, -1.4f, -1.75f)
-            * Matrix_Scale(0.1, 0.1, 0.1)
-            * Matrix_Rotate_Y(PI);
+                    * Matrix_Scale(0.1, 0.1, 0.1)
+                    * Matrix_Rotate_Y(PI);
             glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
             glUniform1i(object_id_uniform, PIKACHU);
             DrawVirtualObject("Pikachu");
@@ -894,7 +895,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 3.5 to z 10.5
         model = Matrix_Translate(0.0f,1.0f,7.0f)
-        *Matrix_Scale(0.5f, 2.5f, 7.0f);
+                *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -905,7 +906,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 3.5 Z 0 to z 7
         model = Matrix_Translate(3.5f,1.0f,3.5f)
-        *Matrix_Scale(0.5f, 2.5f, 7.0f);
+                *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -916,7 +917,7 @@ int main(int argc, char* argv[])
 
         //Wall from X -7 Z 0 to z -7
         model = Matrix_Translate(-7.0f,1.0f,-3.5f)
-        *Matrix_Scale(0.5f, 2.5f, 7.0f);
+                *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -927,7 +928,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 0 X -3.5 to Z 3.5
         model = Matrix_Translate(-3.5f,1.0f,1.750f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -938,7 +939,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 3.5 X -7 to Z 7
         model = Matrix_Translate(-7.0f,1.0f,5.25f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -949,7 +950,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 3.5 X 7 to Z 7
         model = Matrix_Translate(7.0f,1.0f,5.25f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -960,7 +961,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z -3.5 X 3.5 to Z -7
         model = Matrix_Translate(3.5f,1.0f,-5.25f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -971,7 +972,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 0 X 7 to Z -3.5
         model = Matrix_Translate(7.0f,1.0f,-1.75f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -982,7 +983,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 7 X -3.5 to Z 10.5
         model = Matrix_Translate(-3.5f,1.0f,8.75f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -993,7 +994,7 @@ int main(int argc, char* argv[])
 
         //Wall from Z 0 to Z -3.5
         model = Matrix_Translate(0.0f,1.0f,-1.75f)
-        *Matrix_Scale(0.5f, 2.5f, 3.50f);
+                *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -1004,7 +1005,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 0 to X 10.5
         model = Matrix_Translate(5.25f,1.0f,0.0f)
-        *Matrix_Scale(10.50f, 2.5f, 0.5f);
+                *Matrix_Scale(10.50f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1017,7 +1018,7 @@ int main(int argc, char* argv[])
         if (!pikachu_catched)
         {
             model = Matrix_Translate(5.25f,1.0f,3.5f)
-            *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                    *Matrix_Scale(3.5f, 2.5f, 0.5f);
             glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
             glUniform1i(object_id_uniform, XCUBE);
             DrawVirtualObject("secret_wall");
@@ -1033,7 +1034,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 0 Z -7 to X -7
         model = Matrix_Translate(-3.5f,1.0f,-7.0f)
-        *Matrix_Scale(7.0f, 2.5f, 0.5f);
+                *Matrix_Scale(7.0f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1044,7 +1045,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 0 Z -3.5 to X -3.5
         model = Matrix_Translate(-1.75f,1.0f,-3.5f)
-        *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1055,7 +1056,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 3.5 Z -3.5 to X 7
         model = Matrix_Translate(5.25f,1.0f,-3.5f)
-        *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1066,7 +1067,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 3.5 Z -7 to X 7
         model = Matrix_Translate(5.25f,1.0f,-7.0f)
-        *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1077,7 +1078,7 @@ int main(int argc, char* argv[])
 
         //Wall from X -7 to X -10.5
         model = Matrix_Translate(-8.75f,1.0f,0.0f)
-        *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1088,7 +1089,7 @@ int main(int argc, char* argv[])
 
         //Wall from X 7 Z 7 to X 10.5
         model = Matrix_Translate(8.75f,1.0f,7.0f)
-        *Matrix_Scale(3.5f, 2.5f, 0.5f);
+                *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1099,20 +1100,50 @@ int main(int argc, char* argv[])
 
         //Wall from X 0 Z 3.5 to X -7
         model = Matrix_Translate(-3.5f,1.0f,3.5f)
-        *Matrix_Scale(7.0f, 2.5f, 0.5f);
+                *Matrix_Scale(7.0f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
         g_VirtualScene["cube"].apply(model);
 
+
         if (first_run)
             walls.push_back(g_VirtualScene["cube"]);
 
+        //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
+
+        if(door_touched)
+        {
+            if (door_y > 0.5f)
+                door_y -= delta_time + 0.0025f;
+        }
+
+        model = Matrix_Translate(8.75f,1.60f,-3.5f)
+                *Matrix_Scale(3.5f, door_y, 0.5f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, XDOOR);
+        DrawVirtualObject("pikachu_door");
+        g_VirtualScene["pikachu_door"].apply(model);
+        g_VirtualScene["pikachu_door"].name = "pikachu_door";
+
+        if (first_run)
+            walls.push_back(g_VirtualScene["pikachu_door"]);
+
+        //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
+        model = Matrix_Translate(8.625f,1.5f,-1.5f)
+                *Matrix_Scale(3.75f, 0.5f, 3.5f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, XDOOR);
+        DrawVirtualObject("cube");
+        g_VirtualScene["cube"].apply(model);
+
+        if (first_run)
+            walls.push_back(g_VirtualScene["cube"]);
         // Bound walls
 
         // +X
         model = Matrix_Translate(10.75f,5.0f,0.0f)
-        *Matrix_Scale(0.5f, 6.5f, 21.0f);
+                *Matrix_Scale(0.5f, 6.5f, 21.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -1123,7 +1154,7 @@ int main(int argc, char* argv[])
 
         // -x
         model = Matrix_Translate(-10.75f,5.0f,0.0f)
-        *Matrix_Scale(0.5f, 6.5f, 21.0f);
+                *Matrix_Scale(0.5f, 6.5f, 21.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
         DrawVirtualObject("cube");
@@ -1132,9 +1163,9 @@ int main(int argc, char* argv[])
         if (first_run)
             walls.push_back(g_VirtualScene["cube"]);
 
-                // Z
+        // Z
         model = Matrix_Translate(0.0f,5.0f,10.75f)
-        *Matrix_Scale(21.0f, 6.5f, 0.5f);
+                *Matrix_Scale(21.0f, 6.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1143,9 +1174,9 @@ int main(int argc, char* argv[])
         if (first_run)
             walls.push_back(g_VirtualScene["cube"]);
 
-               // -Z
+        // -Z
         model = Matrix_Translate(0.0f,5.0f,-10.75f)
-        *Matrix_Scale(21.0f, 6.5f, 0.5f);
+                *Matrix_Scale(21.0f, 6.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
         DrawVirtualObject("cube");
@@ -1780,6 +1811,7 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "charizard_body"), 12);
     glUniform1i(glGetUniformLocation(program_id, "charizard_eye"), 13);
     glUniform1i(glGetUniformLocation(program_id, "wall"), 14);
+    glUniform1i(glGetUniformLocation(program_id, "door"), 15);
     glUseProgram(0);
 }
 
