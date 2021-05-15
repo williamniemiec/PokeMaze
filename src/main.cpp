@@ -438,19 +438,19 @@ int main(int argc, char* argv[])
 
     ObjModel planemodel1("../../data/plane.obj");
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane1");
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall1");
 
     ObjModel planemode2("../../data/plane.obj");
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane2");
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall2");
 
     ObjModel planemodel3("../../data/plane.obj");
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane3");
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall3");
 
     ObjModel planemodel4("../../data/plane.obj");
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane4");
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall4");
 
     ObjModel charizard("../../data/Charizard/Charizard.obj", "../../data/Charizard/");
     ComputeNormals(&charizard);
@@ -497,7 +497,9 @@ int main(int argc, char* argv[])
     glm::vec4 free_camera_position_c  = glm::vec4(10.0f,5.60f,-10.25f,1.0f);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
-    std::stack<glm::vec4> movements;
+    std::stack<glm::vec4> movements_fp;
+    std::stack<glm::vec4> movements_fc;
+
     // Ficamos em loop, renderizando, até que o usuário feche a janela
 
 
@@ -505,20 +507,20 @@ int main(int argc, char* argv[])
 
 
 
-    /*g_VirtualScene["plane1"].scale(20.0f, 0.0f, 3.0f);
-    g_VirtualScene["plane1"].rotate_x(-PI/2);
-    g_VirtualScene["plane1"].translate(0.0f, 1.f, 20.0f);
-    g_VirtualScene["plane2"].scale(20.0f, 0.0f, 3.0f);*/
-    /*g_VirtualScene["plane2"].rotate_x(-PI/2);
-    g_VirtualScene["plane2"].translate(0.0f, 1.f, -20.0f);
-    g_VirtualScene["plane3"].scale(20.0f, 0.0f, 3.0f);
-    g_VirtualScene["plane3"].rotate_x(-PI/2);
-    g_VirtualScene["plane3"].rotate_y(-PI/2);
-    g_VirtualScene["plane3"].translate(20.0f, 1.f, 0.0f);*/
-    //g_VirtualScene["plane4"].scale(20.0f, 0.0f, 3.0f);
-    //g_VirtualScene["plane4"].rotate_x(PI/2);
-    //g_VirtualScene["plane4"].rotate_y(PI/2);
-    //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
+    /*g_VirtualScene["wall1"].scale(20.0f, 0.0f, 3.0f);
+    g_VirtualScene["wall1"].rotate_x(-PI/2);
+    g_VirtualScene["wall1"].translate(0.0f, 1.f, 20.0f);
+    g_VirtualScene["wall2"].scale(20.0f, 0.0f, 3.0f);*/
+    /*g_VirtualScene["wall2"].rotate_x(-PI/2);
+    g_VirtualScene["wall2"].translate(0.0f, 1.f, -20.0f);
+    g_VirtualScene["wall3"].scale(20.0f, 0.0f, 3.0f);
+    g_VirtualScene["wall3"].rotate_x(-PI/2);
+    g_VirtualScene["wall3"].rotate_y(-PI/2);
+    g_VirtualScene["wall3"].translate(20.0f, 1.f, 0.0f);*/
+    //g_VirtualScene["wall4"].scale(20.0f, 0.0f, 3.0f);
+    //g_VirtualScene["wall4"].rotate_x(PI/2);
+    //g_VirtualScene["wall4"].rotate_y(PI/2);
+    //g_VirtualScene["wall4"].translate(-20.0f, 1.f, 0.0f);
 
 
 
@@ -550,12 +552,6 @@ int main(int argc, char* argv[])
         previous_time = current_time;
 
 
-
-
-
-
-
-
         /// CAMERA
         glm::vec4 movement;
         glm::vec4 camera_view_vector;
@@ -567,6 +563,8 @@ int main(int argc, char* argv[])
             float z = cos(g_FreeModeCameraPhi)*cos(g_FreeModeCameraTheta);
             float x = cos(g_FreeModeCameraPhi)*sin(g_FreeModeCameraTheta);
 
+            movement = free_camera_position_c;
+
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
             camera_w_vector = -1.0f*camera_view_vector;
             camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
@@ -574,13 +572,33 @@ int main(int argc, char* argv[])
             camera_u_vector = camera_u_vector / norm(camera_u_vector);
 
             if (w_key == true)
-                free_camera_position_c += -camera_w_vector * CAMERA_SPEED * delta_time;
+                movement = free_camera_position_c -camera_w_vector * CAMERA_SPEED * delta_time;
             if (a_key == true)
-                free_camera_position_c += -camera_u_vector * CAMERA_SPEED * delta_time;
+                movement = free_camera_position_c  -camera_u_vector * CAMERA_SPEED * delta_time;
             if (s_key == true)
-                free_camera_position_c += camera_w_vector * CAMERA_SPEED * delta_time;
+                movement = free_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
             if (d_key == true)
-                free_camera_position_c += camera_u_vector * CAMERA_SPEED * delta_time;
+                movement = free_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
+
+            if (Collisions::has_collision_point_plane(movement, g_VirtualScene["wall1"]) ||
+                Collisions::has_collision_point_plane(movement, g_VirtualScene["wall2"]) ||
+                Collisions::has_collision_point_plane(movement, g_VirtualScene["wall3"]) ||
+                Collisions::has_collision_point_plane(movement, g_VirtualScene["wall4"]))
+            {
+                movements_fc.pop();
+                movements_fc.pop();
+                movements_fc.pop();
+                movements_fc.pop();
+                movements_fc.pop();
+                movements_fc.pop();
+                free_camera_position_c = movements_fc.top();
+                movements_fc.pop();
+            }
+            else
+            {
+                free_camera_position_c = movement;
+                movements_fc.push(movement);
+            }
 
 //            if (free_camera_position_c.y > 5.8f)
 //                free_camera_position_c.y = 5.8f;
@@ -617,11 +635,11 @@ int main(int argc, char* argv[])
             {
                 movement = fp_camera_position_c - camera_w_vector * CAMERA_SPEED * delta_time;
                 //fp_camera_position_c += -camera_w_vector * CAMERA_SPEED * delta_time;
-                //std::cout << Collisions::has_collision_point_plane_2d(movement, g_VirtualScene["plane1"]) << std::endl;
-                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["plane2"]) << std::endl;
-                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["plane3"]) << std::endl;
-                //std::cout << Collisions::has_collision_point_plane(movement, g_VirtualScene["plane4"]) << std::endl;
-                //std::cout << Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane4"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane_2d(movement, g_VirtualScene["wall1"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["wall2"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(fp_camera_position_c, g_VirtualScene["wall3"]) << std::endl;
+                //std::cout << Collisions::has_collision_point_plane(movement, g_VirtualScene["wall4"]) << std::endl;
+                //std::cout << Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["wall4"]) << std::endl;
             }
             if (a_key == true)
             {
@@ -660,20 +678,20 @@ int main(int argc, char* argv[])
             movement.y = 0.80f;
 
 
-           if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane1"]) ||
-                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane2"]) ||
-                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane3"]) ||
-                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["plane4"]))
+           if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["wall1"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["wall2"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["wall3"]) ||
+                Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["wall4"]))
             {
-                movements.pop();
-                fp_camera_position_c = movements.top();
-                movements.pop();
+                movements_fp.pop();
+                fp_camera_position_c = movements_fp.top();
+                movements_fp.pop();
                 g_VirtualScene["Ash_Ketchum"].undo();
             }
             else
             {
                 fp_camera_position_c = movement;
-                movements.push(fp_camera_position_c);
+                movements_fp.push(fp_camera_position_c);
             }
         }
 
@@ -741,43 +759,43 @@ int main(int argc, char* argv[])
         glm::mat4 model = Matrix_Identity();
 
         // WALLS
-        model = Matrix_Translate(0.0f, 1.f, 20.0f)
+        model = Matrix_Translate(0.0f, 1.f, 19.0f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 3.0f);
                 //* Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane1");
-        g_VirtualScene["plane1"].apply(model);
+        DrawVirtualObject("wall1");
+        g_VirtualScene["wall1"].apply(model);
 
-        model = Matrix_Translate(0.0f, 1.f, -20.0f)
+        model = Matrix_Translate(0.0f, 1.f, -19.0f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane2");
-        g_VirtualScene["plane2"].apply(model);
+        DrawVirtualObject("wall2");
+        g_VirtualScene["wall2"].apply(model);
 
 
 
-        model = Matrix_Translate(20.0f, 1.f, 0.0f)
+        model = Matrix_Translate(19.0f, 1.f, 0.0f)
                 * Matrix_Rotate_Y(PI/2)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane3");
-        g_VirtualScene["plane3"].apply(model);
+        DrawVirtualObject("wall3");
+        g_VirtualScene["wall3"].apply(model);
 
 
-        model = Matrix_Translate(-20.0f, 1.f, 0.0f)
+        model = Matrix_Translate(-19.0f, 1.f, 0.0f)
                 * Matrix_Rotate_Y(-PI/2)
                 * Matrix_Rotate_X(-PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane4");
-        g_VirtualScene["plane4"].apply(model);
+        DrawVirtualObject("wall4");
+        g_VirtualScene["wall4"].apply(model);
 // Desenhamos o modelo da esfera
         /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
               * Matrix_Rotate_Z(0.6f)
@@ -888,7 +906,7 @@ int main(int argc, char* argv[])
         g_VirtualScene["Pikachu"].translate(0.5f, -1.4f, 0.5f);
 
         // Verifica se existem colisões entre objetos da cena
-        for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
+        /*for (auto it = g_VirtualScene.begin(); it != g_VirtualScene.end(); it++)
         {
             for (auto it2 = g_VirtualScene.begin(); it2 != g_VirtualScene.end(); it2++)
             {
@@ -915,7 +933,7 @@ int main(int argc, char* argv[])
                     std::cout << "COLLISION: " << it->first << " WITH " << it2->first << std::endl;
                 }
             }
-        }
+        }*/
 
 
         //Wall from Z 3.5 to z 10.5

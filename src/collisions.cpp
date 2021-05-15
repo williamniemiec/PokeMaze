@@ -15,32 +15,64 @@ bool Collisions::has_collision_plane_plane(SceneObject obj1, SceneObject obj2)
 }
 
 // teste ponto-plano (camera livre e paredes)
-bool Collisions::has_collision_point_plane(glm::vec3 point, SceneObject plane)
+bool Collisions::has_collision_point_plane(glm::vec4 point, SceneObject plane)
 {
-    std::cout << point.x << " " << plane.bbox_min_world.x << " && " << point.x << " " << plane.bbox_max_world.x << " x: " << (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) << std::endl;
-    std::cout << point.y << " " << plane.bbox_min_world.y << " && " << point.y << " " << plane.bbox_max_world.y << " y: " << (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) << std::endl;
-    std::cout << point.z << " " << plane.bbox_min_world.z << " && " << point.z << " " << plane.bbox_max_world.z << " z: " << (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z) << std::endl;
+    std::cout << "1: " <<  point.x << " " << plane.bbox_min_world.x << " && " << point.x << " " << plane.bbox_max_world.x << " x: " << (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) << std::endl;
+    std::cout << "2: " << point.y << " " << plane.bbox_min_world.y << " && " << point.y << " " << plane.bbox_max_world.y << " y: " << (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) << std::endl;
+    std::cout << "3: " << point.z << " " << plane.bbox_min_world.z << " && " << point.z << " " << plane.bbox_max_world.z << " z: " << (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z) << std::endl;
 
-    /*if (plane.bbox_min.x == plane.bbox_max.x)
+    if (plane.bbox_min_world.x == plane.bbox_max_world.x)
     {
-        return  (point.x >= plane.bbox_min.x) &&
-                (point.y >= plane.bbox_min.y && point.y <= plane.bbox_max.y) &&
-                (point.z >= plane.bbox_min.z && point.z <= plane.bbox_max.z);
+        if (plane.bbox_min_world.x >= 0)
+        {
+            return  (point.x >= plane.bbox_min_world.x) &&
+                (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) &&
+                (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z);
+        }
+        else
+        {
+            return  (point.x <= plane.bbox_min_world.x) &&
+                (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) &&
+                (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z);
+        }
+
     }
 
-    if (plane.bbox_min.y == plane.bbox_max.y)
+    if (plane.bbox_min_world.y == plane.bbox_max_world.y)
     {
-        return  (point.x >= plane.bbox_min.x && point.x <= plane.bbox_max.x) &&
-                (point.y >= plane.bbox_min.y) &&
-                (point.z >= plane.bbox_min.z && point.z <= plane.bbox_max.z);
+        if (plane.bbox_min_world.y >= 0)
+        {
+            return  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) &&
+                (point.y >= plane.bbox_min_world.y) &&
+                (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z);
+        }
+        else
+        {
+            return  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) &&
+                (point.y <= plane.bbox_min_world.y) &&
+                (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z);
+        }
+
+
     }
 
-    if (plane.bbox_min.z == plane.bbox_max.z)
+    if (plane.bbox_min_world.z == plane.bbox_max_world.z)
     {
-        return  (point.x >= plane.bbox_min.x && point.x <= plane.bbox_max.x) &&
-                (point.y >= plane.bbox_min.y && point.y <= plane.bbox_max.y) &&
-                (point.z >= plane.bbox_min.z);
-    }*/
+        if (plane.bbox_min_world.z >= 0)
+        {
+            return  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) &&
+                (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) &&
+                (point.z >= plane.bbox_min_world.z);
+        }
+        else
+        {
+            return  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) &&
+                (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) &&
+                (point.z <= plane.bbox_min_world.z);
+        }
+
+
+    }
 
     return  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x) &&
             (point.y >= plane.bbox_min_world.y && point.y <= plane.bbox_max_world.y) &&
@@ -77,11 +109,11 @@ bool Collisions::has_collision_sphere_plane(SceneObject sphere, SceneObject aabb
 
     return distance < sphereRadius;
 }
-
+/*
 double Collisions::is_vector_less_than_or_equal_to(glm::vec3 left, glm::vec3 right)
 {
     return  left.x <= right.x
             && left.y <= right.y
             && left.z <= right.z;
-}
+}*/
 
