@@ -42,6 +42,7 @@
 #include "SceneObject.hpp"
 #include "matrices.h"
 #include "collisions.hpp"
+#include "IOUtils.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -315,6 +316,7 @@ float delta_time = (float)(current_time - previous_time);
 bool w_key = false, a_key = false, s_key = false, d_key = false;
 bool first_run = true;
 
+
 int main(int argc, char* argv[])
 {
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
@@ -520,8 +522,8 @@ int main(int argc, char* argv[])
     //g_VirtualScene["plane4"].rotate_y(PI/2);
     //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
 
-
-    PlaySound("..\\..\\media\\pokemon-piano-theme.wav", NULL, SND_LOOP | SND_ASYNC);
+    std::string soundtrack = IOUtils::get_project_absolute_path() + "\\media\\pokemon-piano-theme.wav";
+    PlaySound(soundtrack.c_str(), NULL, SND_LOOP | SND_ASYNC);
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
     {
