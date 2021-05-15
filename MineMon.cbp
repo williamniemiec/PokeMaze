@@ -96,6 +96,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="lib\libglfw3.a -lgdi32 -lopengl32 lib\Winmm.lib" />
+			<Add library="lib/Winmm.lib" />
 			<Add directory="lib" />
 		</Linker>
 		<Unit filename="include/GLFW/glfw3.h" />
