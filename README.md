@@ -1,5 +1,19 @@
-<h1 align='center'>MineMon</h1>
-<p align='center'>Minecraft-style game with Pokémon theme.</p>
+<h1 align='center'>PokeMaze</h1>
+<p align='center'>Maze game with Pokémon theme.</p>
+
+## 🎮 Controls
+|        Command        |Description|
+|----------------|-------------------------------|
+| `w` | Move up |
+| `a` | Move left |
+| `s` | Move down |
+| `d` | Move right |
+| `p`| Perspective projection |
+| `o`| Parallel projection |
+| `c` | Free camera mode |
+| `Pause Break` | Pause / Continue game |
+| `Left mouse button` pressed + `direction`  | Moves player camera to `direction` |
+
 
 ## 📁 Files
 
