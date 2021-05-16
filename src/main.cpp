@@ -206,6 +206,7 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void TextRendering_ShowEulerAngles(GLFWwindow* window);
 void TextRendering_ShowProjection(GLFWwindow* window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
+void TextRendering_ShowPause(GLFWwindow* window);
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
@@ -254,7 +255,9 @@ float g_FreeModeCameraTheta = 1.25f*PI; // Ângulo no plano ZX em relação ao e
 float g_FreeModeCameraPhi = -0.4f;   // Ângulo em relação ao eixo Y
 float g_PlayerCameraTheta = 0; // Ângulo no plano ZX em relação ao eixo Z
 float g_PlayerCameraPhi = -0.4f;   // Ângulo em relação ao eixo Y
-float g_CameraDistance = 2.5f; // Distância da câmera para a origem
+float g_PauseModeCameraTheta = 0.0f;
+float g_PauseModeCameraPhi = 0.0f;
+float g_CameraDistance = 3.0f; // Distância da câmera para a origem
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -287,9 +290,9 @@ GLuint g_NumLoadedTextures = 0;
 
 glm::vec4 camera_w_vector;
 glm::vec4 camera_u_vector;
-glm::vec4 offset = glm::vec4(-0.5f,1.5f,-2.0f,0.0f);
 
 bool FREE_MODE = true;
+bool pause = false;
 float g_player_direction = PLAYER_DIRECTION_UP;
 float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
@@ -488,9 +491,8 @@ int main(int argc, char* argv[])
     double param_t = 2.0;
     bool bezier_forward = true;
 
-    glm::vec4 player_position = glm::vec4(0.0f,0.0f,0.0f,1.0f);
+    glm::vec4 lookat_camera_position_c;
     glm::vec4 free_camera_position_c  = glm::vec4(10.0f,5.60f,-10.25f,1.0f);
-    glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
     std::stack<glm::vec4> movements_fp;
     std::stack<glm::vec4> movements_fc;
@@ -527,7 +529,6 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
     {
-
         // Aqui executamos as operações de renderização
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
@@ -556,7 +557,7 @@ int main(int argc, char* argv[])
         glm::vec4 camera_view_vector;
         glm::vec4 camera_up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f);
 
-        if (FREE_MODE)
+        if (FREE_MODE && !pause)
         {
             float y = sin(g_FreeModeCameraPhi);
             float z = cos(g_FreeModeCameraPhi)*cos(g_FreeModeCameraTheta);
@@ -617,6 +618,18 @@ int main(int argc, char* argv[])
                 movements_fc.push(movement);
             }
         }
+        else if (pause)
+        {
+            float r = g_CameraDistance;
+            float x = r*cos(g_PauseModeCameraPhi)*sin(g_PauseModeCameraTheta);
+            float y = r*sin(g_PauseModeCameraPhi);
+            float z = r*cos(g_PauseModeCameraPhi)*cos(g_PauseModeCameraTheta);
+
+            glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"].pos.x,0.0f,g_VirtualScene["Ash_Ketchum"].pos.z,0.0f);
+            lookat_camera_position_c  = glm::vec4(x,y,z,1.0f) + offset;
+            glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f) + offset;
+            camera_view_vector = camera_lookat_l - lookat_camera_position_c;
+        }
         else
         {
             float y = sin(g_PlayerCameraPhi);
@@ -624,7 +637,7 @@ int main(int argc, char* argv[])
             float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
 
             movement = fp_camera_position_c;
-            g_player_direction = PI - g_PlayerCameraTheta;
+            g_player_direction = -1*g_PlayerCameraTheta;
 
             camera_view_vector = glm::vec4(x,y,-z,0.0f);
             camera_w_vector = -1.0f*camera_view_vector;
@@ -706,8 +719,10 @@ int main(int argc, char* argv[])
 // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::mat4 view;
 
-        if(FREE_MODE)
+        if(FREE_MODE && !pause)
             view = Matrix_Camera_View(free_camera_position_c, camera_view_vector, camera_up_vector);
+        else if (pause)
+            view = Matrix_Camera_View(lookat_camera_position_c, camera_view_vector, camera_up_vector);
         else
             view = Matrix_Camera_View(fp_camera_position_c, camera_view_vector, camera_up_vector);
 
@@ -773,6 +788,7 @@ int main(int argc, char* argv[])
         //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
         //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
         g_VirtualScene["Ash_Ketchum"].apply(model);
+        g_VirtualScene["Ash_Ketchum"].pos = {fp_camera_position_c.x,-1.4f,fp_camera_position_c.z};
         //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
 
@@ -1245,6 +1261,9 @@ int main(int argc, char* argv[])
 
         if (first_run)
             walls.push_back(g_VirtualScene["plane"]);
+
+        if (pause)
+            TextRendering_ShowPause(window);
 
 
 // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
@@ -2353,10 +2372,15 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dy = ypos - g_LastCursorPosY;
 
         // Atualizamos parâmetros da câmera com os deslocamentos
-        if(FREE_MODE)
+        if (FREE_MODE && !pause)
         {
             g_FreeModeCameraTheta += 0.01f*dx;
             g_FreeModeCameraPhi   -= 0.01f*dy;
+        }
+        else if (pause)
+        {
+            g_PauseModeCameraTheta -= 0.01f*dx;
+            g_PauseModeCameraPhi   += 0.01f*dy;
         }
         else
         {
@@ -2368,13 +2392,21 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float phimin = -phimax;
 
 
-        if(FREE_MODE)
+        if(FREE_MODE && !pause)
         {
             if (g_FreeModeCameraPhi > phimax)
                 g_FreeModeCameraPhi = phimax;
 
             if (g_FreeModeCameraPhi < phimin)
                 g_FreeModeCameraPhi = phimin;
+        }
+        else if (pause)
+        {
+            if (g_PauseModeCameraPhi > phimax)
+                g_PauseModeCameraPhi = phimax;
+
+            if (g_PauseModeCameraPhi < phimin)
+                g_PauseModeCameraPhi = phimin;
         }
         else
         {
@@ -2502,9 +2534,24 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_UsePerspectiveProjection = false;
     }
 
-    // Se o usuário apertar a tecla F, alteramos o modo de câmera.
+    if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS)
+    {
+        if (pause)
+            pause = false;
+        else
+            pause = true;
+
+        if(pause)
+            printf("Paused: True\n");
+        else
+            printf("Paused: False\n");
+    }
+
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
     {
+        if (pause)
+            return;
+
         if (FREE_MODE)
             FREE_MODE = false;
         else FREE_MODE = true;
@@ -2655,6 +2702,15 @@ void TextRendering_ShowEulerAngles(GLFWwindow* window)
     snprintf(buffer, 80, "Euler Angles rotation matrix = Z(%.2f)*Y(%.2f)*X(%.2f)\n", g_AngleZ, g_AngleY, g_AngleX);
 
     TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
+}
+
+void TextRendering_ShowPause(GLFWwindow* window)
+{
+    float pad = TextRendering_LineHeight(window);
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    TextRendering_PrintString(window, "PAUSED", -0.33+pad, -0.1+pad, 5.0f);
 }
 
 // Escrevemos na tela qual matriz de projeção está sendo utilizada.
