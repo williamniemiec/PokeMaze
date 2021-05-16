@@ -14,6 +14,7 @@ in vec4 position_model;
 in vec2 texcoords;
 
 in vec2 texids;
+in vec3 vertex_color;
 
 
 // Matrizes computadas no código C++ e enviadas para a GPU
@@ -307,6 +308,9 @@ void main()
         color = Kd0 * (lambert + 0.8);
     }
 
+    // Gouraud shading
+    if (vertex_color.x != -1.0 && vertex_color.y != -1.0 && vertex_color.z != -1.0)
+        color = vertex_color;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
