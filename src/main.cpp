@@ -497,7 +497,8 @@ int main(int argc, char* argv[])
     std::vector<SceneObject> walls;
     bool pikachu_catched = false;
     bool pokeball_catched = false;
-    bool door_touched = false;
+    bool pikachu_door_touched = false;
+    bool pikachu_door_opened = false;
     float door_y = 3.5f;
     // Ficamos em loop, renderizando, até que o usuário feche a janela
 
@@ -668,6 +669,19 @@ int main(int argc, char* argv[])
                     g_VirtualScene["Ash_Ketchum"].undo();
                     collision = true;
                     break;
+                }
+            }
+
+            if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["pikachu_door"]))
+            {
+                if (!pikachu_door_opened)
+                {
+                    pikachu_door_touched = true;
+                    movements_fp.pop();
+                    fp_camera_position_c = movements_fp.top();
+                    movements_fp.pop();
+                    g_VirtualScene["Ash_Ketchum"].undo();
+                    collision = true;
                 }
             }
 
@@ -1112,10 +1126,12 @@ int main(int argc, char* argv[])
 
         //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
 
-        if(door_touched)
+        if(pikachu_door_touched)
         {
             if (door_y > 0.5f)
                 door_y -= delta_time + 0.0025f;
+            else
+                pikachu_door_opened = true;
         }
 
         model = Matrix_Translate(8.75f,1.60f,-3.5f)
@@ -1125,9 +1141,6 @@ int main(int argc, char* argv[])
         DrawVirtualObject("pikachu_door");
         g_VirtualScene["pikachu_door"].apply(model);
         g_VirtualScene["pikachu_door"].name = "pikachu_door";
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["pikachu_door"]);
 
         //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
         model = Matrix_Translate(8.625f,1.5f,-1.5f)
