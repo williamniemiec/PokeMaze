@@ -377,9 +377,8 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/grass.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/sky.png"); // TextureImage2
+    LoadTextureImage("../../data/grass.jpg");
+    LoadTextureImage("../../data/sky.png");
     LoadObjTextureImage("../../data/Ash_Ketchum/Ash_arms_hat_hair.png", 3);
     LoadObjTextureImage("../../data/Ash_Ketchum/PokeTra_Ash_face.png", 4);
     LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_body_col.png", 5);

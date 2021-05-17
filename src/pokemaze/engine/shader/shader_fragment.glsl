@@ -45,7 +45,6 @@ uniform vec4 bbox_max;
 // Variáveis para acesso das imagens de textura
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
-uniform sampler2D TextureImage2;
 uniform sampler2D ash_arms;
 uniform sampler2D ash_face;
 uniform sampler2D ash_body;
@@ -164,7 +163,7 @@ void main()
 
     if ( object_id == SKY )
     {
-        color = texture(TextureImage2, vec2(U,V)).rgb;
+        color = texture(TextureImage1, vec2(U,V)).rgb;
     }
     else if ( object_id == WALL )
     {

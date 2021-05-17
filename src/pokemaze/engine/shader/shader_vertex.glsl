@@ -31,7 +31,6 @@ uniform vec4 bbox_max;
 
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
-uniform sampler2D TextureImage2;
 uniform sampler2D ash_arms;
 uniform sampler2D ash_face;
 uniform sampler2D ash_body;
