@@ -1,8 +1,11 @@
-### CodeBlocks ###
-# specific to CodeBlocks IDE
+### IDE ###
+# CodeBlocks IDE
 *.layout
 *.depend
 
-# generated directories
+# Visual Code
+.vscode
+
+# Binaries
 bin/*
 obj/*
