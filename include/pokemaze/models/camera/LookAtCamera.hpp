@@ -3,7 +3,14 @@
 
 class LookAtCamera : public Camera
 {
+private:
+    float camera_distance;
+
 public:
-     virtual void translate(float phi, float theta, float z);
+    LookAtCamera(std::string name, float x_up, float y_up, float z_up, float camera_distance);
+
+public:
+     void look_to(float phi, float theta);
+     void look_to(float phi, float theta, glm::vec4 offset);
 };
 

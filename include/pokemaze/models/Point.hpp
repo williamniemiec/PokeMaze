@@ -4,7 +4,7 @@
 
 class Point
 {
-private:
+protected:
     std::string name;
     glm::vec4 position;
 
@@ -15,7 +15,7 @@ public:
 public:
     void translate(float x, float y, float z);
     std::string get_name();
-    glm::vec4 get_position_x();
-    glm::vec4 get_position_y();
-    glm::vec4 get_position_z();
+    float get_position_x();
+    float get_position_y();
+    float get_position_z();
 };
