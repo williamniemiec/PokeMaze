@@ -31,7 +31,7 @@
 
 // Headers locais, definidos na pasta "include/"
 #include "pokemaze/util/utils.h"
-#include "pokemaze/SceneObject.hpp"
+#include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/util/algebra/Matrices.h"
 #include "pokemaze/engine/Collisions.hpp"
 #include "pokemaze/util/io/IOUtils.hpp"
@@ -377,84 +377,74 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/grass.jpg");
-    LoadTextureImage("../../data/sky.png");
-    LoadObjTextureImage("../../data/Ash_Ketchum/Ash_arms_hat_hair.png", 3);
-    LoadObjTextureImage("../../data/Ash_Ketchum/PokeTra_Ash_face.png", 4);
-    LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_body_col.png", 5);
-    LoadObjTextureImage("../../data/Ash_Ketchum/trAsh_00_obj_col.png", 6);
-    LoadObjTextureImage("../../data/Pokeball/ob0204_00.png", 7);
-    LoadObjTextureImage("../../data/Pikachu/Pikachu_B.png", 8);
-    LoadObjTextureImage("../../data/Pikachu/Pikachu_C.png", 9);
-    LoadObjTextureImage("../../data/Pikachu/Pikachu_E.png", 10);
-    LoadObjTextureImage("../../data/Pikachu/Pikachu_M.png", 11);
-    LoadObjTextureImage("../../data/Charizard/FitPokeLizardon.png", 12);
-    LoadObjTextureImage("../../data/Charizard/FitPokeLizardonEyeIris.png", 13);
-    LoadObjTextureImage("../../data/bricks.jpg", 14);
-    LoadObjTextureImage("../../data/garagedoor.jpg", 15);
-    LoadObjTextureImage("../../data/Tree/3DPaz_fir-tree_leaves.jpg", 16);
-    LoadObjTextureImage("../../data/Tree/3DPaz_fir-tree_trunk.jpg", 17);
+    LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
+    LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/PokeTra_Ash_face.png").c_str(), 4);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_body_col.png").c_str(), 5);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_obj_col.png").c_str(), 6);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pokeball/ob0204_00.png").c_str(), 7);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_B.png").c_str(), 8);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_C.png").c_str(), 9);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_E.png").c_str(), 10);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_M.png").c_str(), 11);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png").c_str(), 12);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png").c_str(), 13);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/bricks.jpg").c_str(), 14);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
+    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    /*ObjModel spheremodel("../../data/sphere.obj");
-    ComputeNormals(&spheremodel);
-    BuildTrianglesAndAddToVirtualScene(&spheremodel);
-    */
-
-    ObjModel ash("../../data/Ash_Ketchum/Ash_Ketchum.obj", "../../data/Ash_Ketchum/");
+    ObjModel ash((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_Ketchum.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/").c_str());
     ComputeNormals(&ash);
     BuildTrianglesAndAddToVirtualScene(&ash, "Ash_Ketchum");
 
-    /*ObjModel bunnymodel("../../data/bunny.obj");
-    ComputeNormals(&bunnymodel);
-    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
-    */
-
-    ObjModel pokeball("../../data/Pokeball/Pokeball.obj");
+    ObjModel pokeball((IOUtils::get_project_absolute_path() + "data/Pokeball/Pokeball.obj").c_str());
     ComputeNormals(&pokeball);
     BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
 
-    ObjModel planemodel("../../data/plane.obj");
+    ObjModel planemodel((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane");
 
-    ObjModel planemodel1("../../data/plane.obj");
+    ObjModel planemodel1((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane1");
 
-    ObjModel planemode2("../../data/plane.obj");
+    ObjModel planemode2((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane2");
 
-    ObjModel planemodel3("../../data/plane.obj");
+    ObjModel planemodel3((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane3");
 
-    ObjModel planemodel4("../../data/plane.obj");
+    ObjModel planemodel4((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel, "plane4");
 
-    ObjModel charizard("../../data/Charizard/Charizard.obj", "../../data/Charizard/");
+    ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
     ComputeNormals(&charizard);
     BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
 
-    ObjModel pikachu("../../data/Pikachu/Pikachu.obj", "../../data/Pikachu/");
+    ObjModel pikachu((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Pikachu/").c_str());
     ComputeNormals(&pikachu);
     BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
 
-    ObjModel cube("../../data/cube.obj");
+    ObjModel cube((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
     ComputeNormals(&cube);
     BuildTrianglesAndAddToVirtualScene(&cube, "cube");
 
-    ObjModel secret_wall("../../data/cube.obj");
+    ObjModel secret_wall((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
     ComputeNormals(&secret_wall);
     BuildTrianglesAndAddToVirtualScene(&secret_wall, "secret_wall");
 
-    ObjModel pikachu_door("../../data/cube.obj");
+    ObjModel pikachu_door((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
     ComputeNormals(&pikachu_door);
     BuildTrianglesAndAddToVirtualScene(&pikachu_door, "pikachu_door");
 
-    ObjModel tree("../../data/Tree/Tree.obj", "../../data/Tree/");
+    ObjModel tree((IOUtils::get_project_absolute_path() + "data/Tree/Tree.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Tree/").c_str());
     ComputeNormals(&tree);
     BuildTrianglesAndAddToVirtualScene(&tree, "Tree");
 
@@ -498,29 +488,9 @@ int main(int argc, char* argv[])
     bool pikachu_door_touched = false;
     bool pikachu_door_opened = false;
     float door_y = 3.5f;
-    // Ficamos em loop, renderizando, até que o usuário feche a janela
 
 
-
-
-
-
-    /*g_VirtualScene["plane1"].scale(20.0f, 0.0f, 3.0f);
-    g_VirtualScene["plane1"].rotate_x(-PI/2);
-    g_VirtualScene["plane1"].translate(0.0f, 1.f, 20.0f);
-    g_VirtualScene["plane2"].scale(20.0f, 0.0f, 3.0f);*/
-    /*g_VirtualScene["plane2"].rotate_x(-PI/2);
-    g_VirtualScene["plane2"].translate(0.0f, 1.f, -20.0f);
-    g_VirtualScene["plane3"].scale(20.0f, 0.0f, 3.0f);
-    g_VirtualScene["plane3"].rotate_x(-PI/2);
-    g_VirtualScene["plane3"].rotate_y(-PI/2);
-    g_VirtualScene["plane3"].translate(20.0f, 1.f, 0.0f);*/
-    //g_VirtualScene["plane4"].scale(20.0f, 0.0f, 3.0f);
-    //g_VirtualScene["plane4"].rotate_x(PI/2);
-    //g_VirtualScene["plane4"].rotate_y(PI/2);
-    //g_VirtualScene["plane4"].translate(-20.0f, 1.f, 0.0f);
-
-    std::string soundtrack = IOUtils::get_project_absolute_path() + "\\media\\pokemon-piano-theme.wav";
+    std::string soundtrack = IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
     PlaySound(soundtrack.c_str(), NULL, SND_LOOP | SND_ASYNC);
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
@@ -784,7 +754,7 @@ int main(int argc, char* argv[])
         //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
         //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
         g_VirtualScene["Ash_Ketchum"].apply(model);
-        g_VirtualScene["Ash_Ketchum"].pos = {fp_camera_position_c.x,-1.4f,fp_camera_position_c.z};
+        g_VirtualScene["Ash_Ketchum"].pos = {fp_camera_position_c.x,-1.4f,fp_camera_position_c.z, 1.0f};
         //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
 
@@ -854,7 +824,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, POKEBALL);
         DrawVirtualObject("Pokeball");
-        g_VirtualScene["Pokeball"].pos = {8.75f,0.0f,5.25f};
+        g_VirtualScene["Pokeball"].pos = {8.75f,0.0f,5.25f, 1.0f};
         g_VirtualScene["Pokeball"].apply(model);
 
         float charizard_current_time = (float)glfwGetTime();
@@ -1808,8 +1778,8 @@ GLuint BuildTriangles()
 //
 void LoadShadersFromFiles()
 {
-    vertex_shader_id = LoadShader_Vertex("../../src/pokemaze/engine/shader/shader_vertex.glsl");
-    fragment_shader_id = LoadShader_Fragment("../../src/pokemaze/engine/shader/shader_fragment.glsl");
+    vertex_shader_id = LoadShader_Vertex((IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_vertex.glsl").c_str());
+    fragment_shader_id = LoadShader_Fragment((IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_fragment.glsl").c_str());
 
     // Deletamos o programa de GPU anterior, caso ele exista.
     if ( program_id != 0 )

@@ -43,7 +43,7 @@ bool Collisions::has_collision_point_plane(glm::vec4 point, SceneObject plane)
         else
         {
             has_colision =  (point.x >= plane.bbox_min_world.x && point.x <= plane.bbox_max_world.x)
-                    && (point.y <= plane.bbox_min_world.y) 
+                    && (point.y <= plane.bbox_min_world.y)
                     && (point.z >= plane.bbox_min_world.z && point.z <= plane.bbox_max_world.z);
         }
     }
@@ -76,7 +76,7 @@ bool Collisions::has_collision_point_plane(glm::vec4 point, SceneObject plane)
 bool Collisions::has_collision_sphere_plane(SceneObject sphere, SceneObject aabb)
 {
     double sphere_radius = 1.0;
-    
+
     float aabb_min_x = aabb.bbox_min_world.x;
     float aabb_min_y = aabb.bbox_min_world.y;
     float aabb_min_z = aabb.bbox_min_world.z;
@@ -88,11 +88,16 @@ bool Collisions::has_collision_sphere_plane(SceneObject sphere, SceneObject aabb
     double y = std::max(aabb_min_y, std::min(sphere.pos.y, aabb_max_y));
     double z = std::max(aabb_min_z, std::min(sphere.pos.z, aabb_max_z));
 
-    double distance = sqrt(
-            (x - sphere.pos.x) * (x - sphere.pos.x)
-            + (y - sphere.pos.y) * (y - sphere.pos.y)
-            + (z - sphere.pos.z) * (z - sphere.pos.z)
+    glm::vec4 pos = {x, y, z, 1.0f};
+
+    return euclidian_distance(pos, sphere.get_position()) < sphere_radius;
+}
+
+double Collisions::euclidian_distance(glm::vec4 p1, glm::vec4 p2)
+{
+    return sqrt(
+            (p1.x - p2.x) * (p1.x - p2.x)
+            + (p1.y - p2.y) * (p1.y - p2.y)
+            + (p1.z - p2.z) * (p1.z - p2.z)
     );
-    
-    return distance < sphere_radius;
 }

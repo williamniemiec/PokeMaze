@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/vec4.hpp>
-#include "pokemaze/SceneObject.hpp"
+#include "pokemaze/models/SceneObject.hpp"
 
 /**
  * Responsible for collision tests.
@@ -32,7 +32,7 @@ public:
 
     /**
      * Checks if there is a collision between a sphere and a plane (AABB).
-     * 
+     *
      * @param       sphere Sphere object
      * @param       plane Plane object
      *
@@ -42,11 +42,14 @@ public:
 
     /**
      * Checks if there is a collision between two planes (AABB).
-     * 
+     *
      * @param       plane1 Plane object
      * @param       plane2 Another plane object
      *
      * @return      True if there is a collision; false otherwise
      */
     static bool has_collision_plane_plane(SceneObject plane1, SceneObject plane2);
+
+private:
+    static double euclidian_distance(glm::vec4 p1, glm::vec4 p2);
 };

@@ -1,5 +1,17 @@
-#include "pokemaze/SceneObject.hpp"
+#include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/util/algebra/Matrices.h"
+
+SceneObject::SceneObject()
+{
+    pos.x = 1.0f;
+    pos.y = 1.0f;
+    pos.z = 1.0f;
+    pos.w = 1.0f;
+
+    current_scale.x = 1.0f;
+    current_scale.y = 1.0f;
+    current_scale.z = 1.0f;
+}
 
 void SceneObject::undo()
 {
@@ -220,4 +232,9 @@ void SceneObject::translate(float x, float y, float z)
     bbox_max.x += x;
     bbox_max.y += y;
     bbox_max.z += z;
+}
+
+glm::vec4 SceneObject::get_position()
+{
+    return pos;
 }
