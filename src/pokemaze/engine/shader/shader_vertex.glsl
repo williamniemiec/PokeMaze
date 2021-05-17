@@ -12,6 +12,7 @@
 #define ZCUBE 9
 #define XCUBE 10
 #define XDOOR 11
+#define TREE 12
 
 // Atributos de vértice recebidos como entrada ("in") pelo Vertex Shader.
 // Veja a função BuildTrianglesAndAddToVirtualScene() em "main.cpp".

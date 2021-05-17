@@ -6,25 +6,8 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/main" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Debug/" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="-std=c++11" />
-					<Add option="-g" />
-				</Compiler>
-				<Linker>
-					<Add option="-static-libstdc++" />
-					<Add option="-static-libgcc" />
-					<Add option="-static" />
-				</Linker>
-			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/main" prefix_auto="1" extension_auto="1" />
+			<Target title="Release (CBlocks 17.12 32-bit)">
+				<Option output="dist/1.x/1.0/minemon-1.0.0" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/Release/" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -36,9 +19,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-static-libstdc++" />
-					<Add option="-static-libgcc" />
-					<Add option="-static" />
+					<Add option="lib-mingw-32\libglfw3.a -lgdi32 -lopengl32 -lwinmm" />
 				</Linker>
 			</Target>
 			<Target title="Linux">
@@ -72,22 +53,6 @@
 					<Add option="lib-mingw-32\libglfw3.a -lgdi32 -lopengl32" />
 				</Linker>
 			</Target>
-			<Target title="Release (CBlocks 17.12 32-bit)">
-				<Option output="bin/Release/main" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Release/" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-					<Add option="-Wall" />
-					<Add option="-std=c++11" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-					<Add option="lib-mingw-32\libglfw3.a -lgdi32 -lopengl32 -lwinmm" />
-				</Linker>
-			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -101,11 +66,8 @@
 		</Linker>
 		<Unit filename="include/GLFW/glfw3.h" />
 		<Unit filename="include/GLFW/glfw3native.h" />
-		<Unit filename="include/pokemaze/util/io/IOUtils.hpp" />
 		<Unit filename="include/KHR/khrplatform.h" />
 		<Unit filename="include/SceneObject.hpp" />
-		<Unit filename="include/pokemaze/engine/Collisions.hpp" />
-		<Unit filename="include/pokemaze/engine/text/dejavufont.h" />
 		<Unit filename="include/glad/glad.h" />
 		<Unit filename="include/glm/CMakeLists.txt" />
 		<Unit filename="include/glm/common.hpp" />
@@ -369,23 +331,26 @@
 		<Unit filename="include/glm/vec3.hpp" />
 		<Unit filename="include/glm/vec4.hpp" />
 		<Unit filename="include/glm/vector_relational.hpp" />
-		<Unit filename="include/pokemaze/util/algebra/matrices.h" />
+		<Unit filename="include/pokemaze/engine/Collisions.hpp" />
 		<Unit filename="include/pokemaze/engine/loader/stb_image.h" />
 		<Unit filename="include/pokemaze/engine/loader/tiny_obj_loader.h" />
+		<Unit filename="include/pokemaze/engine/text/dejavufont.h" />
+		<Unit filename="include/pokemaze/util/algebra/Matrices.h" />
+		<Unit filename="include/pokemaze/util/io/IOUtils.hpp" />
 		<Unit filename="include/pokemaze/util/utils.h" />
-		<Unit filename="src/pokemaze/util/io/IOUtils.cpp" />
-		<Unit filename="src/pokemaze/util/algebra/Matrices.cpp" />
+		<Unit filename="src/pokemaze/App.cpp" />
 		<Unit filename="src/pokemaze/SceneObject.cpp" />
 		<Unit filename="src/pokemaze/engine/Collisions.cpp" />
 		<Unit filename="src/pokemaze/engine/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/pokemaze/App.cpp" />
+		<Unit filename="src/pokemaze/engine/loader/stb_image.cpp" />
+		<Unit filename="src/pokemaze/engine/loader/tiny_obj_loader.cpp" />
 		<Unit filename="src/pokemaze/engine/shader/shader_fragment.glsl" />
 		<Unit filename="src/pokemaze/engine/shader/shader_vertex.glsl" />
-		<Unit filename="src/pokemaze/engine/loader/stb_image.cpp" />
 		<Unit filename="src/pokemaze/engine/text/TextRender.cpp" />
-		<Unit filename="src/pokemaze/engine/loader/tiny_obj_loader.cpp" />
+		<Unit filename="src/pokemaze/util/algebra/Matrices.cpp" />
+		<Unit filename="src/pokemaze/util/io/IOUtils.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

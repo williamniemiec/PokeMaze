@@ -35,6 +35,7 @@ uniform mat4 projection;
 #define ZCUBE 9
 #define XCUBE 10
 #define XDOOR 11
+#define TREE 12
 
 uniform int object_id;
 
@@ -58,6 +59,8 @@ uniform sampler2D charizard_body;
 uniform sampler2D charizard_eye;
 uniform sampler2D wall;
 uniform sampler2D door;
+uniform sampler2D tree_leaves;
+uniform sampler2D tree_trunk;
 
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
@@ -294,17 +297,24 @@ void main()
 
         color = Kd0 * (lambert + 0.01);
     }
-    else
+    else if ( object_id == TREE )
     {
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd0;
 
-        //vec3 Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
+        if (texids.x == 0)
+            Kd0 = texture(tree_leaves, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(tree_trunk, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
 
-        // Equação de Iluminação
         float lambert = max(0,dot(n,l));
 
-        color = Kd0 * (lambert + 0.8);
+        color = Kd0 * (lambert + 0.01);
+    }
+    else
+    {
+        color = vec3(0.5,0.5,0.5);
     }
 
     // Gouraud shading

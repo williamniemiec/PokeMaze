@@ -392,6 +392,8 @@ int main(int argc, char* argv[])
     LoadObjTextureImage("../../data/Charizard/FitPokeLizardonEyeIris.png", 13);
     LoadObjTextureImage("../../data/bricks.jpg", 14);
     LoadObjTextureImage("../../data/garagedoor.jpg", 15);
+    LoadObjTextureImage("../../data/Tree/3DPaz_fir-tree_leaves.jpg", 16);
+    LoadObjTextureImage("../../data/Tree/3DPaz_fir-tree_trunk.jpg", 17);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     /*ObjModel spheremodel("../../data/sphere.obj");
@@ -451,6 +453,10 @@ int main(int argc, char* argv[])
     ObjModel pikachu_door("../../data/cube.obj");
     ComputeNormals(&pikachu_door);
     BuildTrianglesAndAddToVirtualScene(&pikachu_door, "pikachu_door");
+
+    ObjModel tree("../../data/Tree/Tree.obj", "../../data/Tree/");
+    ComputeNormals(&tree);
+    BuildTrianglesAndAddToVirtualScene(&tree, "Tree");
 
     //GLuint vertex_array_object_id = BuildTriangles();
 
@@ -569,7 +575,6 @@ int main(int argc, char* argv[])
                 movement = free_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
             if (d_key == true)
                 movement = free_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
-
 
             bool collision = false;
             for (SceneObject obj : walls)
@@ -766,6 +771,7 @@ int main(int argc, char* argv[])
 #define ZCUBE 9
 #define XCUBE 10
 #define XDOOR 11
+#define TREE 12
 
         glm::mat4 model = Matrix_Identity();
 
@@ -781,6 +787,13 @@ int main(int argc, char* argv[])
         g_VirtualScene["Ash_Ketchum"].pos = {fp_camera_position_c.x,-1.4f,fp_camera_position_c.z};
         //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
+
+        model = Matrix_Translate(8.6f, -1.4f, 8.8f)
+            * Matrix_Scale(0.5f, 0.5f, 0.5f);
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(object_id_uniform, TREE);
+        DrawVirtualObject("Tree");
+        g_VirtualScene["Tree"].apply(model);
 
         // WALLS
         model = Matrix_Translate(0.0f, 1.f, 19.99f)
@@ -1833,6 +1846,8 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "charizard_eye"), 13);
     glUniform1i(glGetUniformLocation(program_id, "wall"), 14);
     glUniform1i(glGetUniformLocation(program_id, "door"), 15);
+    glUniform1i(glGetUniformLocation(program_id, "tree_leaves"), 16);
+    glUniform1i(glGetUniformLocation(program_id, "tree_trunk"), 17);
     glUseProgram(0);
 }
 
@@ -2006,11 +2021,13 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
                         texture_id.push_back(-1);
                     else if (model->materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png"
                              || model->materials[id_material].diffuse_texname == "Pikachu_B.png"
-                             || model->materials[id_material].diffuse_texname == "FitPokeLizardon.PNG")
+                             || model->materials[id_material].diffuse_texname == "FitPokeLizardon.PNG"
+                             || model->materials[id_material].diffuse_texname == "3DPaz_fir-tree_leaves.jpg")
                         texture_id.push_back(0);
                     else if (model->materials[id_material].diffuse_texname == "PokeTra_Ash_face.png"
                              || model->materials[id_material].diffuse_texname == "Pikachu_C.png"
-                             || model->materials[id_material].diffuse_texname == "FitPokeLizardonEyeIris.PNG")
+                             || model->materials[id_material].diffuse_texname == "FitPokeLizardonEyeIris.PNG"
+                             || model->materials[id_material].diffuse_texname == "3DPaz_fir-tree_trunk.jpg")
                         texture_id.push_back(1);
                     else if (model->materials[id_material].diffuse_texname == "trAsh_00_body_col.png"
                              || model->materials[id_material].diffuse_texname == "Pikachu_E.png")
