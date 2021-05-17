@@ -1,4 +1,4 @@
-![logo](https://github.com/williamniemiec/PokeMaze/blob/master/docs/img/logo/logo.png?raw=true)
+<p align="center"><img alt="logo" src="https://github.com/williamniemiec/PokeMaze/blob/master/docs/img/logo/logo.png?raw=true" /></p>
 
 <h1 align='center'>PokeMaze</h1>
 <p align='center'>Maze game with Pokémon theme.</p>
