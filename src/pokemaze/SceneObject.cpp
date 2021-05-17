@@ -1,5 +1,5 @@
-#include "SceneObject.hpp"
-#include "matrices.h"
+#include "pokemaze/SceneObject.hpp"
+#include "pokemaze/util/algebra/Matrices.h"
 
 void SceneObject::undo()
 {

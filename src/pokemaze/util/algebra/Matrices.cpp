@@ -1,4 +1,4 @@
-#include "matrices.h"
+#include "pokemaze/util/algebra/Matrices.h"
 
 
 // Esta função Matrix() auxilia na criação de matrizes usando a biblioteca GLM.

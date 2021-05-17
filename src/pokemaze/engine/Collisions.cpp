@@ -1,5 +1,5 @@
 #include <cmath>
-#include "collisions.hpp"
+#include "pokemaze/engine/Collisions.hpp"
 
 //teste cubo-cubo
 //um teste cubo-plano

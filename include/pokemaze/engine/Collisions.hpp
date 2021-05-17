@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/vec4.hpp>
-#include "SceneObject.hpp"
+#include "pokemaze/SceneObject.hpp"
 
 class Collisions
 {

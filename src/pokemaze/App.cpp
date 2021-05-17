@@ -1,10 +1,3 @@
-// Arquivos "headers" padrões de C podem ser incluídos em um
-// programa C++, sendo necessário somente adicionar o caractere
-// "c" antes de seu nome, e remover o sufixo ".h". Exemplo:
-//    #include <stdio.h> // Em C
-//  vira
-//    #include <cstdio> // Em C++
-//
 #include <iostream>
 #include <cmath>
 #include <cstdio>
@@ -33,16 +26,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Headers da biblioteca para carregar modelos obj
-#include <tiny_obj_loader.h>
-
-#include <stb_image.h>
+#include <pokemaze/engine/loader/tiny_obj_loader.h>
+#include <pokemaze/engine/loader/stb_image.h>
 
 // Headers locais, definidos na pasta "include/"
-#include "utils.h"
-#include "SceneObject.hpp"
-#include "matrices.h"
-#include "collisions.hpp"
-#include "IOUtils.hpp"
+#include "pokemaze/util/utils.h"
+#include "pokemaze/SceneObject.hpp"
+#include "pokemaze/util/algebra/Matrices.h"
+#include "pokemaze/engine/Collisions.hpp"
+#include "pokemaze/util/io/IOUtils.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -338,10 +330,9 @@ int main(int argc, char* argv[])
     // funções modernas de OpenGL.
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
-    // de pixels, e com título "INF01047 ...".
+
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "MINEMON", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "PokeMaze", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -1805,8 +1796,8 @@ GLuint BuildTriangles()
 //
 void LoadShadersFromFiles()
 {
-    vertex_shader_id = LoadShader_Vertex("../../src/shader_vertex.glsl");
-    fragment_shader_id = LoadShader_Fragment("../../src/shader_fragment.glsl");
+    vertex_shader_id = LoadShader_Vertex("../../src/pokemaze/engine/shader/shader_vertex.glsl");
+    fragment_shader_id = LoadShader_Fragment("../../src/pokemaze/engine/shader/shader_fragment.glsl");
 
     // Deletamos o programa de GPU anterior, caso ele exista.
     if ( program_id != 0 )

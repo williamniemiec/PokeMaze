@@ -101,11 +101,11 @@
 		</Linker>
 		<Unit filename="include/GLFW/glfw3.h" />
 		<Unit filename="include/GLFW/glfw3native.h" />
-		<Unit filename="include/IOUtils.hpp" />
+		<Unit filename="include/pokemaze/util/io/IOUtils.hpp" />
 		<Unit filename="include/KHR/khrplatform.h" />
 		<Unit filename="include/SceneObject.hpp" />
-		<Unit filename="include/collisions.hpp" />
-		<Unit filename="include/dejavufont.h" />
+		<Unit filename="include/pokemaze/engine/Collisions.hpp" />
+		<Unit filename="include/pokemaze/engine/text/dejavufont.h" />
 		<Unit filename="include/glad/glad.h" />
 		<Unit filename="include/glm/CMakeLists.txt" />
 		<Unit filename="include/glm/common.hpp" />
@@ -369,23 +369,23 @@
 		<Unit filename="include/glm/vec3.hpp" />
 		<Unit filename="include/glm/vec4.hpp" />
 		<Unit filename="include/glm/vector_relational.hpp" />
-		<Unit filename="include/matrices.h" />
-		<Unit filename="include/stb_image.h" />
-		<Unit filename="include/tiny_obj_loader.h" />
-		<Unit filename="include/utils.h" />
-		<Unit filename="src/IOUtils.cpp" />
-		<Unit filename="src/Matrices.cpp" />
-		<Unit filename="src/SceneObject.cpp" />
-		<Unit filename="src/collisions.cpp" />
-		<Unit filename="src/glad.c">
+		<Unit filename="include/pokemaze/util/algebra/matrices.h" />
+		<Unit filename="include/pokemaze/engine/loader/stb_image.h" />
+		<Unit filename="include/pokemaze/engine/loader/tiny_obj_loader.h" />
+		<Unit filename="include/pokemaze/util/utils.h" />
+		<Unit filename="src/pokemaze/util/io/IOUtils.cpp" />
+		<Unit filename="src/pokemaze/util/algebra/Matrices.cpp" />
+		<Unit filename="src/pokemaze/SceneObject.cpp" />
+		<Unit filename="src/pokemaze/engine/Collisions.cpp" />
+		<Unit filename="src/pokemaze/engine/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/main.cpp" />
-		<Unit filename="src/shader_fragment.glsl" />
-		<Unit filename="src/shader_vertex.glsl" />
-		<Unit filename="src/stb_image.cpp" />
-		<Unit filename="src/textrendering.cpp" />
-		<Unit filename="src/tiny_obj_loader.cpp" />
+		<Unit filename="src/pokemaze/App.cpp" />
+		<Unit filename="src/pokemaze/engine/shader/shader_fragment.glsl" />
+		<Unit filename="src/pokemaze/engine/shader/shader_vertex.glsl" />
+		<Unit filename="src/pokemaze/engine/loader/stb_image.cpp" />
+		<Unit filename="src/pokemaze/engine/text/TextRender.cpp" />
+		<Unit filename="src/pokemaze/engine/loader/tiny_obj_loader.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
