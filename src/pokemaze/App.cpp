@@ -29,6 +29,7 @@
 #include "pokemaze/engine/text/TextRender.hpp"
 
 #define PI 3.14159265358979323846f
+#define PLAYER_DIRECTION_UP 0
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
 
