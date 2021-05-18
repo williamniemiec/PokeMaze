@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 #include <limits>
-#include <fstream>
+
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
@@ -17,9 +17,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
-#include <pokemaze/engine/loader/stb_image.h>
+
 #include "pokemaze/util/utils.h"
 #include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/util/algebra/Matrices.h"
@@ -27,6 +27,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/engine/text/TextRender.hpp"
+#include "pokemaze/engine/Renderer.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -132,14 +133,7 @@ Point P3 = Point(1.0f, 1.0f);
 // logo após a definição de main() neste arquivo.
 void BuildTrianglesAndAddToVirtualScene(ObjModel*, std::string); // Constrói representação de um ObjModel como malha de triângulos para renderização
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
-void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
-void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
-void LoadObjTextureImage(const char* filename, GLuint textureunit);
 void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
-GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
-GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
-void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 
 
 // Funções callback para comunicação com o sistema operacional e interação do
@@ -151,7 +145,6 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-void LoadBackground(const char* filename);
 
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
@@ -194,16 +187,7 @@ bool g_UsePerspectiveProjection = true;
 // Variável que controla se o texto informativo será mostrado na tela.
 bool g_ShowInfoText = true;
 
-// Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
-GLuint vertex_shader_id;
-GLuint fragment_shader_id;
-GLuint program_id = 0;
-GLint model_uniform;
-GLint view_uniform;
-GLint projection_uniform;
-GLint object_id_uniform;
-GLint bbox_min_uniform;
-GLint bbox_max_uniform;
+
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
@@ -282,25 +266,25 @@ int main(int argc, char* argv[])
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
-    LoadShadersFromFiles();
+    Renderer::LoadShadersFromFiles();
 
-    LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
-    LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/PokeTra_Ash_face.png").c_str(), 4);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_body_col.png").c_str(), 5);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_obj_col.png").c_str(), 6);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pokeball/ob0204_00.png").c_str(), 7);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_B.png").c_str(), 8);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_C.png").c_str(), 9);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_E.png").c_str(), 10);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_M.png").c_str(), 11);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png").c_str(), 12);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png").c_str(), 13);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/bricks.jpg").c_str(), 14);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
-    LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
+    Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
+    Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/PokeTra_Ash_face.png").c_str(), 4);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_body_col.png").c_str(), 5);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_obj_col.png").c_str(), 6);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pokeball/ob0204_00.png").c_str(), 7);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_B.png").c_str(), 8);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_C.png").c_str(), 9);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_E.png").c_str(), 10);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_M.png").c_str(), 11);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png").c_str(), 12);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png").c_str(), 13);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/bricks.jpg").c_str(), 14);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
 
 
     ObjModel ash((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_Ketchum.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/").c_str());
@@ -384,23 +368,8 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window) && !pokeball_catched)
     {
-        // Aqui executamos as operações de renderização
 
-        // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
-        // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
-        // Vermelho, Verde, Azul, Alpha (valor de transparência).
-        // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-        //
-        //           R     G     B     A
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-        // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
-        // e também resetamos todos os pixels do Z-buffer (depth buffer).
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
-        // os shaders de vértice e fragmentos).
-        glUseProgram(program_id);
+        Renderer::pre_render();
 
         current_time = (float)glfwGetTime();
         delta_time = current_time - previous_time;
@@ -632,8 +601,10 @@ int main(int argc, char* argv[])
 // Enviamos as matrizes "view" e "projection" para a placa de vídeo
 // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
 // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
+        Renderer::render_view(view);
+        Renderer::render_projection(projection);
+        //glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
+        //glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
 
 #define SPHERE 0
 #define POKEBALL  1
@@ -654,8 +625,10 @@ int main(int argc, char* argv[])
 /// Desenha jogador
         model = Matrix_Translate(fp_camera_position_c.x,-1.4f,fp_camera_position_c.z)
                 * Matrix_Rotate_Y(g_player_direction);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, PLAYER);
+        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        //glUniform1i(object_id_uniform, PLAYER);
+        Renderer::render_model(model, PLAYER);
+
         DrawVirtualObject("Ash_Ketchum");
         //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
         //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
@@ -666,8 +639,10 @@ int main(int argc, char* argv[])
 
         model = Matrix_Translate(8.6f, -1.4f, 8.8f)
             * Matrix_Scale(0.5f, 0.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, TREE);
+        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        //glUniform1i(object_id_uniform, TREE);
+        Renderer::render_model(model, TREE);
+
         DrawVirtualObject("Tree");
         g_VirtualScene["Tree"]->apply(model);
 
@@ -676,8 +651,10 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
         //* Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
+        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        //glUniform1i(object_id_uniform, WALL);
+        Renderer::render_model(model, WALL);
+
         DrawVirtualObject("wall_23");
         g_VirtualScene["wall_23"]->apply(model);
 
@@ -687,8 +664,10 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 1.f, -19.99f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
+        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        //glUniform1i(object_id_uniform, WALL);
+        Renderer::render_model(model, WALL);
+
         DrawVirtualObject("wall_24");
         g_VirtualScene["wall_24"]->apply(model);
 
@@ -700,8 +679,7 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_Y(PI/2)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
+        Renderer::render_model(model, WALL);
         DrawVirtualObject("wall_25");
         g_VirtualScene["wall_25"]->apply(model);
 
@@ -714,8 +692,7 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_Y(-PI/2)
                 * Matrix_Rotate_X(-PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, WALL);
+        Renderer::render_model(model, WALL);
         DrawVirtualObject("wall_26");
         g_VirtualScene["wall_26"]->apply(model);
 
@@ -727,8 +704,7 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_Z(g_AngleZ + (float)glfwGetTime() * 0.5f)
                 * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 1.5f)
                 * Matrix_Scale(0.2, 0.2, 0.2);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, POKEBALL);
+        Renderer::render_model(model, POKEBALL);
         DrawVirtualObject("Pokeball");
         g_VirtualScene["Pokeball"]->set_position(8.75f,0.0f,5.25f);
         g_VirtualScene["Pokeball"]->apply(model);
@@ -755,8 +731,7 @@ int main(int argc, char* argv[])
 
 // Desenhamos o plano do chão
         model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(20.5f, 10.5f, 20.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, PLANE);
+        Renderer::render_model(model, PLANE);
         DrawVirtualObject("floor");
         g_VirtualScene["floor"]->apply(model);
 
@@ -765,8 +740,7 @@ int main(int argc, char* argv[])
 
 // Desenhamos o plano do ceu
         model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(20.0f, 10.0f, 20.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, SKY);
+        Renderer::render_model(model, SKY);
         DrawVirtualObject("sky_5");
         g_VirtualScene["sky_5"]->apply(model);
 
@@ -779,8 +753,7 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(0.1, 0.1, 0.1)
                 * Matrix_Rotate_Y(PI)
                 * Matrix_Rotate_X(PI/4);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, CHARIZARD);
+        Renderer::render_model(model, CHARIZARD);
         DrawVirtualObject("Charizard");
         g_VirtualScene["Charizard"]->apply(model);
 
@@ -789,8 +762,7 @@ int main(int argc, char* argv[])
             model = Matrix_Translate(8.75f, -1.4f, -1.75f)
                     * Matrix_Scale(0.1, 0.1, 0.1)
                     * Matrix_Rotate_Y(PI);
-            glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            glUniform1i(object_id_uniform, PIKACHU);
+            Renderer::render_model(model, PIKACHU);
             DrawVirtualObject("Pikachu");
             g_VirtualScene["Pikachu"]->apply(model);
         }
@@ -798,8 +770,7 @@ int main(int argc, char* argv[])
         //Wall from Z 3.5 to z 10.5
         model = Matrix_Translate(0.0f,1.0f,7.0f)
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_1");
         g_VirtualScene["wall_1"]->apply(model);
 
@@ -809,8 +780,7 @@ int main(int argc, char* argv[])
         //Wall from X 3.5 Z 0 to z 7
         model = Matrix_Translate(3.5f,1.0f,3.5f)
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_2");
         g_VirtualScene["wall_2"]->apply(model);
 
@@ -820,8 +790,7 @@ int main(int argc, char* argv[])
         //Wall from X -7 Z 0 to z -7
         model = Matrix_Translate(-7.0f,1.0f,-3.5f)
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_3");
         g_VirtualScene["wall_3"]->apply(model);
 
@@ -831,8 +800,7 @@ int main(int argc, char* argv[])
         //Wall from Z 0 X -3.5 to Z 3.5
         model = Matrix_Translate(-3.5f,1.0f,1.750f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_4");
         g_VirtualScene["wall_4"]->apply(model);
 
@@ -842,8 +810,7 @@ int main(int argc, char* argv[])
         //Wall from Z 3.5 X -7 to Z 7
         model = Matrix_Translate(-7.0f,1.0f,5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_5");
         g_VirtualScene["wall_5"]->apply(model);
 
@@ -853,8 +820,7 @@ int main(int argc, char* argv[])
         //Wall from Z 3.5 X 7 to Z 7
         model = Matrix_Translate(7.0f,1.0f,5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_6");
         g_VirtualScene["wall_6"]->apply(model);
 
@@ -864,8 +830,7 @@ int main(int argc, char* argv[])
         //Wall from Z -3.5 X 3.5 to Z -7
         model = Matrix_Translate(3.5f,1.0f,-5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_7");
         g_VirtualScene["wall_7"]->apply(model);
 
@@ -875,8 +840,7 @@ int main(int argc, char* argv[])
         //Wall from Z 0 X 7 to Z -3.5
         model = Matrix_Translate(7.0f,1.0f,-1.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_8");
         g_VirtualScene["wall_8"]->apply(model);
 
@@ -886,8 +850,7 @@ int main(int argc, char* argv[])
         //Wall from Z 7 X -3.5 to Z 10.5
         model = Matrix_Translate(-3.5f,1.0f,8.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_9");
         g_VirtualScene["wall_9"]->apply(model);
 
@@ -897,8 +860,7 @@ int main(int argc, char* argv[])
         //Wall from Z 0 to Z -3.5
         model = Matrix_Translate(0.0f,1.0f,-1.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_10");
         g_VirtualScene["wall_10"]->apply(model);
 
@@ -908,8 +870,7 @@ int main(int argc, char* argv[])
         //Wall from X 0 to X 10.5
         model = Matrix_Translate(5.25f,1.0f,0.0f)
                 *Matrix_Scale(10.50f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_11");
         g_VirtualScene["wall_11"]->apply(model);
 
@@ -921,8 +882,7 @@ int main(int argc, char* argv[])
         {
             model = Matrix_Translate(5.25f,1.0f,3.5f)
                     *Matrix_Scale(3.5f, 2.5f, 0.5f);
-            glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            glUniform1i(object_id_uniform, XCUBE);
+            Renderer::render_model(model, XCUBE);
             DrawVirtualObject("secret_wall");
             g_VirtualScene["secret_wall"]->apply(model);
             g_VirtualScene["secret_wall"]->set_name("secret_wall");
@@ -937,8 +897,7 @@ int main(int argc, char* argv[])
         //Wall from X 0 Z -7 to X -7
         model = Matrix_Translate(-3.5f,1.0f,-7.0f)
                 *Matrix_Scale(7.0f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_12");
         g_VirtualScene["wall_12"]->apply(model);
 
@@ -948,8 +907,7 @@ int main(int argc, char* argv[])
         //Wall from X 0 Z -3.5 to X -3.5
         model = Matrix_Translate(-1.75f,1.0f,-3.5f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_13");
         g_VirtualScene["wall_13"]->apply(model);
 
@@ -959,8 +917,7 @@ int main(int argc, char* argv[])
         //Wall from X 3.5 Z -3.5 to X 7
         model = Matrix_Translate(5.25f,1.0f,-3.5f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_14");
         g_VirtualScene["wall_14"]->apply(model);
 
@@ -970,8 +927,7 @@ int main(int argc, char* argv[])
         //Wall from X 3.5 Z -7 to X 7
         model = Matrix_Translate(5.25f,1.0f,-7.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_15");
         g_VirtualScene["wall_15"]->apply(model);
 
@@ -981,8 +937,7 @@ int main(int argc, char* argv[])
         //Wall from X -7 to X -10.5
         model = Matrix_Translate(-8.75f,1.0f,0.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_16");
         g_VirtualScene["wall_16"]->apply(model);
 
@@ -992,8 +947,7 @@ int main(int argc, char* argv[])
         //Wall from X 7 Z 7 to X 10.5
         model = Matrix_Translate(8.75f,1.0f,7.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_17");
         g_VirtualScene["wall_17"]->apply(model);
 
@@ -1003,8 +957,7 @@ int main(int argc, char* argv[])
         //Wall from X 0 Z 3.5 to X -7
         model = Matrix_Translate(-3.5f,1.0f,3.5f)
                 *Matrix_Scale(7.0f, 2.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_18");
         g_VirtualScene["wall_18"]->apply(model);
 
@@ -1024,8 +977,7 @@ int main(int argc, char* argv[])
 
         model = Matrix_Translate(8.75f,1.60f,-3.5f)
                 *Matrix_Scale(3.5f, door_y, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XDOOR);
+        Renderer::render_model(model, XDOOR);
         DrawVirtualObject("pikachu_door");
         g_VirtualScene["pikachu_door"]->apply(model);
         g_VirtualScene["pikachu_door"]->set_name("pikachu_door");
@@ -1033,8 +985,7 @@ int main(int argc, char* argv[])
         //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
         model = Matrix_Translate(8.625f,1.5f,-1.5f)
                 *Matrix_Scale(3.75f, 0.5f, 3.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XDOOR);
+        Renderer::render_model(model, XDOOR);
         DrawVirtualObject("pikachu_ceiling");
         g_VirtualScene["pikachu_ceiling"]->apply(model);
 
@@ -1045,8 +996,7 @@ int main(int argc, char* argv[])
         // +X
         model = Matrix_Translate(10.75f,5.0f,0.0f)
                 *Matrix_Scale(0.5f, 6.5f, 21.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_19");
         g_VirtualScene["wall_19"]->apply(model);
 
@@ -1056,8 +1006,7 @@ int main(int argc, char* argv[])
         // -x
         model = Matrix_Translate(-10.75f,5.0f,0.0f)
                 *Matrix_Scale(0.5f, 6.5f, 21.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, ZCUBE);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_20");
         g_VirtualScene["wall_20"]->apply(model);
 
@@ -1067,8 +1016,7 @@ int main(int argc, char* argv[])
         // Z
         model = Matrix_Translate(0.0f,5.0f,10.75f)
                 *Matrix_Scale(21.0f, 6.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_21");
         g_VirtualScene["wall_21"]->apply(model);
 
@@ -1078,8 +1026,7 @@ int main(int argc, char* argv[])
         // -Z
         model = Matrix_Translate(0.0f,5.0f,-10.75f)
                 *Matrix_Scale(21.0f, 6.5f, 0.5f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, XCUBE);
+        Renderer::render_model(model, XCUBE);
         DrawVirtualObject("wall_22");
         g_VirtualScene["wall_22"]->apply(model);
 
@@ -1091,8 +1038,7 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 4.0f, 20.0f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, SKY);
+        Renderer::render_model(model, SKY);
         DrawVirtualObject("sky_1");
         g_VirtualScene["sky_1"]->apply(model);
 
@@ -1102,8 +1048,7 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 4.0f, -20.0f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, SKY);
+        Renderer::render_model(model, SKY);
         DrawVirtualObject("sky_2");
         g_VirtualScene["sky_2"]->apply(model);
 
@@ -1114,8 +1059,7 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_Y(PI/2)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, SKY);
+        Renderer::render_model(model, SKY);
         DrawVirtualObject("sky_3");
         g_VirtualScene["sky_3"]->apply(model);
 
@@ -1126,8 +1070,7 @@ int main(int argc, char* argv[])
                 * Matrix_Rotate_Y(PI/2)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(object_id_uniform, SKY);
+        Renderer::render_model(model, SKY);
         DrawVirtualObject("sky_4");
         g_VirtualScene["sky_4"]->apply(model);
 
@@ -1164,369 +1107,6 @@ int main(int argc, char* argv[])
 }
 
 
-//
-// LOADERS
-//
-
-// Função que carrega os shaders de vértices e de fragmentos que serão
-// utilizados para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-//
-void LoadShadersFromFiles()
-{
-    vertex_shader_id = LoadShader_Vertex((IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_vertex.glsl").c_str());
-    fragment_shader_id = LoadShader_Fragment((IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_fragment.glsl").c_str());
-
-    // Deletamos o programa de GPU anterior, caso ele exista.
-    if ( program_id != 0 )
-        glDeleteProgram(program_id);
-
-    // Criamos um programa de GPU utilizando os shaders carregados acima.
-    program_id = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
-
-    // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
-    // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
-    // (GPU)! Veja arquivo "shader_vertex.glsl" e "shader_fragment.glsl".
-    model_uniform           = glGetUniformLocation(program_id, "model"); // Variável da matriz "model"
-    view_uniform            = glGetUniformLocation(program_id, "view"); // Variável da matriz "view" em shader_vertex.glsl
-    projection_uniform      = glGetUniformLocation(program_id, "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    object_id_uniform       = glGetUniformLocation(program_id, "object_id"); // Variável "object_id" em shader_fragment.glsl
-    bbox_min_uniform        = glGetUniformLocation(program_id, "bbox_min");
-    bbox_max_uniform        = glGetUniformLocation(program_id, "bbox_max");
-
-    // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
-    glUseProgram(program_id);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage0"), 0);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage1"), 1);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage2"), 2);
-    glUniform1i(glGetUniformLocation(program_id, "ash_arms"), 3);
-    glUniform1i(glGetUniformLocation(program_id, "ash_face"), 4);
-    glUniform1i(glGetUniformLocation(program_id, "ash_body"), 5);
-    glUniform1i(glGetUniformLocation(program_id, "ash_col"), 6);
-    glUniform1i(glGetUniformLocation(program_id, "pokeball"), 7);
-    glUniform1i(glGetUniformLocation(program_id, "pikachu_b"), 8);
-    glUniform1i(glGetUniformLocation(program_id, "pikachu_c"), 9);
-    glUniform1i(glGetUniformLocation(program_id, "pikachu_e"), 10);
-    glUniform1i(glGetUniformLocation(program_id, "pikachu_m"), 11);
-    glUniform1i(glGetUniformLocation(program_id, "charizard_body"), 12);
-    glUniform1i(glGetUniformLocation(program_id, "charizard_eye"), 13);
-    glUniform1i(glGetUniformLocation(program_id, "wall"), 14);
-    glUniform1i(glGetUniformLocation(program_id, "door"), 15);
-    glUniform1i(glGetUniformLocation(program_id, "tree_leaves"), 16);
-    glUniform1i(glGetUniformLocation(program_id, "tree_trunk"), 17);
-    glUseProgram(0);
-}
-
-// Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
-GLuint LoadShader_Vertex(const char* filename)
-{
-    // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos vértices.
-    GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
-
-    // Carregamos e compilamos o shader
-    LoadShader(filename, vertex_shader_id);
-
-    // Retorna o ID gerado acima
-    return vertex_shader_id;
-}
-
-// Carrega um Fragment Shader de um arquivo GLSL . Veja definição de LoadShader() abaixo.
-GLuint LoadShader_Fragment(const char* filename)
-{
-    // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos fragmentos.
-    GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Carregamos e compilamos o shader
-    LoadShader(filename, fragment_shader_id);
-
-    // Retorna o ID gerado acima
-    return fragment_shader_id;
-}
-
-// Função auxilar, utilizada pelas duas funções acima. Carrega código de GPU de
-// um arquivo GLSL e faz sua compilação.
-void LoadShader(const char* filename, GLuint shader_id)
-{
-    // Lemos o arquivo de texto indicado pela variável "filename"
-    // e colocamos seu conteúdo em memória, apontado pela variável
-    // "shader_string".
-    std::ifstream file;
-    try
-    {
-        file.exceptions(std::ifstream::failbit);
-        file.open(filename);
-    }
-    catch ( std::exception& e )
-    {
-        fprintf(stderr, "ERROR: Cannot open file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-    std::stringstream shader;
-    shader << file.rdbuf();
-    std::string str = shader.str();
-    const GLchar* shader_string = str.c_str();
-    const GLint   shader_string_length = static_cast<GLint>( str.length() );
-
-    // Define o código do shader GLSL, contido na string "shader_string"
-    glShaderSource(shader_id, 1, &shader_string, &shader_string_length);
-
-    // Compila o código do shader GLSL (em tempo de execução)
-    glCompileShader(shader_id);
-
-    // Verificamos se ocorreu algum erro ou "warning" durante a compilação
-    GLint compiled_ok;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled_ok);
-
-    GLint log_length = 0;
-    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
-
-    // Alocamos memória para guardar o log de compilação.
-    // A chamada "new" em C++ é equivalente ao "malloc()" do C.
-    GLchar* log = new GLchar[log_length];
-    glGetShaderInfoLog(shader_id, log_length, &log_length, log);
-
-    // Imprime no terminal qualquer erro ou "warning" de compilação
-    if ( log_length != 0 )
-    {
-        std::string  output;
-
-        if ( !compiled_ok )
-        {
-            output += "ERROR: OpenGL compilation of \"";
-            output += filename;
-            output += "\" failed.\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
-        }
-        else
-        {
-            output += "WARNING: OpenGL compilation of \"";
-            output += filename;
-            output += "\".\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
-        }
-
-        fprintf(stderr, "%s", output.c_str());
-    }
-
-    // A chamada "delete" em C++ é equivalente ao "free()" do C
-    delete [] log;
-}
-
-void LoadBackground(const char* filename)
-{
-    printf("Carregando imagem \"%s\"... ", filename);
-
-    // Primeiro fazemos a leitura da imagem do disco
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
-
-    if ( data == NULL )
-    {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-
-    printf("OK (%dx%d).\n", width, height);
-
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
-
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-
-    GLuint textureunit = g_NumLoadedTextures;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
-
-    stbi_image_free(data);
-
-    g_NumLoadedTextures += 1;
-}
-
-// Função que carrega uma imagem para ser utilizada como textura
-void LoadTextureImage(const char* filename)
-{
-    printf("Carregando imagem \"%s\"... ", filename);
-
-    // Primeiro fazemos a leitura da imagem do disco
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
-
-    if ( data == NULL )
-    {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-
-    printf("OK (%dx%d).\n", width, height);
-
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
-
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-
-    GLuint textureunit = g_NumLoadedTextures;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
-
-    stbi_image_free(data);
-
-    g_NumLoadedTextures += 1;
-}
-
-void LoadObjTextureImage(const char* filename, GLuint textureunit)
-{
-    printf("Carregando imagem \"%s\"... ", filename);
-
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
-
-    if ( data == NULL )
-    {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
-
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
-
-    stbi_image_free(data);
-}
-
-
-
-
-
-
-
-//
-// Engine
-//
-
-// Esta função cria um programa de GPU, o qual contém obrigatoriamente um
-// Vertex Shader e um Fragment Shader.
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
-{
-    // Criamos um identificador (ID) para este programa de GPU
-    GLuint program_id = glCreateProgram();
-
-    // Definição dos dois shaders GLSL que devem ser executados pelo programa
-    glAttachShader(program_id, vertex_shader_id);
-    glAttachShader(program_id, fragment_shader_id);
-
-    // Linkagem dos shaders acima ao programa
-    glLinkProgram(program_id);
-
-    // Verificamos se ocorreu algum erro durante a linkagem
-    GLint linked_ok = GL_FALSE;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked_ok);
-
-    // Imprime no terminal qualquer erro de linkagem
-    if ( linked_ok == GL_FALSE )
-    {
-        GLint log_length = 0;
-        glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &log_length);
-
-        // Alocamos memória para guardar o log de compilação.
-        // A chamada "new" em C++ é equivalente ao "malloc()" do C.
-        GLchar* log = new GLchar[log_length];
-
-        glGetProgramInfoLog(program_id, log_length, &log_length, log);
-
-        std::string output;
-
-        output += "ERROR: OpenGL linking of program failed.\n";
-        output += "== Start of link log\n";
-        output += log;
-        output += "\n== End of link log\n";
-
-        // A chamada "delete" em C++ é equivalente ao "free()" do C
-        delete [] log;
-
-        fprintf(stderr, "%s", output.c_str());
-    }
-
-    // Os "Shader Objects" podem ser marcados para deleção após serem linkados
-    glDeleteShader(vertex_shader_id);
-    glDeleteShader(fragment_shader_id);
-
-    // Retornamos o ID gerado acima
-    return program_id;
-}
 
 
 // Definição da função que será chamada sempre que a janela do sistema
@@ -1568,8 +1148,9 @@ void DrawVirtualObject(const char* object_name)
     // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
     BoundingBox* bbox = g_VirtualScene[object_name]->get_bounding_box();
 
-    glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
-    glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
+    //glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
+    //glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
+    Renderer::render_bbox(bbox);
 
     // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
     // apontados pelo VAO como linhas. Veja a definição de
@@ -2121,17 +1702,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         g_ShowInfoText = !g_ShowInfoText;
     }
-
-    // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        LoadShadersFromFiles();
-        fprintf(stdout,"Shaders recarregados!\n");
-        fflush(stdout);
-    }
-
-
-
 
     if (key == GLFW_KEY_W)
     {
