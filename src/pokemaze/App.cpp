@@ -170,16 +170,6 @@ float g_CameraDistance = 3.0f; // Distância da câmera para a origem
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
 
-// Variável que controla se o texto informativo será mostrado na tela.
-//bool g_ShowInfoText = true;
-
-
-
-// Número de texturas carregadas pela função LoadTextureImage()
-//GLuint g_NumLoadedTextures = 0;
-
-glm::vec4 camera_w_vector;
-glm::vec4 camera_u_vector;
 
 bool FREE_MODE = true;
 bool pause = false;
@@ -332,16 +322,10 @@ int main(int argc, char* argv[])
     double param_t = 2.0;
     bool bezier_forward = true;
 
-    //glm::vec4 lookat_camera_position_c;
-    glm::vec4 free_camera_position_c  = glm::vec4(10.0f,5.60f,-10.25f,1.0f);
-    glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
-
     FreeCamera* free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
     LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
     FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
 
-    //std::stack<glm::vec4> movements_fp;
-    std::stack<glm::vec4> movements_fc;
     std::vector<SceneObject*> walls;
     bool pikachu_catched = false;
     bool pokeball_catched = false;
@@ -364,26 +348,8 @@ int main(int argc, char* argv[])
 
 
         /// CAMERA E TESTE DE COLISOES
-        glm::vec4 movement;
-        glm::vec4 camera_view_vector;
-        glm::vec4 camera_up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f); // free_camera->set_up_vector(0.0f, 1.0f, 0.0f);
-
         if (FREE_MODE && !pause)
         {
-            float y = sin(g_FreeModeCameraPhi);
-            float z = cos(g_FreeModeCameraPhi)*cos(g_FreeModeCameraTheta);
-            float x = cos(g_FreeModeCameraPhi)*sin(g_FreeModeCameraTheta);
-
-            movement = free_camera_position_c;
-
-            camera_view_vector = glm::vec4(x,y,-z,0.0f);
-
-            // apenas se tem mov
-            camera_w_vector = -1.0f*camera_view_vector;
-            camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
-            camera_w_vector = camera_w_vector / norm(camera_w_vector);
-            camera_u_vector = camera_u_vector / norm(camera_u_vector);
-
             free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
 
             if (w_key || a_key || s_key || d_key)
@@ -391,7 +357,6 @@ int main(int argc, char* argv[])
                 if (w_key == true)
                 {
                     free_camera->move_up(CAMERA_SPEED * delta_time);
-
                 }
                 if (a_key == true)
                 {
@@ -401,24 +366,19 @@ int main(int argc, char* argv[])
                 if (s_key == true)
                 {
                     free_camera->move_down(CAMERA_SPEED * delta_time);
-
                 }
-
                 if (d_key == true)
                 {
                     free_camera->move_right(CAMERA_SPEED * delta_time);
-
                 }
             }
 
-            bool collision = false;
             for (SceneObject* obj : walls)
             {
                 if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
                 {
                     free_camera->undo();
 
-                    collision = true;
                     break;
                 }
             }
@@ -427,60 +387,30 @@ int main(int argc, char* argv[])
         {
             glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"]->get_position_x(),0.0f,g_VirtualScene["Ash_Ketchum"]->get_position_z(),0.0f);
             lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
-
-            /*float r = g_CameraDistance;
-            float x = r*cos(g_PauseModeCameraPhi)*sin(g_PauseModeCameraTheta);
-            float y = r*sin(g_PauseModeCameraPhi);
-            float z = r*cos(g_PauseModeCameraPhi)*cos(g_PauseModeCameraTheta);
-
-            lookat_camera_position_c  = glm::vec4(x,y,z,1.0f) + offset;
-            glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f) + offset;
-            camera_view_vector = camera_lookat_l - lookat_camera_position_c;
-            */
         }
         else
         {
             g_player_direction = -1*g_PlayerCameraTheta;
 
             fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
-            /*
-            float y = sin(g_PlayerCameraPhi);
-            float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
-            float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
-            camera_view_vector = glm::vec4(x,y,-z,0.0f);
-
-            movement = fp_camera_position_c;
-
-            camera_w_vector = -1.0f*camera_view_vector;
-            camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
-            camera_w_vector = camera_w_vector / norm(camera_w_vector);
-            camera_u_vector = camera_u_vector / norm(camera_u_vector);
-            */
 
             if (w_key == true)
             {
                 fixed_camera->move_up(CAMERA_SPEED * delta_time);
-                //movement = fp_camera_position_c - camera_w_vector * CAMERA_SPEED * delta_time;
             }
             if (a_key == true)
             {
                 fixed_camera->move_left(CAMERA_SPEED * delta_time);
-                //movement = fp_camera_position_c - camera_u_vector * CAMERA_SPEED * delta_time;
             }
             if (s_key == true)
             {
                 fixed_camera->move_down(CAMERA_SPEED * delta_time);
-                //movement = fp_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
             }
             if (d_key == true)
             {
                 fixed_camera->move_right(CAMERA_SPEED * delta_time);
-                //movement = fp_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
             }
 
-            //movement.y = 0.80f;
-
-            bool collision = false;
             for (SceneObject* obj : walls)
             {
                 if (pikachu_catched && obj->get_name() == "secret_wall")
@@ -489,13 +419,8 @@ int main(int argc, char* argv[])
                 if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], obj))
                 {
                     fixed_camera->undo();
-                    /*movements_fp.pop();
-                    fp_camera_position_c = movements_fp.top();
-                    movements_fp.pop();*/
-
                     g_VirtualScene["Ash_Ketchum"]->undo();
 
-                    collision = true;
                     break;
                 }
             }
@@ -507,21 +432,9 @@ int main(int argc, char* argv[])
                     pikachu_door_touched = true;
 
                     fixed_camera->undo();
-                    /*movements_fp.pop();
-                    fp_camera_position_c = movements_fp.top();
-                    movements_fp.pop();*/
-
                     g_VirtualScene["Ash_Ketchum"]->undo();
-                    collision = true;
                 }
             }
-
-            /*if (!collision)
-            {
-                fp_camera_position_c = movement;
-                movements_fp.push(fp_camera_position_c);
-            }*/
-
 
             if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["Pikachu"]))
                 pikachu_catched = true;
@@ -539,17 +452,14 @@ int main(int argc, char* argv[])
 
         if(FREE_MODE && !pause)
         {
-            //view = Matrix_Camera_View(free_camera_position_c, camera_view_vector, camera_up_vector);
             view = free_camera->get_view_matrix();
         }
         else if (pause)
         {
-            //view = Matrix_Camera_View(lookat_camera_position_c, camera_view_vector, camera_up_vector);
             view = lookat_camera->get_view_matrix();
         }
         else
         {
-            //view = Matrix_Camera_View(fp_camera_position_c, camera_view_vector, camera_up_vector);
             view = fixed_camera->get_view_matrix();
         }
 
