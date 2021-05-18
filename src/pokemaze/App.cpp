@@ -338,7 +338,7 @@ int main(int argc, char* argv[])
 
     FreeCamera* free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
     LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
-    FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.0f, 8.75f);
+    FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
 
     //std::stack<glm::vec4> movements_fp;
     std::stack<glm::vec4> movements_fc;
@@ -391,23 +391,23 @@ int main(int argc, char* argv[])
                 if (w_key == true)
                 {
                     free_camera->move_up(CAMERA_SPEED * delta_time);
-                    //movement = free_camera_position_c -camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_up(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+
                 }
                 if (a_key == true)
                 {
                     free_camera->move_left(CAMERA_SPEED * delta_time);
-                    //movement = free_camera_position_c  -camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_left(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+
                 }
                 if (s_key == true)
                 {
                     free_camera->move_down(CAMERA_SPEED * delta_time);
-                    //movement = free_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_down(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+
                 }
 
                 if (d_key == true)
                 {
                     free_camera->move_right(CAMERA_SPEED * delta_time);
-                    //movement = free_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_right(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+
                 }
             }
 
@@ -417,37 +417,10 @@ int main(int argc, char* argv[])
                 if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
                 {
                     free_camera->undo();
-                    // camera.undo(); // 18x
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    movements_fc.pop();
-                    free_camera_position_c = movements_fc.top();
-                    movements_fc.pop();
+
                     collision = true;
                     break;
                 }
-            }
-
-            if (!collision)
-            {
-                free_camera_position_c = movement;
-                movements_fc.push(movement);
             }
         }
         else if (pause)
@@ -469,7 +442,7 @@ int main(int argc, char* argv[])
         {
             g_player_direction = -1*g_PlayerCameraTheta;
 
-            fixed_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta);
+            fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
             /*
             float y = sin(g_PlayerCameraPhi);
             float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
@@ -491,12 +464,12 @@ int main(int argc, char* argv[])
             }
             if (a_key == true)
             {
-                fixed_camera->move_down(CAMERA_SPEED * delta_time);
+                fixed_camera->move_left(CAMERA_SPEED * delta_time);
                 //movement = fp_camera_position_c - camera_u_vector * CAMERA_SPEED * delta_time;
             }
             if (s_key == true)
             {
-                fixed_camera->move_left(CAMERA_SPEED * delta_time);
+                fixed_camera->move_down(CAMERA_SPEED * delta_time);
                 //movement = fp_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
             }
             if (d_key == true)
@@ -621,6 +594,7 @@ int main(int argc, char* argv[])
         Renderer::render_model(model, PLAYER);
         DrawVirtualObject("Ash_Ketchum");
         g_VirtualScene["Ash_Ketchum"]->apply(model);
+        g_VirtualScene["Ash_Ketchum"]->set_position(fixed_camera->get_x(),-1.4f,fixed_camera->get_z());
 
 
         model = Matrix_Translate(8.6f, -1.4f, 8.8f)

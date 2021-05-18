@@ -11,7 +11,7 @@ void LookAtCamera::look_to(float phi, float theta)
     look_to(phi, theta, {0.0f, 0.0f, 0.0f, 0.0f});
 }
 
-void LookAtCamera::look_to(float phi, float theta, glm::vec4 offset = {0.0f, 0.0f, 0.0f, 0.0f})
+void LookAtCamera::look_to(float phi, float theta, glm::vec4 offset)
 {
     float x = camera_distance * cos(phi) * sin(theta);
     float y = camera_distance * sin(phi);

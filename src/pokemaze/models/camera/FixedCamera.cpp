@@ -31,6 +31,7 @@ void FixedCamera::move_up(float offset)
     u = u / norm(u);
 
     glm::vec4 movement = position - w * offset;
+    movement.y = position.y;
 
     position = movement;
     movements->push(movement);
@@ -44,6 +45,7 @@ void FixedCamera::move_down(float offset)
     u = u / norm(u);
 
     glm::vec4 movement = position + w * offset;
+    movement.y = position.y;
 
     position = movement;
     movements->push(movement);
@@ -57,6 +59,7 @@ void FixedCamera::move_left(float offset)
     u = u / norm(u);
 
     glm::vec4 movement = position - u * offset;
+    movement.y = position.y;
 
     position = movement;
     movements->push(movement);
@@ -70,7 +73,7 @@ void FixedCamera::move_right(float offset)
     u = u / norm(u);
 
     glm::vec4 movement = position + u * offset;
-    movement.y = 0.80f;
+    movement.y = position.y;
 
     position = movement;
     movements->push(movement);
