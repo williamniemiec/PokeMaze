@@ -4,8 +4,6 @@
 #include <cstdlib>
 #include <windows.h>
 #include <mmsystem.h>
-
-// Headers abaixo são específicos de C++
 #include <map>
 #include <stack>
 #include <string>
@@ -15,66 +13,33 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
-
-// Headers das bibliotecas OpenGL
-#include <glad/glad.h>   // Criação de contexto OpenGL 3.3
-#include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
-
-// Headers da biblioteca GLM: criação de matrizes e vetores.
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-// Headers da biblioteca para carregar modelos obj
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include <pokemaze/engine/loader/stb_image.h>
-
-// Headers locais, definidos na pasta "include/"
 #include "pokemaze/util/utils.h"
 #include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/util/algebra/Matrices.h"
 #include "pokemaze/engine/Collisions.hpp"
 #include "pokemaze/util/io/IOUtils.hpp"
+#include "pokemaze/engine/Display.hpp"
+#include "pokemaze/engine/text/TextRender.hpp"
 
 #define PI 3.14159265358979323846f
-#define PLAYER_DIRECTION_UP 0
-#define PLAYER_DIRECTION_DOWN PI
-#define PLAYER_DIRECTION_LEFT PI/2
-#define PLAYER_DIRECTION_RIGHT -PI/2
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
 
-
-
-
-static bool FileExists(const std::string& abs_filename)
-{
-    bool ret;
-    FILE* fp = fopen(abs_filename.c_str(), "rb");
-    if (fp)
-    {
-        ret = true;
-        fclose(fp);
-    }
-    else
-    {
-        ret = false;
-    }
-
-    return ret;
-}
-
-// Estrutura que representa um modelo geométrico carregado a partir de um
-// arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
 struct ObjModel
 {
-    tinyobj::attrib_t                 attrib;
-    std::vector<tinyobj::shape_t>     shapes;
-    std::vector<tinyobj::material_t>  materials;
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
     std::map<std::string, GLuint> textures;
 
-    // Este construtor lê o modelo de um arquivo utilizando a biblioteca tinyobjloader.
-    // Veja: https://github.com/syoyo/tinyobjloader
+    // SOURCE: https://github.com/syoyo/tinyobjloader
     ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true)
     {
         printf("Carregando modelo \"%s\"... ", filename);
@@ -175,21 +140,6 @@ GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 
-
-// Declaração de funções auxiliares para renderizar texto dentro da janela
-// OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
-void TextRendering_Init();
-float TextRendering_LineHeight(GLFWwindow* window);
-float TextRendering_CharWidth(GLFWwindow* window);
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
-
-
-// Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
-// outras informações do programa. Definidas após main().
-void TextRendering_ShowEulerAngles(GLFWwindow* window);
-void TextRendering_ShowProjection(GLFWwindow* window);
-void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
-void TextRendering_ShowPause(GLFWwindow* window);
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
@@ -301,10 +251,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-    // funções modernas de OpenGL.
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 
     GLFWwindow* window;
     window = glfwCreateWindow(800, 600, "PokeMaze", NULL, NULL);
@@ -315,30 +262,18 @@ int main(int argc, char* argv[])
         std::exit(EXIT_FAILURE);
     }
 
-    // Definimos a função de callback que será chamada sempre que o usuário
-    // pressionar alguma tecla do teclado ...
+    Display* display = new Display(window);
+
     glfwSetKeyCallback(window, KeyCallback);
-    // ... ou clicar os botões do mouse ...
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
-    // ... ou movimentar o cursor do mouse em cima da janela ...
     glfwSetCursorPosCallback(window, CursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
     glfwSetScrollCallback(window, ScrollCallback);
 
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-    // Definimos a função de callback que será chamada sempre que a janela for
-    // redimensionada, por consequência alterando o tamanho do "framebuffer"
-    // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
     FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
-    // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);
     const GLubyte *glversion   = glGetString(GL_VERSION);
@@ -346,12 +281,8 @@ int main(int argc, char* argv[])
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
-    // Carregamos os shaders de vértices e de fragmentos que serão utilizados
-    // para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-    //
     LoadShadersFromFiles();
 
-    // Carregamos duas imagens para serem utilizadas como textura
     LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
     LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
     LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
@@ -370,7 +301,7 @@ int main(int argc, char* argv[])
     LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
     LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
 
-    // Construímos a representação de objetos geométricos através de malhas de triângulos
+
     ObjModel ash((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_Ketchum.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/").c_str());
     ComputeNormals(&ash);
     BuildTrianglesAndAddToVirtualScene(&ash, "Ash_Ketchum");
@@ -418,19 +349,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&tree);
     BuildTrianglesAndAddToVirtualScene(&tree, "Tree");
 
-    // Inicializamos o código para renderização de texto.
-    TextRendering_Init();
+    TextRender::TextRendering_Init();
 
-    // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    // Habilitamos o Backface Culling. Veja slides 23-34 do documento Aula_13_Clipping_and_Culling.pdf.
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CCW);
-
-    // Variáveis auxiliares utilizadas para chamada à função
-    // TextRendering_ShowModelViewProjection(), armazenando matrizes 4x4.
     glm::mat4 the_projection;
     glm::mat4 the_model;
     glm::mat4 the_view;
@@ -1212,47 +1134,24 @@ int main(int argc, char* argv[])
             walls.push_back(g_VirtualScene["sky_4"]);
 
         if (pause)
-            TextRendering_ShowPause(window);
+            display->show_pause();
 
 
-// Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
-// passamos por todos os sistemas de coordenadas armazenados nas
-// matrizes the_model, the_view, e the_projection; e escrevemos na tela
-// as matrizes e pontos resultantes dessas transformações.
-//glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
-//TextRendering_ShowModelViewProjection(window, projection, view, model, p_model);
+        display->show_controls();
+        display->show_projection(g_UsePerspectiveProjection);
+        display->show_fps();
 
-// Imprimimos na tela os ângulos de Euler que controlam a rotação do
-// terceiro cubo.
-        TextRendering_ShowEulerAngles(window);
-
-// Imprimimos na informação sobre a matriz de projeção sendo utilizada.
-        TextRendering_ShowProjection(window);
-
-// Imprimimos na tela informação sobre o número de quadros renderizados
-// por segundo (frames per second).
-        TextRendering_ShowFramesPerSecond(window);
-
-// O framebuffer onde OpenGL executa as operações de renderização não
-// é o mesmo que está sendo mostrado para o usuário, caso contrário
-// seria possível ver artefatos conhecidos como "screen tearing". A
-// chamada abaixo faz a troca dos buffers, mostrando para o usuário
-// tudo que foi renderizado pelas funções acima.
-// Veja o link: Veja o link: https://en.wikipedia.org/w/index.php?title=Multiple_buffering&oldid=793452829#Double_buffering_in_computer_graphics
         glfwSwapBuffers(window);
-
-// Verificamos com o sistema operacional se houve alguma interação do
-// usuário (teclado, mouse, ...). Caso positivo, as funções de callback
-// definidas anteriormente usando glfwSet*Callback() serão chamadas
-// pela biblioteca GLFW.
         glfwPollEvents();
 
         first_run = false;
     }
 
-// Finalizamos o uso dos recursos do sistema operacional
+    // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
+
     PlaySound(NULL, NULL,SND_SYNC);
+
     if (pokeball_catched)
     {
         system("cls");
@@ -1260,22 +1159,8 @@ int main(int argc, char* argv[])
         system("PAUSE");
     }
 
-
-// Fim do programa
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //
@@ -2294,92 +2179,4 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 void ErrorCallback(int error, const char* description)
 {
     fprintf(stderr, "ERROR: GLFW: %s\n", description);
-}
-
-
-
-
-
-
-
-
-
-
-//
-// Text render
-//
-
-// Escrevemos na tela os ângulos de Euler definidos nas variáveis globais
-// g_AngleX, g_AngleY, e g_AngleZ.
-void TextRendering_ShowEulerAngles(GLFWwindow* window)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    float pad = TextRendering_LineHeight(window);
-
-    char buffer[80];
-    snprintf(buffer, 80, "Euler Angles rotation matrix = Z(%.2f)*Y(%.2f)*X(%.2f)\n", g_AngleZ, g_AngleY, g_AngleX);
-
-    TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
-}
-
-void TextRendering_ShowPause(GLFWwindow* window)
-{
-    float pad = TextRendering_LineHeight(window);
-    int width, height;
-    glfwGetWindowSize(window, &width, &height);
-
-    TextRendering_PrintString(window, "PAUSED", -0.33+pad, -0.1+pad, 5.0f);
-}
-
-// Escrevemos na tela qual matriz de projeção está sendo utilizada.
-void TextRendering_ShowProjection(GLFWwindow* window)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
-
-    if ( g_UsePerspectiveProjection )
-        TextRendering_PrintString(window, "Perspective", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
-    else
-        TextRendering_PrintString(window, "Orthographic", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
-}
-
-// Escrevemos na tela o número de quadros renderizados por segundo (frames per
-// second).
-void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    // Variáveis estáticas (static) mantém seus valores entre chamadas
-    // subsequentes da função!
-    static float old_seconds = (float)glfwGetTime();
-    static int   ellapsed_frames = 0;
-    static char  buffer[20] = "?? fps";
-    static int   numchars = 7;
-
-    ellapsed_frames += 1;
-
-    // Recuperamos o número de segundos que passou desde a execução do programa
-    float seconds = (float)glfwGetTime();
-
-    // Número de segundos desde o último cálculo do fps
-    float ellapsed_seconds = seconds - old_seconds;
-
-    if ( ellapsed_seconds > 1.0f )
-    {
-        numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
-
-        old_seconds = seconds;
-        ellapsed_frames = 0;
-    }
-
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
-
-    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
 }
