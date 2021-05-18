@@ -209,7 +209,7 @@ void LoadBackground(const char* filename);
 // (map).  Veja dentro da função BuildTrianglesAndAddToVirtualScene() como que são incluídos
 // objetos dentro da variável g_VirtualScene, e veja na função main() como
 // estes são acessados.
-std::map<std::string, SceneObject> g_VirtualScene;
+std::map<std::string, SceneObject*> g_VirtualScene;
 
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
@@ -381,23 +381,18 @@ int main(int argc, char* argv[])
 
     ObjModel planemodel((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane");
+    BuildTrianglesAndAddToVirtualScene(&planemodel, "floor");
 
-    ObjModel planemodel1((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane1");
+    for (int i = 1; i <= 5; i++)
+    {
+        BuildTrianglesAndAddToVirtualScene(&planemodel, "sky_" + std::to_string(i));
+    }
 
-    ObjModel planemode2((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane2");
+    for (int i = 23; i <= 26; i++)
+    {
+        BuildTrianglesAndAddToVirtualScene(&planemodel, "wall_" + std::to_string(i));
+    }
 
-    ObjModel planemodel3((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane3");
-
-    ObjModel planemodel4((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "plane4");
 
     ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
     ComputeNormals(&charizard);
@@ -409,15 +404,15 @@ int main(int argc, char* argv[])
 
     ObjModel cube((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
     ComputeNormals(&cube);
-    BuildTrianglesAndAddToVirtualScene(&cube, "cube");
 
-    ObjModel secret_wall((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
-    ComputeNormals(&secret_wall);
-    BuildTrianglesAndAddToVirtualScene(&secret_wall, "secret_wall");
+    for (int i = 1; i <= 22; i++)
+    {
+        BuildTrianglesAndAddToVirtualScene(&cube, "wall_" + std::to_string(i));
+    }
 
-    ObjModel pikachu_door((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
-    ComputeNormals(&pikachu_door);
-    BuildTrianglesAndAddToVirtualScene(&pikachu_door, "pikachu_door");
+    BuildTrianglesAndAddToVirtualScene(&cube, "secret_wall");
+    BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_door");
+    BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_ceiling");
 
     ObjModel tree((IOUtils::get_project_absolute_path() + "data/Tree/Tree.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Tree/").c_str());
     ComputeNormals(&tree);
@@ -453,7 +448,7 @@ int main(int argc, char* argv[])
 
     std::stack<glm::vec4> movements_fp;
     std::stack<glm::vec4> movements_fc;
-    std::vector<SceneObject> walls;
+    std::vector<SceneObject*> walls;
     bool pikachu_catched = false;
     bool pokeball_catched = false;
     bool pikachu_door_touched = false;
@@ -526,7 +521,7 @@ int main(int argc, char* argv[])
 
 
             bool collision = false;
-            for (SceneObject obj : walls)
+            for (SceneObject* obj : walls)
             {
                 if (Collisions::has_collision_point_plane(movement, obj))
                 {
@@ -565,7 +560,7 @@ int main(int argc, char* argv[])
         }
         else if (pause)
         {
-            glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"].pos.x,0.0f,g_VirtualScene["Ash_Ketchum"].pos.z,0.0f);
+            glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"]->get_position_x(),0.0f,g_VirtualScene["Ash_Ketchum"]->get_position_z(),0.0f);
             // lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset)
 
             float r = g_CameraDistance;
@@ -615,9 +610,9 @@ int main(int argc, char* argv[])
             movement.y = 0.80f;
 
             bool collision = false;
-            for (SceneObject obj : walls)
+            for (SceneObject* obj : walls)
             {
-                if (pikachu_catched && obj.name == "secret_wall")
+                if (pikachu_catched && obj->get_name() == "secret_wall")
                     continue;
 
                 if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], obj))
@@ -626,7 +621,8 @@ int main(int argc, char* argv[])
                     fp_camera_position_c = movements_fp.top();
                     movements_fp.pop();
 
-                    g_VirtualScene["Ash_Ketchum"].undo();
+                    g_VirtualScene["Ash_Ketchum"]->undo();
+
                     collision = true;
                     break;
                 }
@@ -643,7 +639,7 @@ int main(int argc, char* argv[])
                     fp_camera_position_c = movements_fp.top();
                     movements_fp.pop();
 
-                    g_VirtualScene["Ash_Ketchum"].undo();
+                    g_VirtualScene["Ash_Ketchum"]->undo();
                     collision = true;
                 }
             }
@@ -740,8 +736,8 @@ int main(int argc, char* argv[])
         DrawVirtualObject("Ash_Ketchum");
         //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
         //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
-        g_VirtualScene["Ash_Ketchum"].apply(model);
-        g_VirtualScene["Ash_Ketchum"].pos = {fp_camera_position_c.x,-1.4f,fp_camera_position_c.z, 1.0f};
+        g_VirtualScene["Ash_Ketchum"]->apply(model);
+        //g_VirtualScene["Ash_Ketchum"]->set_position(fp_camera_position_c.x,-1.4f,fp_camera_position_c.z);
         //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
 
@@ -750,7 +746,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, TREE);
         DrawVirtualObject("Tree");
-        g_VirtualScene["Tree"].apply(model);
+        g_VirtualScene["Tree"]->apply(model);
 
         // WALLS
         model = Matrix_Translate(0.0f, 1.f, 19.99f)
@@ -759,22 +755,22 @@ int main(int argc, char* argv[])
         //* Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane1");
-        g_VirtualScene["plane1"].apply(model);
+        DrawVirtualObject("wall_23");
+        g_VirtualScene["wall_23"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane1"]);
+            walls.push_back(g_VirtualScene["wall_23"]);
 
         model = Matrix_Translate(0.0f, 1.f, -19.99f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane2");
-        g_VirtualScene["plane2"].apply(model);
+        DrawVirtualObject("wall_24");
+        g_VirtualScene["wall_24"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane2"]);
+            walls.push_back(g_VirtualScene["wall_24"]);
 
 
         model = Matrix_Translate(19.99f, 1.f, 0.0f)
@@ -783,11 +779,11 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane3");
-        g_VirtualScene["plane3"].apply(model);
+        DrawVirtualObject("wall_25");
+        g_VirtualScene["wall_25"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane3"]);
+            walls.push_back(g_VirtualScene["wall_25"]);
 
 
 
@@ -797,11 +793,11 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, WALL);
-        DrawVirtualObject("plane4");
-        g_VirtualScene["plane4"].apply(model);
+        DrawVirtualObject("wall_26");
+        g_VirtualScene["wall_26"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane4"]);
+            walls.push_back(g_VirtualScene["wall_26"]);
 
         model = Matrix_Translate(8.75f,0.0f,5.25f)
                 * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 1.0f)
@@ -811,8 +807,8 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, POKEBALL);
         DrawVirtualObject("Pokeball");
-        g_VirtualScene["Pokeball"].pos = {8.75f,0.0f,5.25f, 1.0f};
-        g_VirtualScene["Pokeball"].apply(model);
+        g_VirtualScene["Pokeball"]->set_position(8.75f,0.0f,5.25f);
+        g_VirtualScene["Pokeball"]->apply(model);
 
         float charizard_current_time = (float)glfwGetTime();
         if (charizard_current_time - charizard_previous_time>= 0.04)
@@ -838,21 +834,21 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(20.5f, 10.5f, 20.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, PLANE);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("floor");
+        g_VirtualScene["floor"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["floor"]);
 
 // Desenhamos o plano do ceu
         model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(20.0f, 10.0f, 20.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("sky_5");
+        g_VirtualScene["sky_5"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["sky_5"]);
 
 
 /// Desenha charizard
@@ -863,7 +859,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, CHARIZARD);
         DrawVirtualObject("Charizard");
-        g_VirtualScene["Charizard"].apply(model);
+        g_VirtualScene["Charizard"]->apply(model);
 
         if (!pikachu_catched)
         {
@@ -873,7 +869,7 @@ int main(int argc, char* argv[])
             glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
             glUniform1i(object_id_uniform, PIKACHU);
             DrawVirtualObject("Pikachu");
-            g_VirtualScene["Pikachu"].apply(model);
+            g_VirtualScene["Pikachu"]->apply(model);
         }
 
         //Wall from Z 3.5 to z 10.5
@@ -881,121 +877,121 @@ int main(int argc, char* argv[])
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_1");
+        g_VirtualScene["wall_1"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_1"]);
 
         //Wall from X 3.5 Z 0 to z 7
         model = Matrix_Translate(3.5f,1.0f,3.5f)
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_2");
+        g_VirtualScene["wall_2"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_2"]);
 
         //Wall from X -7 Z 0 to z -7
         model = Matrix_Translate(-7.0f,1.0f,-3.5f)
                 *Matrix_Scale(0.5f, 2.5f, 7.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_3");
+        g_VirtualScene["wall_3"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_3"]);
 
         //Wall from Z 0 X -3.5 to Z 3.5
         model = Matrix_Translate(-3.5f,1.0f,1.750f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_4");
+        g_VirtualScene["wall_4"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_4"]);
 
         //Wall from Z 3.5 X -7 to Z 7
         model = Matrix_Translate(-7.0f,1.0f,5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_5");
+        g_VirtualScene["wall_5"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_5"]);
 
         //Wall from Z 3.5 X 7 to Z 7
         model = Matrix_Translate(7.0f,1.0f,5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_6");
+        g_VirtualScene["wall_6"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_6"]);
 
         //Wall from Z -3.5 X 3.5 to Z -7
         model = Matrix_Translate(3.5f,1.0f,-5.25f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_7");
+        g_VirtualScene["wall_7"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_7"]);
 
         //Wall from Z 0 X 7 to Z -3.5
         model = Matrix_Translate(7.0f,1.0f,-1.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_8");
+        g_VirtualScene["wall_8"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_8"]);
 
         //Wall from Z 7 X -3.5 to Z 10.5
         model = Matrix_Translate(-3.5f,1.0f,8.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_9");
+        g_VirtualScene["wall_9"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_9"]);
 
         //Wall from Z 0 to Z -3.5
         model = Matrix_Translate(0.0f,1.0f,-1.75f)
                 *Matrix_Scale(0.5f, 2.5f, 3.50f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_10");
+        g_VirtualScene["wall_10"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_10"]);
 
         //Wall from X 0 to X 10.5
         model = Matrix_Translate(5.25f,1.0f,0.0f)
                 *Matrix_Scale(10.50f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_11");
+        g_VirtualScene["wall_11"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_11"]);
 
         //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
         if (!pikachu_catched)
@@ -1005,8 +1001,8 @@ int main(int argc, char* argv[])
             glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
             glUniform1i(object_id_uniform, XCUBE);
             DrawVirtualObject("secret_wall");
-            g_VirtualScene["secret_wall"].apply(model);
-            g_VirtualScene["secret_wall"].name = "secret_wall";
+            g_VirtualScene["secret_wall"]->apply(model);
+            g_VirtualScene["secret_wall"]->set_name("secret_wall");
 
             if (first_run)
                 walls.push_back(g_VirtualScene["secret_wall"]);
@@ -1020,78 +1016,78 @@ int main(int argc, char* argv[])
                 *Matrix_Scale(7.0f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_12");
+        g_VirtualScene["wall_12"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_12"]);
 
         //Wall from X 0 Z -3.5 to X -3.5
         model = Matrix_Translate(-1.75f,1.0f,-3.5f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_13");
+        g_VirtualScene["wall_13"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_13"]);
 
         //Wall from X 3.5 Z -3.5 to X 7
         model = Matrix_Translate(5.25f,1.0f,-3.5f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_14");
+        g_VirtualScene["wall_14"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_14"]);
 
         //Wall from X 3.5 Z -7 to X 7
         model = Matrix_Translate(5.25f,1.0f,-7.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_15");
+        g_VirtualScene["wall_15"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_15"]);
 
         //Wall from X -7 to X -10.5
         model = Matrix_Translate(-8.75f,1.0f,0.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_16");
+        g_VirtualScene["wall_16"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_16"]);
 
         //Wall from X 7 Z 7 to X 10.5
         model = Matrix_Translate(8.75f,1.0f,7.0f)
                 *Matrix_Scale(3.5f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_17");
+        g_VirtualScene["wall_17"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_17"]);
 
         //Wall from X 0 Z 3.5 to X -7
         model = Matrix_Translate(-3.5f,1.0f,3.5f)
                 *Matrix_Scale(7.0f, 2.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_18");
+        g_VirtualScene["wall_18"]->apply(model);
 
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_18"]);
 
         //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
 
@@ -1108,19 +1104,19 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XDOOR);
         DrawVirtualObject("pikachu_door");
-        g_VirtualScene["pikachu_door"].apply(model);
-        g_VirtualScene["pikachu_door"].name = "pikachu_door";
+        g_VirtualScene["pikachu_door"]->apply(model);
+        g_VirtualScene["pikachu_door"]->set_name("pikachu_door");
 
         //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
         model = Matrix_Translate(8.625f,1.5f,-1.5f)
                 *Matrix_Scale(3.75f, 0.5f, 3.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XDOOR);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("pikachu_ceiling");
+        g_VirtualScene["pikachu_ceiling"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["pikachu_ceiling"]);
         // Bound walls
 
         // +X
@@ -1128,44 +1124,44 @@ int main(int argc, char* argv[])
                 *Matrix_Scale(0.5f, 6.5f, 21.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_19");
+        g_VirtualScene["wall_19"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_19"]);
 
         // -x
         model = Matrix_Translate(-10.75f,5.0f,0.0f)
                 *Matrix_Scale(0.5f, 6.5f, 21.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, ZCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_20");
+        g_VirtualScene["wall_20"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_20"]);
 
         // Z
         model = Matrix_Translate(0.0f,5.0f,10.75f)
                 *Matrix_Scale(21.0f, 6.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_21");
+        g_VirtualScene["wall_21"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_21"]);
 
         // -Z
         model = Matrix_Translate(0.0f,5.0f,-10.75f)
                 *Matrix_Scale(21.0f, 6.5f, 0.5f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, XCUBE);
-        DrawVirtualObject("cube");
-        g_VirtualScene["cube"].apply(model);
+        DrawVirtualObject("wall_22");
+        g_VirtualScene["wall_22"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["cube"]);
+            walls.push_back(g_VirtualScene["wall_22"]);
 
 
         // Background sky
@@ -1174,22 +1170,22 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("sky_1");
+        g_VirtualScene["sky_1"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["sky_1"]);
 
         model = Matrix_Translate(0.0f, 4.0f, -20.0f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("sky_2");
+        g_VirtualScene["sky_2"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["sky_2"]);
 
         model = Matrix_Translate(20.0f, 4.0f, 0.0f)
                 * Matrix_Rotate_Y(PI/2)
@@ -1197,11 +1193,11 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("sky_3");
+        g_VirtualScene["sky_3"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["sky_3"]);
 
         model = Matrix_Translate(-20.0f, 4.0f, 0.0f)
                 * Matrix_Rotate_Y(PI/2)
@@ -1209,11 +1205,11 @@ int main(int argc, char* argv[])
                 * Matrix_Scale(20.0f, 0.0f, 5.0f);
         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(object_id_uniform, SKY);
-        DrawVirtualObject("plane");
-        g_VirtualScene["plane"].apply(model);
+        DrawVirtualObject("sky_4");
+        g_VirtualScene["sky_4"]->apply(model);
 
         if (first_run)
-            walls.push_back(g_VirtualScene["plane"]);
+            walls.push_back(g_VirtualScene["sky_4"]);
 
         if (pause)
             TextRendering_ShowPause(window);
@@ -1680,15 +1676,14 @@ void DrawVirtualObject(const char* object_name)
     // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
     // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
     // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
-    glBindVertexArray(g_VirtualScene[object_name].vertex_array_object_id);
+    glBindVertexArray(g_VirtualScene[object_name]->get_vertex_array_object());
 
     // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
     // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
-    glm::vec3 bbox_min = g_VirtualScene[object_name].bbox_min;
-    glm::vec3 bbox_max = g_VirtualScene[object_name].bbox_max;
+    BoundingBox* bbox = g_VirtualScene[object_name]->get_bounding_box();
 
-    glUniform4f(bbox_min_uniform, bbox_min.x, bbox_min.y, bbox_min.z, 1.0f);
-    glUniform4f(bbox_max_uniform, bbox_max.x, bbox_max.y, bbox_max.z, 1.0f);
+    glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
+    glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
 
     // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
     // apontados pelo VAO como linhas. Veja a definição de
@@ -1696,10 +1691,10 @@ void DrawVirtualObject(const char* object_name)
     // a documentação da função glDrawElements() em
     // http://docs.gl/gl3/glDrawElements.
     glDrawElements(
-        g_VirtualScene[object_name].rendering_mode,
-        g_VirtualScene[object_name].num_indices,
+        g_VirtualScene[object_name]->get_rendering_mode(),
+        g_VirtualScene[object_name]->get_total_indexes(),
         GL_UNSIGNED_INT,
-        (void*)(g_VirtualScene[object_name].first_index * sizeof(GLuint))
+        (void*) (g_VirtualScene[object_name]->get_first_index() * sizeof(GLuint))
     );
 
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
@@ -1882,15 +1877,28 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
 
         size_t last_index = indices.size() - 1;
 
+        /*
         SceneObject theobject;
         theobject.name           = model->shapes[shape].name;
         theobject.first_index    = first_index; // Primeiro índice
         theobject.num_indices    = last_index - first_index + 1; // Número de indices
         theobject.rendering_mode = GL_TRIANGLES;       // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
         theobject.vertex_array_object_id = vertex_array_object_id;
+        */
 
-        theobject.bbox_min = bbox_min;
-        theobject.bbox_max = bbox_max;
+        SceneObject* theobject = (new SceneObject::Builder())
+            ->name(model->shapes[shape].name)
+            ->first_index(first_index)
+            ->total_indexes(last_index - first_index + 1)
+            ->rendering_mode(GL_TRIANGLES)
+            ->vertex_array_object(vertex_array_object_id)
+            ->bbox_min(bbox_min)
+            ->bbox_max(bbox_max)
+            ->build();
+
+
+        //theobject.bbox_min = bbox_min;
+        //theobject.bbox_max = bbox_max;
 
         //g_VirtualScene[model->shapes[shape].name] = theobject;
         g_VirtualScene[obj_name] = theobject;
