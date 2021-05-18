@@ -32,11 +32,19 @@
 #include "pokemaze/models/camera/FixedCamera.hpp"
 #include "pokemaze/models/camera/FreeCamera.hpp"
 #include "pokemaze/models/Point.hpp"
+#include "pokemaze/engine/Engine.hpp"
+#include "pokemaze/engine/projection/OrthographicProjection.hpp"
+#include "pokemaze/engine/projection/PerspectiveProjection.hpp"
+#include "pokemaze/engine/projection/Projection.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
+
+#define NEAR_PLANE -0.1f
+#define FAR_PLANE -150.0f
+#define CAMERA_DISTANCE 3.0f
 
 #define SPHERE 0
 #define POKEBALL  1
@@ -146,8 +154,6 @@ float g_AngleZ = 0.0f;
 // estes são acessados.
 std::map<std::string, SceneObject*> g_VirtualScene;
 
-// Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
-float g_ScreenRatio = 1.0f;
 
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
@@ -168,7 +174,7 @@ float g_PauseModeCameraPhi = 0.0f;
 float g_CameraDistance = 3.0f; // Distância da câmera para a origem
 
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
-bool g_UsePerspectiveProjection = true;
+//bool g_UsePerspectiveProjection = true;
 
 
 bool FREE_MODE = true;
@@ -178,6 +184,9 @@ float g_offset_up = 0.0f;
 float g_offset_right = 0.0f;
 float g_offset_x_charizard = 0.0f;
 float g_offset_z_charizard = 0.0f;
+
+float g_screen_width = 800;
+float g_screen_height = 600;
 
 
 //Variáveis para controle do time step conforme visto na aula de Animações
@@ -189,39 +198,22 @@ float delta_time = (float)(current_time - previous_time);
 bool w_key = false, a_key = false, s_key = false, d_key = false;
 bool first_run = true;
 
+Projection* g_projection;
+
 
 int main(int argc, char* argv[])
 {
-    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
-    // sistema operacional, onde poderemos renderizar com OpenGL.
-    int success = glfwInit();
-    if (!success)
-    {
-        fprintf(stderr, "ERROR: glfwInit() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(ErrorCallback);
-
-    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    Engine::start();
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "PokeMaze", NULL, NULL);
+    window = glfwCreateWindow(g_screen_width, g_screen_height, "PokeMaze", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
         fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
         std::exit(EXIT_FAILURE);
     }
+
+    g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
 
     Display* display = new Display(window);
 
@@ -233,7 +225,7 @@ int main(int argc, char* argv[])
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, g_screen_width, g_screen_height); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);
@@ -463,41 +455,10 @@ int main(int argc, char* argv[])
             view = fixed_camera->get_view_matrix();
         }
 
-// Agora computamos a matriz de Projeção.
-        glm::mat4 projection;
-
-// Note que, no sistema de coordenadas da câmera, os planos near e far
-// estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-        float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -150.0f; // Posição do "far plane"
-
-        if (g_UsePerspectiveProjection)
-        {
-            // Projeção Perspectiva.
-            // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = PI / 3.0f;
-            projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
-        }
-        else
-        {
-            // Projeção Ortográfica.
-            // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
-            // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
-            // Para simular um "zoom" ortográfico, computamos o valor de "t"
-            // utilizando a variável g_CameraDistance.
-
-            float t = 1.5f*g_CameraDistance/2.5f;
-            float b = -t;
-            float r = t*g_ScreenRatio;
-            float l = -r;
-            projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
-        }
-
         Renderer::render_view(view);
-        Renderer::render_projection(projection);
+        Renderer::render_projection(g_projection->get_projection_matrix());
 
         glm::mat4 model = Matrix_Identity();
-
 /// Desenha jogador
         model = Matrix_Translate(fixed_camera->get_x(),-1.4f,fixed_camera->get_z())
                 * Matrix_Rotate_Y(g_player_direction);
@@ -948,9 +909,8 @@ int main(int argc, char* argv[])
         if (pause)
             display->show_pause();
 
-
         display->show_controls();
-        display->show_projection(g_UsePerspectiveProjection);
+        display->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
         display->show_fps();
 
         glfwSwapBuffers(window);
@@ -961,6 +921,7 @@ int main(int argc, char* argv[])
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
+    Engine::shutdown();
 
     PlaySound(NULL, NULL,SND_SYNC);
 
@@ -995,7 +956,10 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     //
     // O cast para float é necessário pois números inteiros são arredondados ao
     // serem divididos!
-    g_ScreenRatio = (float)width / height;
+    //g_ScreenRatio = (float)width / height;
+    g_screen_width = width;
+    g_screen_height = height;
+    g_projection->set_screen_dimensions(width, height);
 }
 
 
@@ -1529,13 +1493,15 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
     if (key == GLFW_KEY_P && action == GLFW_PRESS)
     {
-        g_UsePerspectiveProjection = true;
+        g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
+        //g_UsePerspectiveProjection = true;
     }
 
     // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
     if (key == GLFW_KEY_O && action == GLFW_PRESS)
     {
-        g_UsePerspectiveProjection = false;
+        g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height, CAMERA_DISTANCE);
+        //g_UsePerspectiveProjection = false;
     }
 
     if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS)
