@@ -28,11 +28,29 @@
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/engine/text/TextRender.hpp"
 #include "pokemaze/engine/Renderer.hpp"
+#include "pokemaze/models/camera/LookAtCamera.hpp"
+#include "pokemaze/models/camera/FixedCamera.hpp"
+#include "pokemaze/models/camera/FreeCamera.hpp"
+#include "pokemaze/models/Point.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
 #define PLAYER_SPEED 7.0f
 #define CAMERA_SPEED 10.0f
+
+#define SPHERE 0
+#define POKEBALL  1
+#define PLANE  2
+#define SKY 3
+#define PLAYER 4
+#define CHARIZARD 5
+#define PIKACHU 6
+#define WALL 7
+#define CUBE 8
+#define ZCUBE 9
+#define XCUBE 10
+#define XDOOR 11
+#define TREE 12
 
 struct ObjModel
 {
@@ -62,38 +80,6 @@ struct ObjModel
 
 
 /// --- BEZIER ---
-//Point class for taking the points
-class Point
-{
-public:
-    float x, y;
-    Point(float x, float y)
-    {
-        this->x = x;
-        this->y = y;
-    }
-    Point() {};
-    void setxy(float x2, float y2)
-    {
-        x = x2;
-        y = y2;
-    }
-    //operator overloading for '=' sign
-    const Point & operator=(const Point &rPoint)
-    {
-        x = rPoint.x;
-        y = rPoint.y;
-        return *this;
-    }
-
-    //std::ostream& operator<<(std::ostream& outs, const Point &p)
-    friend std::ostream& operator<<(std::ostream &outs, const Point &p)
-    {
-        return outs << "(" << p.x << "," << p.y << ")";
-    }
-
-};
-
 int factorial(int n)
 {
     if (n<=1)
@@ -113,17 +99,17 @@ float binomial_coff(float n,float k)
 //Calculate the bezier point
 Point calculate_cubic_bezier(Point P0, Point P1, Point P2, Point P3, double t)
 {
-    Point P;
-    P.x = pow((1 - t), 3) * P0.x + 3 * t * pow((1 -t), 2) * P1.x + 3 * (1-t) * pow(t, 2)* P2.x + pow (t, 3)* P3.x;
-    P.y = pow((1 - t), 3) * P0.y + 3 * t * pow((1 -t), 2) * P1.y + 3 * (1-t) * pow(t, 2)* P2.y + pow (t, 3)* P3.y;
 
-    return P;
+    float x = pow((1 - t), 3) * P0.get_x() + 3 * t * pow((1 -t), 2) * P1.get_x() + 3 * (1-t) * pow(t, 2)* P2.get_x() + pow (t, 3)* P3.get_x();
+    float y = pow((1 - t), 3) * P0.get_y() + 3 * t * pow((1 -t), 2) * P1.get_y() + 3 * (1-t) * pow(t, 2)* P2.get_y() + pow (t, 3)* P3.get_y();
+
+    return Point(P0.get_name() + P1.get_name(), x, y, 0.0f);
 }
 
-Point P0 = Point(0.0f, 0.0f);
-Point P1 = Point(0.5f, 0.1f);
-Point P2 = Point(1.0f, 0.2f);
-Point P3 = Point(1.0f, 1.0f);
+Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
+Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
+Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
+Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
 /// --- FIM BEZIER ---
 
 
@@ -148,6 +134,11 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
+
+// Ângulos que controlam a pokebola
+float g_AngleX = 0.0f;
+float g_AngleY = 0.0f;
+float g_AngleZ = 0.0f;
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
 // (map).  Veja dentro da função BuildTrianglesAndAddToVirtualScene() como que são incluídos
@@ -176,21 +167,16 @@ float g_PauseModeCameraTheta = 0.0f;
 float g_PauseModeCameraPhi = 0.0f;
 float g_CameraDistance = 3.0f; // Distância da câmera para a origem
 
-// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
-float g_AngleX = 0.0f;
-float g_AngleY = 0.0f;
-float g_AngleZ = 0.0f;
-
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
 
 // Variável que controla se o texto informativo será mostrado na tela.
-bool g_ShowInfoText = true;
+//bool g_ShowInfoText = true;
 
 
 
 // Número de texturas carregadas pela função LoadTextureImage()
-GLuint g_NumLoadedTextures = 0;
+//GLuint g_NumLoadedTextures = 0;
 
 glm::vec4 camera_w_vector;
 glm::vec4 camera_u_vector;
@@ -346,14 +332,15 @@ int main(int argc, char* argv[])
     double param_t = 2.0;
     bool bezier_forward = true;
 
-    glm::vec4 lookat_camera_position_c;
+    //glm::vec4 lookat_camera_position_c;
     glm::vec4 free_camera_position_c  = glm::vec4(10.0f,5.60f,-10.25f,1.0f);
     glm::vec4 fp_camera_position_c = glm::vec4(-1.75f,0.0f,8.75f,1.0f);
-    // FreeCamera* free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
-    // LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
-    // FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.0f, 8.75f);
 
-    std::stack<glm::vec4> movements_fp;
+    FreeCamera* free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
+    LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
+    FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.0f, 8.75f);
+
+    //std::stack<glm::vec4> movements_fp;
     std::stack<glm::vec4> movements_fc;
     std::vector<SceneObject*> walls;
     bool pikachu_catched = false;
@@ -397,26 +384,39 @@ int main(int argc, char* argv[])
             camera_w_vector = camera_w_vector / norm(camera_w_vector);
             camera_u_vector = camera_u_vector / norm(camera_u_vector);
 
-            if (w_key == true)
-                movement = free_camera_position_c -camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_up(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
-            if (a_key == true)
-                movement = free_camera_position_c  -camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_left(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
-            if (s_key == true)
-                movement = free_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_down(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
-            if (d_key == true)
-                movement = free_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_right(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+            free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
 
-            // free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
-            // if (w_key)
-            //      free_camera->move_up(CAMERA_SPEED * delta_time);
-            //
+            if (w_key || a_key || s_key || d_key)
+            {
+                if (w_key == true)
+                {
+                    free_camera->move_up(CAMERA_SPEED * delta_time);
+                    //movement = free_camera_position_c -camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_up(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+                }
+                if (a_key == true)
+                {
+                    free_camera->move_left(CAMERA_SPEED * delta_time);
+                    //movement = free_camera_position_c  -camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_left(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+                }
+                if (s_key == true)
+                {
+                    free_camera->move_down(CAMERA_SPEED * delta_time);
+                    //movement = free_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time; // free_camera->move_down(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+                }
 
+                if (d_key == true)
+                {
+                    free_camera->move_right(CAMERA_SPEED * delta_time);
+                    //movement = free_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time; // free_camera->move_right(g_FreeModeCameraPhi, g_FreeModeCameratheta, CAMERA_SPEED * delta_time);
+                }
+            }
 
             bool collision = false;
             for (SceneObject* obj : walls)
             {
-                if (Collisions::has_collision_point_plane(movement, obj))
+                if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
                 {
+                    free_camera->undo();
                     // camera.undo(); // 18x
                     movements_fc.pop();
                     movements_fc.pop();
@@ -453,9 +453,9 @@ int main(int argc, char* argv[])
         else if (pause)
         {
             glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"]->get_position_x(),0.0f,g_VirtualScene["Ash_Ketchum"]->get_position_z(),0.0f);
-            // lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset)
+            lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
 
-            float r = g_CameraDistance;
+            /*float r = g_CameraDistance;
             float x = r*cos(g_PauseModeCameraPhi)*sin(g_PauseModeCameraTheta);
             float y = r*sin(g_PauseModeCameraPhi);
             float z = r*cos(g_PauseModeCameraPhi)*cos(g_PauseModeCameraTheta);
@@ -463,12 +463,14 @@ int main(int argc, char* argv[])
             lookat_camera_position_c  = glm::vec4(x,y,z,1.0f) + offset;
             glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f) + offset;
             camera_view_vector = camera_lookat_l - lookat_camera_position_c;
+            */
         }
         else
         {
             g_player_direction = -1*g_PlayerCameraTheta;
 
-            // fixed_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta);
+            fixed_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta);
+            /*
             float y = sin(g_PlayerCameraPhi);
             float z = cos(g_PlayerCameraPhi)*cos(g_PlayerCameraTheta);
             float x = cos(g_PlayerCameraPhi)*sin(g_PlayerCameraTheta);
@@ -480,26 +482,30 @@ int main(int argc, char* argv[])
             camera_u_vector = crossproduct(camera_up_vector, camera_w_vector);
             camera_w_vector = camera_w_vector / norm(camera_w_vector);
             camera_u_vector = camera_u_vector / norm(camera_u_vector);
-
+            */
 
             if (w_key == true)
-            {// fixed_camera->move_up(CAMERA_SPEED * delta_time);
-                movement = fp_camera_position_c - camera_w_vector * CAMERA_SPEED * delta_time;
+            {
+                fixed_camera->move_up(CAMERA_SPEED * delta_time);
+                //movement = fp_camera_position_c - camera_w_vector * CAMERA_SPEED * delta_time;
             }
             if (a_key == true)
-            {// fixed_camera->move_down(CAMERA_SPEED * delta_time);
-                movement = fp_camera_position_c - camera_u_vector * CAMERA_SPEED * delta_time;
+            {
+                fixed_camera->move_down(CAMERA_SPEED * delta_time);
+                //movement = fp_camera_position_c - camera_u_vector * CAMERA_SPEED * delta_time;
             }
             if (s_key == true)
-            {// fixed_camera->move_left(CAMERA_SPEED * delta_time);
-                movement = fp_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
+            {
+                fixed_camera->move_left(CAMERA_SPEED * delta_time);
+                //movement = fp_camera_position_c + camera_w_vector * CAMERA_SPEED * delta_time;
             }
             if (d_key == true)
-            {// fixed_camera->move_right(CAMERA_SPEED * delta_time);
-                movement = fp_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
+            {
+                fixed_camera->move_right(CAMERA_SPEED * delta_time);
+                //movement = fp_camera_position_c + camera_u_vector * CAMERA_SPEED * delta_time;
             }
 
-            movement.y = 0.80f;
+            //movement.y = 0.80f;
 
             bool collision = false;
             for (SceneObject* obj : walls)
@@ -508,10 +514,11 @@ int main(int argc, char* argv[])
                     continue;
 
                 if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], obj))
-                {// fixed_camera->undo();
-                    movements_fp.pop();
+                {
+                    fixed_camera->undo();
+                    /*movements_fp.pop();
                     fp_camera_position_c = movements_fp.top();
-                    movements_fp.pop();
+                    movements_fp.pop();*/
 
                     g_VirtualScene["Ash_Ketchum"]->undo();
 
@@ -526,23 +533,21 @@ int main(int argc, char* argv[])
                 {
                     pikachu_door_touched = true;
 
-                    // fixed_camera->undo();
-                    movements_fp.pop();
+                    fixed_camera->undo();
+                    /*movements_fp.pop();
                     fp_camera_position_c = movements_fp.top();
-                    movements_fp.pop();
+                    movements_fp.pop();*/
 
                     g_VirtualScene["Ash_Ketchum"]->undo();
                     collision = true;
                 }
             }
 
-            if (!collision)
+            /*if (!collision)
             {
                 fp_camera_position_c = movement;
                 movements_fp.push(fp_camera_position_c);
-            }
-            // if (collision)
-                //fixed_camera.undo();
+            }*/
 
 
             if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["Pikachu"]))
@@ -560,11 +565,20 @@ int main(int argc, char* argv[])
         glm::mat4 view;
 
         if(FREE_MODE && !pause)
-            view = Matrix_Camera_View(free_camera_position_c, camera_view_vector, camera_up_vector); //free_camera->get_view_matrix();
+        {
+            //view = Matrix_Camera_View(free_camera_position_c, camera_view_vector, camera_up_vector);
+            view = free_camera->get_view_matrix();
+        }
         else if (pause)
-            view = Matrix_Camera_View(lookat_camera_position_c, camera_view_vector, camera_up_vector); //lookat_camera->get_view_matrix();
+        {
+            //view = Matrix_Camera_View(lookat_camera_position_c, camera_view_vector, camera_up_vector);
+            view = lookat_camera->get_view_matrix();
+        }
         else
-            view = Matrix_Camera_View(fp_camera_position_c, camera_view_vector, camera_up_vector); //fixed_camera->get_view_matrix();
+        {
+            //view = Matrix_Camera_View(fp_camera_position_c, camera_view_vector, camera_up_vector);
+            view = fixed_camera->get_view_matrix();
+        }
 
 // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
@@ -596,51 +610,21 @@ int main(int argc, char* argv[])
             projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
-
-
-// Enviamos as matrizes "view" e "projection" para a placa de vídeo
-// (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
-// efetivamente aplicadas em todos os pontos.
         Renderer::render_view(view);
         Renderer::render_projection(projection);
-        //glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
-        //glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
-
-#define SPHERE 0
-#define POKEBALL  1
-#define PLANE  2
-#define SKY 3
-#define PLAYER 4
-#define CHARIZARD 5
-#define PIKACHU 6
-#define WALL 7
-#define CUBE 8
-#define ZCUBE 9
-#define XCUBE 10
-#define XDOOR 11
-#define TREE 12
 
         glm::mat4 model = Matrix_Identity();
 
 /// Desenha jogador
-        model = Matrix_Translate(fp_camera_position_c.x,-1.4f,fp_camera_position_c.z)
+        model = Matrix_Translate(fixed_camera->get_x(),-1.4f,fixed_camera->get_z())
                 * Matrix_Rotate_Y(g_player_direction);
-        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        //glUniform1i(object_id_uniform, PLAYER);
         Renderer::render_model(model, PLAYER);
-
         DrawVirtualObject("Ash_Ketchum");
-        //g_VirtualScene["Ash_Ketchum"].rotate_y(g_player_direction);
-        //g_VirtualScene["Ash_Ketchum"].translate(fp_camera_position_c.x,fp_camera_position_c.y-2.1f,fp_camera_position_c.z);
         g_VirtualScene["Ash_Ketchum"]->apply(model);
-        //g_VirtualScene["Ash_Ketchum"]->set_position(fp_camera_position_c.x,-1.4f,fp_camera_position_c.z);
-        //g_VirtualScene["Ash_Ketchum"].rotateY = g_player_direction;
 
 
         model = Matrix_Translate(8.6f, -1.4f, 8.8f)
             * Matrix_Scale(0.5f, 0.5f, 0.5f);
-        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        //glUniform1i(object_id_uniform, TREE);
         Renderer::render_model(model, TREE);
 
         DrawVirtualObject("Tree");
@@ -724,8 +708,8 @@ int main(int argc, char* argv[])
 
             Point p = calculate_cubic_bezier(P0, P1, P2, P3, param_t);
 
-            g_offset_x_charizard = p.x;
-            g_offset_z_charizard = p.y;
+            g_offset_x_charizard = p.get_x();
+            g_offset_z_charizard = p.get_y();
             charizard_previous_time = charizard_current_time;
         }
 
@@ -1695,12 +1679,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         if(FREE_MODE)
             printf("Freemode: True\n");
         else printf("Freemode: False\n");
-    }
-
-    // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        g_ShowInfoText = !g_ShowInfoText;
     }
 
     if (key == GLFW_KEY_W)

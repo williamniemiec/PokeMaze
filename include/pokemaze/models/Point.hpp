@@ -15,7 +15,7 @@ public:
 public:
     void translate(float x, float y, float z);
     std::string get_name();
-    float get_position_x();
-    float get_position_y();
-    float get_position_z();
+    float get_x();
+    float get_y();
+    float get_z();
 };

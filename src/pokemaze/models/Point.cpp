@@ -22,17 +22,17 @@ std::string Point::get_name()
     return name;
 }
 
-float Point::get_position_x()
+float Point::get_x()
 {
     return position.x;
 }
 
-float Point::get_position_y()
+float Point::get_y()
 {
     return position.y;
 }
 
-float Point::get_position_z()
+float Point::get_z()
 {
     return position.z;
 }

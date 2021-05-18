@@ -18,4 +18,5 @@ public:
      void move_down(float offset);
      void move_left(float offset);
      void move_right(float offset);
+     glm::vec4 get_last_movement();
 };

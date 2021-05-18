@@ -5,6 +5,7 @@ FreeCamera::FreeCamera(std::string name, float x_up, float y_up, float z_up, flo
     : Camera(name, x_up, y_up, z_up, x, y, z)
 {
     movements = new std::stack<glm::vec4>();
+    movements->push(position);
 }
 
 void FreeCamera::look_to(float phi, float theta)
@@ -18,11 +19,12 @@ void FreeCamera::look_to(float phi, float theta)
 
 void FreeCamera::undo()
 {
-    int i = 0;
+    int i = 1;
 
     while (i <= 18 && i < (int) movements->size() - 1)
     {
         movements->pop();
+        i++;
     }
 
     position = movements->top();
@@ -79,4 +81,9 @@ void FreeCamera::move_right(float offset)
 
     position = movement;
     movements->push(movement);
+}
+
+glm::vec4 FreeCamera::get_last_movement()
+{
+    return movements->top();
 }
