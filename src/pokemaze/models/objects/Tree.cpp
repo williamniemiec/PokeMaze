@@ -3,7 +3,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
 Tree::Tree(std::string name, glm::vec4 position, std::string filename, std::string mtl_path, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode)
+        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode, get_textures())
 {
 }
 
@@ -19,4 +19,10 @@ Tree* Tree::create(std::string name, float x, float y, float z)
     );
 }
 
-
+std::vector<std::string> Tree::get_textures()
+{
+    return std::vector<std::string>({
+            IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg",
+            IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg"
+    });
+}

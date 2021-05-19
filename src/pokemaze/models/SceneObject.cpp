@@ -1,15 +1,18 @@
 #include "pokemaze/models/SceneObject.hpp"
 
+#include <regex>
 #include "pokemaze/util/algebra/Matrices.h"
 
 SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::string filename, std::string mtl_path,
-                         bool triangulate, GLenum rendering_mode)
+                         bool triangulate, GLenum rendering_mode,
+                         std::vector<std::string> textures)
 {
     this->name = name;
     this->position = position;
     this->rendering_mode = rendering_mode;
     this->vertex_array_object_id = -1;
+    this->textures = textures;
 
     if (!filename.empty()) // TEMP
     {
@@ -26,7 +29,8 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::vector<float> model_coefficients,
                          std::vector<float> normal_coefficients,
                          std::vector<float> texture_coefficients,
-                         std::vector<int> texture_id)
+                         std::vector<int> texture_id,
+                         std::vector<std::string> textures)
 {
     this->name = name;
     this->position = position;
@@ -46,6 +50,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->normal_coefficients = normal_coefficients;
     this->texture_coefficients = texture_coefficients;
     this->texture_id = texture_id;
+    this->textures = textures;
 
 
 
@@ -81,6 +86,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position, std::string filen
     this->materials = materials;
 }*/
 
+/*
 SceneObject::Builder::Builder()
 {
     _position.x = 1.0f;
@@ -137,6 +143,7 @@ SceneObject* SceneObject::Builder::build()
     return new SceneObject(_name, _position, _filename, _mtl_path,
                            _triangulate, _rendering_mode);
 }
+*/
 
 void SceneObject::undo()
 {
@@ -198,11 +205,12 @@ BoundingBox* SceneObject::get_bounding_box()
     return bounding_box;
 }
 
-
 void SceneObject::build()
 {
     if (attrib.normals.empty())
         compute_normals();
+
+    std::map<std::string, int> texture_mapping = generate_texture_mapping();
 
     for (size_t shape = 0; shape < shapes.size(); ++shape)
     {
@@ -221,8 +229,6 @@ void SceneObject::build()
 
             int id_material = shapes[shape].mesh.material_ids[int(triangle)];
 
-
-
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
                 tinyobj::index_t idx = shapes[shape].mesh.indices[3*triangle + vertex];
@@ -232,13 +238,11 @@ void SceneObject::build()
                 const float vx = attrib.vertices[3*idx.vertex_index + 0];
                 const float vy = attrib.vertices[3*idx.vertex_index + 1];
                 const float vz = attrib.vertices[3*idx.vertex_index + 2];
-                //printf("tri %d vert %d = (%.2f, %.2f, %.2f)\n", (int)triangle, (int)vertex, vx, vy, vz);
+
                 model_coefficients.push_back( vx ); // X
                 model_coefficients.push_back( vy ); // Y
                 model_coefficients.push_back( vz ); // Z
                 model_coefficients.push_back( 1.0f ); // W
-
-
 
                 bbox_min.x = std::min(bbox_min.x, vx);
                 bbox_min.y = std::min(bbox_min.y, vy);
@@ -246,11 +250,6 @@ void SceneObject::build()
                 bbox_max.x = std::max(bbox_max.x, vx);
                 bbox_max.y = std::max(bbox_max.y, vy);
                 bbox_max.z = std::max(bbox_max.z, vz);
-
-                // Inspecionando o código da tinyobjloader, o aluno Bernardo
-                // Sulzbach (2017/1) apontou que a maneira correta de testar se
-                // existem normais e coordenadas de textura no ObjModel é
-                // comparando se o índice retornado é -1. Fazemos isso abaixo.
 
                 if ( idx.normal_index != -1 )
                 {
@@ -274,27 +273,10 @@ void SceneObject::build()
 
                     if (id_material == -1)
                         texture_id.push_back(-1);
-                    else if (materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png"
-                             || materials[id_material].diffuse_texname == "Pikachu_B.png"
-                             || materials[id_material].diffuse_texname == "FitPokeLizardon.PNG"
-                             || materials[id_material].diffuse_texname == "3DPaz_fir-tree_leaves.jpg")
-                        texture_id.push_back(0);
-                    else if (materials[id_material].diffuse_texname == "PokeTra_Ash_face.png"
-                             || materials[id_material].diffuse_texname == "Pikachu_C.png"
-                             || materials[id_material].diffuse_texname == "FitPokeLizardonEyeIris.PNG"
-                             || materials[id_material].diffuse_texname == "3DPaz_fir-tree_trunk.jpg")
-                        texture_id.push_back(1);
-                    else if (materials[id_material].diffuse_texname == "trAsh_00_body_col.png"
-                             || materials[id_material].diffuse_texname == "Pikachu_E.png")
-                        texture_id.push_back(2);
-                    else if (materials[id_material].diffuse_texname == "trAsh_00_obj_col.png"
-                             || materials[id_material].diffuse_texname == "Pikachu_M.png")
-                        texture_id.push_back(3);
                     else
-                        texture_id.push_back(-1);
+                        texture_id.push_back(texture_mapping[materials[id_material].diffuse_texname]);
 
                     texture_id.push_back(-1);
-
                 }
             }
         }
@@ -307,6 +289,21 @@ void SceneObject::build()
         this->vertex_array_object_id = -1;
         this->bounding_box = new BoundingBox(bbox_min, bbox_max);
     }
+}
+
+std::map<std::string, int> SceneObject::generate_texture_mapping()
+{
+    std::map<std::string, int> texture_mapping;
+    std::regex filename_regex = std::regex("^.+(\\\\\\\\|\\/)");
+
+    for (int i = 0; i < (int) textures.size(); i++)
+    {
+        std::string filename = std::regex_replace(textures[i], filename_regex, "");
+
+        texture_mapping[filename] = i;
+    }
+
+    return texture_mapping;
 }
 
 // TODO: move to another class
@@ -398,8 +395,13 @@ SceneObject* SceneObject::create_copy()
 
     return new SceneObject(name, position, rendering_mode, first_index, total_indexes, bounding_box,
                            indexes, model_coefficients, normal_coefficients,
-                           texture_coefficients, texture_id);
+                           texture_coefficients, texture_id, textures);
 
+}
+
+std::vector<std::string> SceneObject::get_textures()
+{
+    return textures;
 }
 
 std::vector<GLuint> SceneObject::get_indexes()

@@ -22,8 +22,9 @@ public:
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
-    std::string  name;
+    std::string name;
     glm::vec4 position;
+    std::vector<std::string> textures;
     //std::string filename;
     //std::string mtl_path;
     //bool triangulate;
@@ -51,7 +52,8 @@ public:
 
 protected:
     SceneObject(std::string name, glm::vec4 position, std::string filename,
-                std::string mtl_path, bool triangulate, GLenum rendering_mode);
+                std::string mtl_path, bool triangulate, GLenum rendering_mode,
+                std::vector<std::string> textures);
 
 private:
     SceneObject(std::string name, glm::vec4 position,
@@ -61,7 +63,8 @@ private:
                 std::vector<GLuint> indexes,
                 std::vector<float> model_coefficients, std::vector<float> normal_coefficients,
                 std::vector<float> texture_coefficients,
-                std::vector<int> texture_id);
+                std::vector<int> texture_id,
+                std::vector<std::string> textures);
     /*SceneObject(std::string name, glm::vec4 position, std::string filename,
                 std::string mtl_path, bool triangulate, GLenum rendering_mode,
                 size_t first_index, size_t total_indexes, GLuint vertex_array_object_id,
@@ -71,7 +74,7 @@ private:
                 std::vector<int> texture_id, tinyobj::attrib_t attrib,
                 std::vector<tinyobj::shape_t> shapes, std::vector<tinyobj::material_t> materials);
 */
-
+/*
 public:
     class Builder
     {
@@ -94,7 +97,7 @@ public:
         SceneObject::Builder* triangulate(bool triangulate);
         SceneObject::Builder* rendering_mode(GLenum index);
         SceneObject* build();
-    };
+    };*/
 
 public:
     void undo();
@@ -119,6 +122,8 @@ public:
     std::vector<float> get_texture_coefficients();
     std::vector<int> get_textures_id();
 
+    std::vector<std::string> get_textures();
+
 private:
     void load(std::string filename, std::string mtl_path, bool triangulate);
 
@@ -128,5 +133,6 @@ private:
 
     // Constrói triângulos para futura renderização a partir de um ObjModel.
     void build();
+    std::map<std::string, int> generate_texture_mapping();
 
 };

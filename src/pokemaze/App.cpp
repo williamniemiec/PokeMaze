@@ -44,6 +44,7 @@
 #include "pokemaze/models/objects/Tree.hpp"
 #include "pokemaze/models/scene/Floor.hpp"
 #include "pokemaze/models/scene/Sky.hpp"
+#include "pokemaze/models/scene/Garage.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -214,20 +215,28 @@ int main(int argc, char* argv[])
     Renderer::LoadShadersFromFiles();
 
     Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
+
     Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/PokeTra_Ash_face.png").c_str(), 4);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_body_col.png").c_str(), 5);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_obj_col.png").c_str(), 6);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pokeball/ob0204_00.png").c_str(), 7);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_B.png").c_str(), 8);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_C.png").c_str(), 9);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_E.png").c_str(), 10);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_M.png").c_str(), 11);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png").c_str(), 12);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png").c_str(), 13);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/bricks.jpg").c_str(), 14);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
+
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
 
@@ -269,13 +278,13 @@ int main(int argc, char* argv[])
     Renderer::render_object(wall);
     g_VirtualScene["secret_wall"] = wall;
 
-    wall = wall->create_copy();
-    Renderer::render_object(wall);
-    g_VirtualScene["pikachu_door"] = wall;
+    SceneObject* garage = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
+    Renderer::render_object(garage);
+    g_VirtualScene["pikachu_door"] = garage;
 
-    wall = wall->create_copy();
-    Renderer::render_object(wall);
-    g_VirtualScene["pikachu_ceiling"] = wall;
+    garage = garage->create_copy();
+    Renderer::render_object(garage);
+    g_VirtualScene["pikachu_ceiling"] = garage;
 
     Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
     Renderer::render_object(charizard);

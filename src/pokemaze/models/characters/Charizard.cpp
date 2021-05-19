@@ -3,7 +3,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
 Charizard::Charizard(std::string name, glm::vec4 position, std::string filename, std::string mtl_path, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode)
+        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode, get_textures())
 {
 }
 
@@ -17,4 +17,12 @@ Charizard* Charizard::create(std::string name, float x, float y, float z)
             true,
             GL_TRIANGLES
     );
+}
+
+std::vector<std::string> Charizard::get_textures()
+{
+    return std::vector<std::string>({
+            IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png",
+            IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png"
+    });
 }
