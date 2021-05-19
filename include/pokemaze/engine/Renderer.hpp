@@ -38,7 +38,7 @@ public:
 private:
     // "(location = 0)" at "shader_vertex.glsl"
     // vec4 at "shader_vertex.glsl"
-    static void send_to_shader(GLuint location, GLint number_of_dimensions);
+    static void send_to_shader(GLuint location, GLint number_of_dimensions, GLenum type);
 
     static void render_object_indexes(std::vector<GLuint> indexes);
     static void render_object_model(std::vector<float> model_coefficients);

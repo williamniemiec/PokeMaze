@@ -38,8 +38,12 @@
 #include "pokemaze/engine/projection/Projection.hpp"
 #include "pokemaze/models/characters/Charizard.hpp"
 #include "pokemaze/models/characters/AshKetchum.hpp"
+#include "pokemaze/models/characters/Pikachu.hpp"
 #include "pokemaze/models/objects/Pokeball.hpp"
 #include "pokemaze/models/objects/Wall.hpp"
+#include "pokemaze/models/objects/Tree.hpp"
+#include "pokemaze/models/scene/Floor.hpp"
+#include "pokemaze/models/scene/Sky.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -63,32 +67,6 @@
 #define XCUBE 10
 #define XDOOR 11
 #define TREE 12
-
-
-struct ObjModel
-{
-    tinyobj::attrib_t attrib;
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
-
-    // SOURCE: https://github.com/syoyo/tinyobjloader
-    ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true)
-    {
-        printf("Carregando modelo \"%s\"... ", filename);
-
-        std::string err;
-        bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename, basepath, triangulate);
-
-
-        if (!err.empty())
-            fprintf(stderr, "\n%s\n", err.c_str());
-
-        if (!ret)
-            throw std::runtime_error("Erro ao carregar modelo.");
-
-        printf("OK.\n");
-    }
-};
 
 
 /// --- BEZIER ---
@@ -126,11 +104,6 @@ Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
 
 
 
-
-// Declaração de várias funções utilizadas em main().  Essas estão definidas
-// logo após a definição de main() neste arquivo.
-void BuildTrianglesAndAddToVirtualScene(ObjModel*, std::string); // Constrói representação de um ObjModel como malha de triângulos para renderização
-void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
 
 
@@ -259,27 +232,26 @@ int main(int argc, char* argv[])
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
 
 
-    ObjModel ash((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_Ketchum.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/").c_str());
-    ComputeNormals(&ash);
-    BuildTrianglesAndAddToVirtualScene(&ash, "Ash_Ketchum");
-    //AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
-    //Renderer::render_object(ash);
-    //g_VirtualScene["Ash_Ketchum"] = ash;
+    AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
+    Renderer::render_object(ash);
+    g_VirtualScene["Ash_Ketchum"] = ash;
 
-    //ObjModel pokeball((IOUtils::get_project_absolute_path() + "data/Pokeball/Pokeball.obj").c_str());
-    //ComputeNormals(&pokeball);
-    //BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
     Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
     Renderer::render_object(pokeball);
     g_VirtualScene["Pokeball"] = pokeball;
 
-    ObjModel planemodel((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel, "floor");
+    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
+    Renderer::render_object(floor);
+    g_VirtualScene["floor"] = floor;
+
+    SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
 
     for (int i = 1; i <= 5; i++)
     {
-        BuildTrianglesAndAddToVirtualScene(&planemodel, "sky_" + std::to_string(i));
+        sky = sky->create_copy(); // Avoids parsing obj info again
+        Renderer::render_object(sky);
+
+        g_VirtualScene["sky_" + std::to_string(i)] = sky;
     }
 
 
@@ -291,7 +263,6 @@ int main(int argc, char* argv[])
         Renderer::render_object(wall);
 
         g_VirtualScene["wall_" + std::to_string(i)] = wall;
-        //BuildTrianglesAndAddToVirtualScene(&cube, "wall_" + std::to_string(i));
     }
 
     wall = wall->create_copy();
@@ -306,27 +277,17 @@ int main(int argc, char* argv[])
     Renderer::render_object(wall);
     g_VirtualScene["pikachu_ceiling"] = wall;
 
-    //for (int i = 23; i <= 26; i++)
-    //{
-    //    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall_" + std::to_string(i));
-    //}
-
-
-    //ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
-    //ComputeNormals(&charizard);
-    //BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
     Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
     Renderer::render_object(charizard);
     g_VirtualScene["Charizard"] = charizard;
 
-    ObjModel pikachu((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Pikachu/").c_str());
-    ComputeNormals(&pikachu);
-    BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
+    Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
+    Renderer::render_object(pikachu);
+    g_VirtualScene["Pikachu"] = pikachu;
 
-    ObjModel tree((IOUtils::get_project_absolute_path() + "data/Tree/Tree.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Tree/").c_str());
-    ComputeNormals(&tree);
-    BuildTrianglesAndAddToVirtualScene(&tree, "Tree");
-    // g_VirtualScene[treeObj] = Tree::build();
+    Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
+    Renderer::render_object(tree);
+    g_VirtualScene["Tree"] = tree;
 
     TextRender::TextRendering_Init();
 
@@ -1003,287 +964,6 @@ void DrawVirtualObject(const char* object_name)
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
 }
-
-// Função que computa as normais de um ObjModel, caso elas não tenham sido
-// especificadas dentro do arquivo ".obj"
-void ComputeNormals(ObjModel* model)
-{
-    if ( !model->attrib.normals.empty() )
-        return;
-
-    // Primeiro computamos as normais para todos os TRIÂNGULOS.
-    // Segundo, computamos as normais dos VÉRTICES através do método proposto
-    // por Gouraud, onde a normal de cada vértice vai ser a média das normais de
-    // todas as faces que compartilham este vértice.
-
-    size_t num_vertices = model->attrib.vertices.size() / 3;
-
-    std::vector<int> num_triangles_per_vertex(num_vertices, 0);
-    std::vector<glm::vec4> vertex_normals(num_vertices, glm::vec4(0.0f,0.0f,0.0f,0.0f));
-
-    for (size_t shape = 0; shape < model->shapes.size(); ++shape)
-    {
-        size_t num_triangles = model->shapes[shape].mesh.num_face_vertices.size();
-
-        for (size_t triangle = 0; triangle < num_triangles; ++triangle)
-        {
-            assert(model->shapes[shape].mesh.num_face_vertices[triangle] == 3);
-
-            glm::vec4  vertices[3];
-            for (size_t vertex = 0; vertex < 3; ++vertex)
-            {
-                tinyobj::index_t idx = model->shapes[shape].mesh.indices[3*triangle + vertex];
-                const float vx = model->attrib.vertices[3*idx.vertex_index + 0];
-                const float vy = model->attrib.vertices[3*idx.vertex_index + 1];
-                const float vz = model->attrib.vertices[3*idx.vertex_index + 2];
-                vertices[vertex] = glm::vec4(vx,vy,vz,1.0);
-            }
-
-            const glm::vec4  a = vertices[0];
-            const glm::vec4  b = vertices[1];
-            const glm::vec4  c = vertices[2];
-
-            const glm::vec4  n = crossproduct(b-a,c-a);
-
-            for (size_t vertex = 0; vertex < 3; ++vertex)
-            {
-                tinyobj::index_t idx = model->shapes[shape].mesh.indices[3*triangle + vertex];
-                num_triangles_per_vertex[idx.vertex_index] += 1;
-                vertex_normals[idx.vertex_index] += n;
-                model->shapes[shape].mesh.indices[3*triangle + vertex].normal_index = idx.vertex_index;
-            }
-        }
-    }
-
-    model->attrib.normals.resize( 3*num_vertices );
-
-    for (size_t i = 0; i < vertex_normals.size(); ++i)
-    {
-        glm::vec4 n = vertex_normals[i] / (float)num_triangles_per_vertex[i];
-        n /= norm(n);
-        model->attrib.normals[3*i + 0] = n.x;
-        model->attrib.normals[3*i + 1] = n.y;
-        model->attrib.normals[3*i + 2] = n.z;
-    }
-}
-
-// Constrói triângulos para futura renderização a partir de um ObjModel.
-// -> manda info de textura para shaders
-// -> mapeia objeto para g_virtualScene
-void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
-{
-    GLuint vertex_array_object_id;
-    glGenVertexArrays(1, &vertex_array_object_id);
-    glBindVertexArray(vertex_array_object_id);
-
-    std::vector<GLuint> indices;
-    std::vector<float>  model_coefficients;
-    std::vector<float>  normal_coefficients;
-    std::vector<float>  texture_coefficients;
-    std::vector<int>  texture_id;
-
-    for (size_t shape = 0; shape < model->shapes.size(); ++shape)
-    {
-        size_t first_index = indices.size();
-        size_t num_triangles = model->shapes[shape].mesh.num_face_vertices.size();
-
-        const float minval = std::numeric_limits<float>::min();
-        const float maxval = std::numeric_limits<float>::max();
-
-        glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
-        glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
-
-        for (size_t triangle = 0; triangle < num_triangles; ++triangle)
-        {
-            assert(model->shapes[shape].mesh.num_face_vertices[triangle] == 3);
-
-            int id_material = model->shapes[shape].mesh.material_ids[int(triangle)];
-            //std::cout << model->materials[id_material].diffuse_texname << std::endl;
-            //std::cout << "& " << model->shapes[shape].mesh.material_ids[3*triangle + vertex] << std::endl;
-
-
-
-            for (size_t vertex = 0; vertex < 3; ++vertex)
-            {
-                tinyobj::index_t idx = model->shapes[shape].mesh.indices[3*triangle + vertex];
-
-                indices.push_back(first_index + 3*triangle + vertex);
-
-                const float vx = model->attrib.vertices[3*idx.vertex_index + 0];
-                const float vy = model->attrib.vertices[3*idx.vertex_index + 1];
-                const float vz = model->attrib.vertices[3*idx.vertex_index + 2];
-                //printf("tri %d vert %d = (%.2f, %.2f, %.2f)\n", (int)triangle, (int)vertex, vx, vy, vz);
-                model_coefficients.push_back( vx ); // X
-                model_coefficients.push_back( vy ); // Y
-                model_coefficients.push_back( vz ); // Z
-                model_coefficients.push_back( 1.0f ); // W
-
-
-
-                bbox_min.x = std::min(bbox_min.x, vx);
-                bbox_min.y = std::min(bbox_min.y, vy);
-                bbox_min.z = std::min(bbox_min.z, vz);
-                bbox_max.x = std::max(bbox_max.x, vx);
-                bbox_max.y = std::max(bbox_max.y, vy);
-                bbox_max.z = std::max(bbox_max.z, vz);
-
-                // Inspecionando o código da tinyobjloader, o aluno Bernardo
-                // Sulzbach (2017/1) apontou que a maneira correta de testar se
-                // existem normais e coordenadas de textura no ObjModel é
-                // comparando se o índice retornado é -1. Fazemos isso abaixo.
-
-                if ( idx.normal_index != -1 )
-                {
-                    const float nx = model->attrib.normals[3*idx.normal_index + 0];
-                    const float ny = model->attrib.normals[3*idx.normal_index + 1];
-                    const float nz = model->attrib.normals[3*idx.normal_index + 2];
-                    normal_coefficients.push_back( nx ); // X
-                    normal_coefficients.push_back( ny ); // Y
-                    normal_coefficients.push_back( nz ); // Z
-                    normal_coefficients.push_back( 0.0f ); // W
-                }
-
-
-
-                if ( idx.texcoord_index != -1 )
-                {
-                    const float u = model->attrib.texcoords[2*idx.texcoord_index + 0];
-                    const float v = model->attrib.texcoords[2*idx.texcoord_index + 1];
-                    texture_coefficients.push_back( u );
-                    texture_coefficients.push_back( v );
-
-                    if (id_material == -1)
-                        texture_id.push_back(-1);
-                    else if (model->materials[id_material].diffuse_texname == "Ash_arms_hat_hair.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_B.png"
-                             || model->materials[id_material].diffuse_texname == "FitPokeLizardon.PNG"
-                             || model->materials[id_material].diffuse_texname == "3DPaz_fir-tree_leaves.jpg")
-                        texture_id.push_back(0);
-                    else if (model->materials[id_material].diffuse_texname == "PokeTra_Ash_face.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_C.png"
-                             || model->materials[id_material].diffuse_texname == "FitPokeLizardonEyeIris.PNG"
-                             || model->materials[id_material].diffuse_texname == "3DPaz_fir-tree_trunk.jpg")
-                        texture_id.push_back(1);
-                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_body_col.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_E.png")
-                        texture_id.push_back(2);
-                    else if (model->materials[id_material].diffuse_texname == "trAsh_00_obj_col.png"
-                             || model->materials[id_material].diffuse_texname == "Pikachu_M.png")
-                        texture_id.push_back(3);
-                    else
-                        texture_id.push_back(-1);
-
-                    texture_id.push_back(-1);
-
-                }
-            }
-        }
-
-        size_t last_index = indices.size() - 1;
-
-        /*
-        SceneObject theobject;
-        theobject.name           = model->shapes[shape].name;
-        theobject.first_index    = first_index; // Primeiro índice
-        theobject.num_indices    = last_index - first_index + 1; // Número de indices
-        theobject.rendering_mode = GL_TRIANGLES;       // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
-        theobject.vertex_array_object_id = vertex_array_object_id;
-        */
-
-        SceneObject* theobject = (new SceneObject::Builder())
-            ->name(model->shapes[shape].name)
-            ->filename("")
-            //->first_index(first_index)
-            //->total_indexes(last_index - first_index + 1)
-            ->rendering_mode(GL_TRIANGLES)
-            //->vertex_array_object(vertex_array_object_id)
-            //->bbox_min(bbox_min)
-            //->bbox_max(bbox_max)
-            ->build();
-
-        theobject->first_index = first_index;
-        theobject->total_indexes = last_index - first_index + 1;
-        theobject->bounding_box = new BoundingBox(bbox_min, bbox_max);
-        theobject->vertex_array_object_id = vertex_array_object_id;
-
-        //theobject.bbox_min = bbox_min;
-        //theobject.bbox_max = bbox_max;
-
-        //g_VirtualScene[model->shapes[shape].name] = theobject;
-        g_VirtualScene[obj_name] = theobject;
-    }
-
-    GLuint VBO_model_coefficients_id;
-    glGenBuffers(1, &VBO_model_coefficients_id);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_model_coefficients_id);
-    glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
-    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
-    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
-    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(location);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    if ( !normal_coefficients.empty() )
-    {
-        GLuint VBO_normal_coefficients_id;
-        glGenBuffers(1, &VBO_normal_coefficients_id);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
-        glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
-        location = 1; // "(location = 1)" em "shader_vertex.glsl"
-        number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
-        glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(location);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    if ( !texture_coefficients.empty() )
-    {
-        GLuint VBO_texture_coefficients_id;
-        glGenBuffers(1, &VBO_texture_coefficients_id);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
-        glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
-        location = 2; // "(location = 1)" em "shader_vertex.glsl"
-        number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
-        glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(location);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-
-
-    if ( !texture_id.empty() )
-    {
-        GLuint VBO_texture_id_id;
-        glGenBuffers(1, &VBO_texture_id_id);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_id_id);
-        glBufferData(GL_ARRAY_BUFFER, texture_id.size() * sizeof(int), NULL, GL_STATIC_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, texture_id.size() * sizeof(int), texture_id.data());
-        location = 3; // "(location = 1)" em "shader_vertex.glsl"
-        number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
-        glVertexAttribPointer(location, number_of_dimensions, GL_INT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(location);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    GLuint indices_id;
-    glGenBuffers(1, &indices_id);
-
-    // "Ligamos" o buffer. Note que o tipo agora é GL_ELEMENT_ARRAY_BUFFER.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
-    //
-
-    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-    // alterar o mesmo. Isso evita bugs.
-    glBindVertexArray(0);
-}
-
-
 
 
 

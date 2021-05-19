@@ -400,8 +400,16 @@ void Renderer::LoadObjTextureImage(const char* filename, GLuint textureunit)
 
 void Renderer::render_object(SceneObject* object)
 {
-    if (object->get_vertex_array_object() == (GLuint) -1)
-        object->set_vertex_array_object(request_vao());
+    //if (object->get_vertex_array_object() == (GLuint) -1)
+        //object->set_vertex_array_object(request_vao());
+    //GLuint vertex_array_object_id;
+    //glGenVertexArrays(1, &vertex_array_object_id);
+    //glBindVertexArray(request_vao());
+    GLuint vertex_array_object_id;
+    glGenVertexArrays(1, &vertex_array_object_id);
+    glBindVertexArray(vertex_array_object_id);
+    object->set_vertex_array_object(vertex_array_object_id);
+
 
     render_object_model(object->get_model_coefficients());
     render_object_normal(object->get_normal_coefficients());
@@ -430,12 +438,12 @@ void Renderer::render_object_model(std::vector<float> model_coefficients)
     glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
 
-    send_to_shader(0, 4);
+    send_to_shader(0, 4, GL_FLOAT);
 }
 
-void Renderer::send_to_shader(GLuint location, GLint number_of_dimensions)
+void Renderer::send_to_shader(GLuint location, GLint number_of_dimensions, GLenum type)
 {
-    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(location, number_of_dimensions, type, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(location);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -451,7 +459,7 @@ void Renderer::render_object_normal(std::vector<float> normal_coefficients)
     glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
 
-    send_to_shader(1, 4);
+    send_to_shader(1, 4, GL_FLOAT);
 }
 
 void Renderer::render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id)
@@ -465,7 +473,7 @@ void Renderer::render_object_texture(std::vector<float>texture_coefficients, std
         glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
 
-        send_to_shader(2, 2);
+        send_to_shader(2, 2, GL_FLOAT);
     }
 
     if (!texture_id.empty())
@@ -477,7 +485,7 @@ void Renderer::render_object_texture(std::vector<float>texture_coefficients, std
         glBufferData(GL_ARRAY_BUFFER, texture_id.size() * sizeof(int), NULL, GL_STATIC_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER, 0, texture_id.size() * sizeof(int), texture_id.data());
 
-        send_to_shader(3, 2);
+        send_to_shader(3, 2, GL_INT);
     }
 }
 

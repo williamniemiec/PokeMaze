@@ -12,5 +12,3 @@ private:
 public:
     static Pokeball* create(std::string name, float x, float y, float z);
 };
-
-

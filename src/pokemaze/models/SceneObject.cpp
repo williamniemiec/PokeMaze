@@ -313,6 +313,9 @@ void SceneObject::build()
 void SceneObject::load(std::string filename, std::string mtl_path, bool triangulate)
 {
     std::string err;
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
 
     bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str(), mtl_path.c_str(), triangulate);
 
@@ -321,6 +324,10 @@ void SceneObject::load(std::string filename, std::string mtl_path, bool triangul
 
     if (!success)
         throw std::runtime_error("Error while loading model " + name);
+
+    this->attrib = attrib;
+    this->shapes = shapes;
+    this->materials = materials;
 }
 
 void SceneObject::compute_normals()
