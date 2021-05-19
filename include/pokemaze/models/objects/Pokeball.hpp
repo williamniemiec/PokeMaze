@@ -7,10 +7,10 @@
 class Pokeball : public SceneObject
 {
 private:
-    Pokeball(std::string label, glm::vec4 position, std::string filename, bool triangulate, GLenum rendering_mode);
+    Pokeball(std::string name, glm::vec4 position, std::string filename, bool triangulate, GLenum rendering_mode);
 
 public:
-    static Pokeball* create(std::string label, float x, float y, float z);
+    static Pokeball* create(std::string name, float x, float y, float z);
 };
 
 

@@ -266,12 +266,12 @@ int main(int argc, char* argv[])
     //Renderer::render_object(ash);
     //g_VirtualScene["Ash_Ketchum"] = ash;
 
-    ObjModel pokeball((IOUtils::get_project_absolute_path() + "data/Pokeball/Pokeball.obj").c_str());
-    ComputeNormals(&pokeball);
-    BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
-    //Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
-    //Renderer::render_object(pokeball);
-    //g_VirtualScene["Pokeball"] = pokeball;
+    //ObjModel pokeball((IOUtils::get_project_absolute_path() + "data/Pokeball/Pokeball.obj").c_str());
+    //ComputeNormals(&pokeball);
+    //BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
+    Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
+    Renderer::render_object(pokeball);
+    g_VirtualScene["Pokeball"] = pokeball;
 
     ObjModel planemodel((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
@@ -307,6 +307,7 @@ int main(int argc, char* argv[])
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
         Renderer::render_object(wall);
+
         g_VirtualScene["wall_" + std::to_string(i)] = wall;
         //BuildTrianglesAndAddToVirtualScene(&cube, "wall_" + std::to_string(i));
     }
