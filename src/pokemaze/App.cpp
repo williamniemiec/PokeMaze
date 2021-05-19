@@ -282,28 +282,10 @@ int main(int argc, char* argv[])
         BuildTrianglesAndAddToVirtualScene(&planemodel, "sky_" + std::to_string(i));
     }
 
-    for (int i = 23; i <= 26; i++)
-    {
-        BuildTrianglesAndAddToVirtualScene(&planemodel, "wall_" + std::to_string(i));
-    }
 
-
-    //ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
-    //ComputeNormals(&charizard);
-    //BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
-    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
-    Renderer::render_object(charizard);
-    g_VirtualScene["Charizard"] = charizard;
-
-    ObjModel pikachu((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Pikachu/").c_str());
-    ComputeNormals(&pikachu);
-    BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
-
-    //ObjModel cube((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
-    //ComputeNormals(&cube);
     SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
 
-    for (int i = 1; i <= 22; i++)
+    for (int i = 1; i <= 26; i++)
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
         Renderer::render_object(wall);
@@ -323,9 +305,23 @@ int main(int argc, char* argv[])
     wall = wall->create_copy();
     Renderer::render_object(wall);
     g_VirtualScene["pikachu_ceiling"] = wall;
-    //BuildTrianglesAndAddToVirtualScene(&cube, "secret_wall");
-    //BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_door");
-    //BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_ceiling");
+
+    //for (int i = 23; i <= 26; i++)
+    //{
+    //    BuildTrianglesAndAddToVirtualScene(&planemodel, "wall_" + std::to_string(i));
+    //}
+
+
+    //ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
+    //ComputeNormals(&charizard);
+    //BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
+    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+    Renderer::render_object(charizard);
+    g_VirtualScene["Charizard"] = charizard;
+
+    ObjModel pikachu((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Pikachu/").c_str());
+    ComputeNormals(&pikachu);
+    BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
 
     ObjModel tree((IOUtils::get_project_absolute_path() + "data/Tree/Tree.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Tree/").c_str());
     ComputeNormals(&tree);
@@ -506,10 +502,9 @@ int main(int argc, char* argv[])
         g_VirtualScene["Tree"]->apply(model);
 
         // WALLS
-        model = Matrix_Translate(0.0f, 1.f, 19.99f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        Renderer::render_model(model, WALL);
+        model = Matrix_Translate(0.0f, 6.5f, 19.99f)
+                * Matrix_Scale(40.0f, 8.0f, 1.0f);
+        Renderer::render_model(model, XCUBE);
 
         DrawVirtualObject("wall_23");
         g_VirtualScene["wall_23"]->apply(model);
@@ -517,10 +512,9 @@ int main(int argc, char* argv[])
         if (first_run)
             walls.push_back(g_VirtualScene["wall_23"]);
 
-        model = Matrix_Translate(0.0f, 1.f, -19.99f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        Renderer::render_model(model, WALL);
+        model = Matrix_Translate(0.0f, 6.5f, -19.99f)
+                * Matrix_Scale(40.0f, 8.0f, 1.0f);
+        Renderer::render_model(model, XCUBE);
 
         DrawVirtualObject("wall_24");
         g_VirtualScene["wall_24"]->apply(model);
@@ -529,11 +523,9 @@ int main(int argc, char* argv[])
             walls.push_back(g_VirtualScene["wall_24"]);
 
 
-        model = Matrix_Translate(19.99f, 1.f, 0.0f)
-                * Matrix_Rotate_Y(PI/2)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        Renderer::render_model(model, WALL);
+        model = Matrix_Translate(19.99f, 6.5f, 0.0f)
+                * Matrix_Scale(1.0f, 8.0f, 40.0f);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_25");
         g_VirtualScene["wall_25"]->apply(model);
 
@@ -542,11 +534,9 @@ int main(int argc, char* argv[])
 
 
 
-        model = Matrix_Translate(-19.99f, 1.f, 0.0f)
-                * Matrix_Rotate_Y(-PI/2)
-                * Matrix_Rotate_X(-PI/2)
-                * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        Renderer::render_model(model, WALL);
+        model = Matrix_Translate(-19.99f, 6.5f, 0.0f)
+                * Matrix_Scale(1.0f, 8.0f, 40.0f);
+        Renderer::render_model(model, ZCUBE);
         DrawVirtualObject("wall_26");
         g_VirtualScene["wall_26"]->apply(model);
 
