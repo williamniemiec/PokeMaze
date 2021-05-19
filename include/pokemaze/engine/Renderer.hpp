@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <list>
 #include <vector>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -17,7 +19,9 @@ private:
     static GLint object_id_uniform;
     static GLint bbox_min_uniform;
     static GLint bbox_max_uniform;
-    static GLuint g_NumLoadedTextures;
+    static GLuint total_loaded_textures;
+    static std::list<std::string> loaded_textures;
+
 public:
     static void pre_render();
     static void render_view(glm::mat4 view);
@@ -31,8 +35,7 @@ public:
     static GLuint LoadShader_Fragment(const char* filename);
     static void LoadShader(const char* filename, GLuint shader_id);
     static void LoadBackground(const char* filename);
-    static void LoadTextureImage(const char* filename);
-    static void LoadObjTextureImage(const char* filename, GLuint textureunit);
+    static void LoadTextureImage(std::string filename, bool is_plane);
     static void render_object(SceneObject* object);
 
 private:
@@ -43,6 +46,7 @@ private:
     static void render_object_indexes(std::vector<GLuint> indexes);
     static void render_object_model(std::vector<float> model_coefficients);
     static void render_object_normal(std::vector<float> normal_coefficients);
-    static void render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id);
+    static void render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, std::vector<std::string> textures, bool is_plane);
     static GLint request_vao();
+    static bool was_texture_loaded(std::string texture);
 };

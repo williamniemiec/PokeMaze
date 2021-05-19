@@ -30,21 +30,7 @@ uniform int object_id;
 uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
-uniform sampler2D TextureImage0;
-uniform sampler2D TextureImage1;
-uniform sampler2D ash_arms;
-uniform sampler2D ash_face;
-uniform sampler2D ash_body;
-uniform sampler2D ash_col;
-uniform sampler2D pokeball;
-uniform sampler2D pikachu_b;
-uniform sampler2D pikachu_c;
-uniform sampler2D pikachu_e;
-uniform sampler2D pikachu_m;
-uniform sampler2D charizard_body;
-uniform sampler2D charizard_eye;
-uniform sampler2D wall;
-uniform sampler2D door;
+uniform sampler2D texture_0;
 
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
 // ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
@@ -119,14 +105,13 @@ void main()
         float U = texcoords.x;
         float V = texcoords.y;
 
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd0 = texture(texture_0, vec2(U,V)).rgb;
 
         //vec3 Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
 
-        vertex_color = Kd0 * (lambert + 0.9);
+        vertex_color = Kd0 * (lambert + 0.6);
     }
 }
-

@@ -3,7 +3,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
 AshKetchum::AshKetchum(std::string name, glm::vec4 position, std::string filename, std::string mtl_path, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode, get_textures())
+        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode, get_textures(), false)
 {
 }
 

@@ -6,13 +6,14 @@
 SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::string filename, std::string mtl_path,
                          bool triangulate, GLenum rendering_mode,
-                         std::vector<std::string> textures)
+                         std::vector<std::string> textures, bool is_2D)
 {
     this->name = name;
     this->position = position;
     this->rendering_mode = rendering_mode;
     this->vertex_array_object_id = -1;
     this->textures = textures;
+    this->has_only_2_dimensions = is_2D;
 
     if (!filename.empty()) // TEMP
     {
@@ -30,7 +31,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::vector<float> normal_coefficients,
                          std::vector<float> texture_coefficients,
                          std::vector<int> texture_id,
-                         std::vector<std::string> textures)
+                         std::vector<std::string> textures, bool is_2D)
 {
     this->name = name;
     this->position = position;
@@ -51,7 +52,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->texture_coefficients = texture_coefficients;
     this->texture_id = texture_id;
     this->textures = textures;
-
+    this->has_only_2_dimensions = is_2D;
 
 
     //build();
@@ -395,7 +396,7 @@ SceneObject* SceneObject::create_copy()
 
     return new SceneObject(name, position, rendering_mode, first_index, total_indexes, bounding_box,
                            indexes, model_coefficients, normal_coefficients,
-                           texture_coefficients, texture_id, textures);
+                           texture_coefficients, texture_id, textures, has_only_2_dimensions);
 
 }
 
@@ -442,4 +443,9 @@ size_t SceneObject::get_first_index()
 size_t SceneObject::get_total_indexes()
 {
     return total_indexes;
+}
+
+bool SceneObject::is_2D()
+{
+    return has_only_2_dimensions;
 }

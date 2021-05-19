@@ -3,7 +3,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
 Sky::Sky(std::string name, glm::vec4 position, std::string filename, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, "", triangulate, rendering_mode, get_textures())
+        : SceneObject(name, position, filename, "", triangulate, rendering_mode, get_textures(), true)
 {
 }
 

@@ -13,7 +13,8 @@ GLint Renderer::projection_uniform;
 GLint Renderer::object_id_uniform;
 GLint Renderer::bbox_min_uniform;
 GLint Renderer::bbox_max_uniform;
-GLuint Renderer::g_NumLoadedTextures = 0;
+GLuint Renderer::total_loaded_textures = 0;
+std::list<std::string> Renderer::loaded_textures;
 
 void Renderer::pre_render()
 {
@@ -126,7 +127,7 @@ void Renderer::LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(program_id);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage0"), 0);
+    /*glUniform1i(glGetUniformLocation(program_id, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(program_id, "TextureImage1"), 1);
     glUniform1i(glGetUniformLocation(program_id, "TextureImage2"), 2);
     glUniform1i(glGetUniformLocation(program_id, "ash_arms"), 3);
@@ -143,7 +144,7 @@ void Renderer::LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(program_id, "wall"), 14);
     glUniform1i(glGetUniformLocation(program_id, "door"), 15);
     glUniform1i(glGetUniformLocation(program_id, "tree_leaves"), 16);
-    glUniform1i(glGetUniformLocation(program_id, "tree_trunk"), 17);
+    glUniform1i(glGetUniformLocation(program_id, "tree_trunk"), 17);*/
     glUseProgram(0);
 }
 
@@ -250,6 +251,7 @@ void Renderer::LoadShader(const char* filename, GLuint shader_id)
 
 void Renderer::LoadBackground(const char* filename)
 {
+    /*
     printf("Carregando imagem \"%s\"... ", filename);
 
     // Primeiro fazemos a leitura da imagem do disco
@@ -303,76 +305,29 @@ void Renderer::LoadBackground(const char* filename)
 
     stbi_image_free(data);
 
-    g_NumLoadedTextures += 1;
+    g_NumLoadedTextures += 1;*/
 }
 
-// Função que carrega uma imagem para ser utilizada como textura
-void Renderer::LoadTextureImage(const char* filename)
+void Renderer::LoadTextureImage(std::string filename, bool is_plane)
 {
-    printf("Carregando imagem \"%s\"... ", filename);
-
-    // Primeiro fazemos a leitura da imagem do disco
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
-
-    if ( data == NULL )
-    {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-
-    printf("OK (%dx%d).\n", width, height);
-
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
-
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-
-    GLuint textureunit = g_NumLoadedTextures;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
-
-    stbi_image_free(data);
-
-    g_NumLoadedTextures += 1;
-}
-
-void Renderer::LoadObjTextureImage(const char* filename, GLuint textureunit)
-{
-    printf("Carregando imagem \"%s\"... ", filename);
+    printf("Carregando imagem \"%s\"... \n", filename.c_str());
 
     stbi_set_flip_vertically_on_load(true);
     int width;
     int height;
     int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &channels, 3);
 
     if ( data == NULL )
     {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
+        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename.c_str());
         std::exit(EXIT_FAILURE);
     }
+
+    glUseProgram(program_id);
+    std::string texture_label = "texture_" + std::to_string(total_loaded_textures);
+    glUniform1i(glGetUniformLocation(program_id, texture_label.c_str()), total_loaded_textures);
+    glUseProgram(0);
 
     // Agora criamos objetos na GPU com OpenGL para armazenar a textura
     GLuint texture_id;
@@ -381,39 +336,41 @@ void Renderer::LoadObjTextureImage(const char* filename, GLuint textureunit)
     glGenSamplers(1, &sampler_id);
 
     // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    if (is_plane)
+    {
+        glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    else
+    {
+        glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
 
     // Agora enviamos a imagem lida do disco para a GPU
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-    glActiveTexture(GL_TEXTURE0 + textureunit);
+    glActiveTexture(GL_TEXTURE0 + total_loaded_textures);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
+    glBindSampler(total_loaded_textures, sampler_id);
 
     stbi_image_free(data);
+
+    total_loaded_textures++;
+    loaded_textures.push_back(filename);
 }
 
 void Renderer::render_object(SceneObject* object)
 {
-    //if (object->get_vertex_array_object() == (GLuint) -1)
-        //object->set_vertex_array_object(request_vao());
-    //GLuint vertex_array_object_id;
-    //glGenVertexArrays(1, &vertex_array_object_id);
-    //glBindVertexArray(request_vao());
-    GLuint vertex_array_object_id;
-    glGenVertexArrays(1, &vertex_array_object_id);
-    glBindVertexArray(vertex_array_object_id);
-    object->set_vertex_array_object(vertex_array_object_id);
-
+    object->set_vertex_array_object(request_vao());
 
     render_object_model(object->get_model_coefficients());
     render_object_normal(object->get_normal_coefficients());
-    render_object_texture(object->get_texture_coefficients(), object->get_textures_id());
+    render_object_texture(object->get_texture_coefficients(), object->get_textures_id(), object->get_textures(), object->is_2D());
     render_object_indexes(object->get_indexes());
 
     glBindVertexArray(0);   // Avoids bugs
@@ -462,7 +419,7 @@ void Renderer::render_object_normal(std::vector<float> normal_coefficients)
     send_to_shader(1, 4, GL_FLOAT);
 }
 
-void Renderer::render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id)
+void Renderer::render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, std::vector<std::string> textures, bool is_plane)
 {
     if (!texture_coefficients.empty())
     {
@@ -487,6 +444,20 @@ void Renderer::render_object_texture(std::vector<float>texture_coefficients, std
 
         send_to_shader(3, 2, GL_INT);
     }
+
+    if (!textures.empty())
+    {
+        for (std::string texture : textures)
+        {
+            if (!was_texture_loaded(texture))
+                LoadTextureImage(texture, is_plane);
+        }
+    }
+}
+
+bool Renderer::was_texture_loaded(std::string texture)
+{
+    return (std::find(loaded_textures.begin(), loaded_textures.end(), texture) != loaded_textures.end());
 }
 
 GLint Renderer::request_vao()

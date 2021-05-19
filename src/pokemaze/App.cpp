@@ -214,8 +214,7 @@ int main(int argc, char* argv[])
 
     Renderer::LoadShadersFromFiles();
 
-    Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
-
+    /*Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
     Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
 
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
@@ -238,8 +237,20 @@ int main(int argc, char* argv[])
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
 
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);
+    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);*/
 
+    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
+    Renderer::render_object(floor);
+    g_VirtualScene["floor"] = floor;
+
+    SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
+    for (int i = 1; i <= 5; i++)
+    {
+        sky = sky->create_copy(); // Avoids parsing obj info again
+        Renderer::render_object(sky);
+
+        g_VirtualScene["sky_" + std::to_string(i)] = sky;
+    }
 
     AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
     Renderer::render_object(ash);
@@ -249,23 +260,15 @@ int main(int argc, char* argv[])
     Renderer::render_object(pokeball);
     g_VirtualScene["Pokeball"] = pokeball;
 
-    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
-    Renderer::render_object(floor);
-    g_VirtualScene["floor"] = floor;
+    Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
+    Renderer::render_object(pikachu);
+    g_VirtualScene["Pikachu"] = pikachu;
 
-    SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
-
-    for (int i = 1; i <= 5; i++)
-    {
-        sky = sky->create_copy(); // Avoids parsing obj info again
-        Renderer::render_object(sky);
-
-        g_VirtualScene["sky_" + std::to_string(i)] = sky;
-    }
-
+    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+    Renderer::render_object(charizard);
+    g_VirtualScene["Charizard"] = charizard;
 
     SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
-
     for (int i = 1; i <= 26; i++)
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
@@ -285,14 +288,6 @@ int main(int argc, char* argv[])
     garage = garage->create_copy();
     Renderer::render_object(garage);
     g_VirtualScene["pikachu_ceiling"] = garage;
-
-    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
-    Renderer::render_object(charizard);
-    g_VirtualScene["Charizard"] = charizard;
-
-    Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
-    Renderer::render_object(pikachu);
-    g_VirtualScene["Pikachu"] = pikachu;
 
     Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
     Renderer::render_object(tree);

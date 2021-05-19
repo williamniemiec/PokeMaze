@@ -3,7 +3,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
 Wall::Wall(std::string label, glm::vec4 position, std::string filename, bool triangulate, GLenum rendering_mode)
-        : SceneObject(label, position, filename, "", triangulate, rendering_mode, get_textures())
+        : SceneObject(label, position, filename, "", triangulate, rendering_mode, get_textures(), false)
 {
 }
 

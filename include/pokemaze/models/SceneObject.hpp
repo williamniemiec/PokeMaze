@@ -33,6 +33,7 @@ public:
     std::stack<glm::mat4x4> transformations;
     GLuint vertex_array_object_id;
     GLenum rendering_mode;
+    bool has_only_2_dimensions;
 
 
 
@@ -53,7 +54,7 @@ public:
 protected:
     SceneObject(std::string name, glm::vec4 position, std::string filename,
                 std::string mtl_path, bool triangulate, GLenum rendering_mode,
-                std::vector<std::string> textures);
+                std::vector<std::string> textures, bool is_2D);
 
 private:
     SceneObject(std::string name, glm::vec4 position,
@@ -64,7 +65,8 @@ private:
                 std::vector<float> model_coefficients, std::vector<float> normal_coefficients,
                 std::vector<float> texture_coefficients,
                 std::vector<int> texture_id,
-                std::vector<std::string> textures);
+                std::vector<std::string> textures,
+                bool is_2D);
     /*SceneObject(std::string name, glm::vec4 position, std::string filename,
                 std::string mtl_path, bool triangulate, GLenum rendering_mode,
                 size_t first_index, size_t total_indexes, GLuint vertex_array_object_id,
@@ -123,6 +125,7 @@ public:
     std::vector<int> get_textures_id();
 
     std::vector<std::string> get_textures();
+    bool is_2D();
 
 private:
     void load(std::string filename, std::string mtl_path, bool triangulate);
@@ -134,5 +137,4 @@ private:
     // Constrói triângulos para futura renderização a partir de um ObjModel.
     void build();
     std::map<std::string, int> generate_texture_mapping();
-
 };
