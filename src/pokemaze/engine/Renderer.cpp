@@ -398,3 +398,95 @@ void Renderer::LoadObjTextureImage(const char* filename, GLuint textureunit)
     stbi_image_free(data);
 }
 
+void Renderer::render_object(SceneObject* object)
+{
+    if (object->get_vertex_array_object() == (GLuint) -1)
+        object->set_vertex_array_object(request_vao());
+
+    render_object_model(object->get_model_coefficients());
+    render_object_normal(object->get_normal_coefficients());
+    render_object_texture(object->get_texture_coefficients(), object->get_textures_id());
+    render_object_indexes(object->get_indexes());
+
+    glBindVertexArray(0);   // Avoids bugs
+}
+
+void Renderer::render_object_indexes(std::vector<GLuint> indexes)
+{
+    GLuint indexes_id;
+
+    glGenBuffers(1, &indexes_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexes_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexes.size() * sizeof(GLuint), indexes.data());
+}
+
+void Renderer::render_object_model(std::vector<float> model_coefficients)
+{
+    GLuint VBO_model_coefficients_id;
+
+    glGenBuffers(1, &VBO_model_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_model_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
+
+    send_to_shader(0, 4);
+}
+
+void Renderer::send_to_shader(GLuint location, GLint number_of_dimensions)
+{
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Renderer::render_object_normal(std::vector<float> normal_coefficients)
+{
+    if (normal_coefficients.empty())
+        return;
+
+    GLuint VBO_normal_coefficients_id;
+    glGenBuffers(1, &VBO_normal_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
+
+    send_to_shader(1, 4);
+}
+
+void Renderer::render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id)
+{
+    if (!texture_coefficients.empty())
+    {
+        GLuint VBO_texture_coefficients_id;
+
+        glGenBuffers(1, &VBO_texture_coefficients_id);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
+        glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
+
+        send_to_shader(2, 2);
+    }
+
+    if (!texture_id.empty())
+    {
+        GLuint VBO_texture_id_id;
+
+        glGenBuffers(1, &VBO_texture_id_id);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_id_id);
+        glBufferData(GL_ARRAY_BUFFER, texture_id.size() * sizeof(int), NULL, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, texture_id.size() * sizeof(int), texture_id.data());
+
+        send_to_shader(3, 2);
+    }
+}
+
+GLint Renderer::request_vao()
+{
+    GLuint vertex_array_object_id;
+
+    glGenVertexArrays(1, &vertex_array_object_id);
+    glBindVertexArray(vertex_array_object_id);
+
+    return vertex_array_object_id;
+}

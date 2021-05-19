@@ -1,8 +1,10 @@
 #pragma once
 
+#include <vector>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/models/BoundingBox.hpp"
+#include "pokemaze/models/SceneObject.hpp"
 
 class Renderer
 {
@@ -31,4 +33,16 @@ public:
     static void LoadBackground(const char* filename);
     static void LoadTextureImage(const char* filename);
     static void LoadObjTextureImage(const char* filename, GLuint textureunit);
+    static void render_object(SceneObject* object);
+
+private:
+    // "(location = 0)" at "shader_vertex.glsl"
+    // vec4 at "shader_vertex.glsl"
+    static void send_to_shader(GLuint location, GLint number_of_dimensions);
+
+    static void render_object_indexes(std::vector<GLuint> indexes);
+    static void render_object_model(std::vector<float> model_coefficients);
+    static void render_object_normal(std::vector<float> normal_coefficients);
+    static void render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id);
+    static GLint request_vao();
 };

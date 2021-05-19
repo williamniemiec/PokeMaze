@@ -36,6 +36,10 @@
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 #include "pokemaze/engine/projection/PerspectiveProjection.hpp"
 #include "pokemaze/engine/projection/Projection.hpp"
+#include "pokemaze/models/characters/Charizard.hpp"
+#include "pokemaze/models/characters/AshKetchum.hpp"
+#include "pokemaze/models/objects/Pokeball.hpp"
+#include "pokemaze/models/objects/Wall.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -60,12 +64,12 @@
 #define XDOOR 11
 #define TREE 12
 
+
 struct ObjModel
 {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
-    std::map<std::string, GLuint> textures;
 
     // SOURCE: https://github.com/syoyo/tinyobjloader
     ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true)
@@ -258,10 +262,16 @@ int main(int argc, char* argv[])
     ObjModel ash((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_Ketchum.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/").c_str());
     ComputeNormals(&ash);
     BuildTrianglesAndAddToVirtualScene(&ash, "Ash_Ketchum");
+    //AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
+    //Renderer::render_object(ash);
+    //g_VirtualScene["Ash_Ketchum"] = ash;
 
     ObjModel pokeball((IOUtils::get_project_absolute_path() + "data/Pokeball/Pokeball.obj").c_str());
     ComputeNormals(&pokeball);
     BuildTrianglesAndAddToVirtualScene(&pokeball, "Pokeball");
+    //Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
+    //Renderer::render_object(pokeball);
+    //g_VirtualScene["Pokeball"] = pokeball;
 
     ObjModel planemodel((IOUtils::get_project_absolute_path() + "data/plane.obj").c_str());
     ComputeNormals(&planemodel);
@@ -278,29 +288,48 @@ int main(int argc, char* argv[])
     }
 
 
-    ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
-    ComputeNormals(&charizard);
-    BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
+    //ObjModel charizard((IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Charizard/").c_str());
+    //ComputeNormals(&charizard);
+    //BuildTrianglesAndAddToVirtualScene(&charizard, "Charizard");
+    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+    Renderer::render_object(charizard);
+    g_VirtualScene["Charizard"] = charizard;
 
     ObjModel pikachu((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Pikachu/").c_str());
     ComputeNormals(&pikachu);
     BuildTrianglesAndAddToVirtualScene(&pikachu, "Pikachu");
 
-    ObjModel cube((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
-    ComputeNormals(&cube);
+    //ObjModel cube((IOUtils::get_project_absolute_path() + "data/cube.obj").c_str());
+    //ComputeNormals(&cube);
+    SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
 
     for (int i = 1; i <= 22; i++)
     {
-        BuildTrianglesAndAddToVirtualScene(&cube, "wall_" + std::to_string(i));
+        wall = wall->create_copy(); // Avoids parsing obj info again
+        Renderer::render_object(wall);
+        g_VirtualScene["wall_" + std::to_string(i)] = wall;
+        //BuildTrianglesAndAddToVirtualScene(&cube, "wall_" + std::to_string(i));
     }
 
-    BuildTrianglesAndAddToVirtualScene(&cube, "secret_wall");
-    BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_door");
-    BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_ceiling");
+    wall = wall->create_copy();
+    Renderer::render_object(wall);
+    g_VirtualScene["secret_wall"] = wall;
+
+    wall = wall->create_copy();
+    Renderer::render_object(wall);
+    g_VirtualScene["pikachu_door"] = wall;
+
+    wall = wall->create_copy();
+    Renderer::render_object(wall);
+    g_VirtualScene["pikachu_ceiling"] = wall;
+    //BuildTrianglesAndAddToVirtualScene(&cube, "secret_wall");
+    //BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_door");
+    //BuildTrianglesAndAddToVirtualScene(&cube, "pikachu_ceiling");
 
     ObjModel tree((IOUtils::get_project_absolute_path() + "data/Tree/Tree.obj").c_str(), (IOUtils::get_project_absolute_path() + "data/Tree/").c_str());
     ComputeNormals(&tree);
     BuildTrianglesAndAddToVirtualScene(&tree, "Tree");
+    // g_VirtualScene[treeObj] = Tree::build();
 
     TextRender::TextRendering_Init();
 
@@ -479,9 +508,6 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 1.f, 19.99f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        //* Matrix_Scale(20.0f, 0.0f, 5.0f);
-        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        //glUniform1i(object_id_uniform, WALL);
         Renderer::render_model(model, WALL);
 
         DrawVirtualObject("wall_23");
@@ -493,8 +519,6 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, 1.f, -19.99f)
                 * Matrix_Rotate_X(PI/2)
                 * Matrix_Scale(19.99f, 0.0f, 3.0f);
-        //glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        //glUniform1i(object_id_uniform, WALL);
         Renderer::render_model(model, WALL);
 
         DrawVirtualObject("wall_24");
@@ -943,20 +967,8 @@ int main(int argc, char* argv[])
 // "framebuffer" (região de memória onde são armazenados os pixels da imagem).
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-    // Indicamos que queremos renderizar em toda região do framebuffer. A
-    // função "glViewport" define o mapeamento das "normalized device
-    // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de
-    // "Screen Mapping" ou "Viewport Mapping" vista em aula ({+ViewportMapping2+}).
     glViewport(0, 0, width, height);
 
-    // Atualizamos também a razão que define a proporção da janela (largura /
-    // altura), a qual será utilizada na definição das matrizes de projeção,
-    // tal que não ocorra distorções durante o processo de "Screen Mapping"
-    // acima, quando NDC é mapeado para coordenadas de pixels. Veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    //
-    // O cast para float é necessário pois números inteiros são arredondados ao
-    // serem divididos!
-    //g_ScreenRatio = (float)width / height;
     g_screen_width = width;
     g_screen_height = height;
     g_projection->set_screen_dimensions(width, height);
@@ -1065,6 +1077,8 @@ void ComputeNormals(ObjModel* model)
 }
 
 // Constrói triângulos para futura renderização a partir de um ObjModel.
+// -> manda info de textura para shaders
+// -> mapeia objeto para g_virtualScene
 void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
 {
     GLuint vertex_array_object_id;
@@ -1187,14 +1201,19 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, std::string obj_name)
 
         SceneObject* theobject = (new SceneObject::Builder())
             ->name(model->shapes[shape].name)
-            ->first_index(first_index)
-            ->total_indexes(last_index - first_index + 1)
+            ->filename("")
+            //->first_index(first_index)
+            //->total_indexes(last_index - first_index + 1)
             ->rendering_mode(GL_TRIANGLES)
-            ->vertex_array_object(vertex_array_object_id)
-            ->bbox_min(bbox_min)
-            ->bbox_max(bbox_max)
+            //->vertex_array_object(vertex_array_object_id)
+            //->bbox_min(bbox_min)
+            //->bbox_max(bbox_max)
             ->build();
 
+        theobject->first_index = first_index;
+        theobject->total_indexes = last_index - first_index + 1;
+        theobject->bounding_box = new BoundingBox(bbox_min, bbox_max);
+        theobject->vertex_array_object_id = vertex_array_object_id;
 
         //theobject.bbox_min = bbox_min;
         //theobject.bbox_max = bbox_max;

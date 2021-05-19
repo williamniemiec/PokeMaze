@@ -133,6 +133,11 @@ void BoundingBox::apply(glm::mat4 matrix)
     });
 }
 
+BoundingBox* BoundingBox::get_copy()
+{
+    return new BoundingBox(bounding_box_local_min, bounding_box_local_max);
+}
+
 float BoundingBox::get_local_min_x()
 {
     return bounding_box_local_min.x;

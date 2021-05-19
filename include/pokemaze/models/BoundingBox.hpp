@@ -16,6 +16,7 @@ public:
 
 public:
     void apply(glm::mat4 matrix);
+    BoundingBox* get_copy();
     float get_local_min_x();
     float get_world_min_x();
     float get_local_min_y();
