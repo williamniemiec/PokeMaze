@@ -9,14 +9,15 @@ class Engine
 private:
     GLFWwindow* window;
     Display* screen;
-    int g_screen_width;
-    int g_screen_height;
+    int screen_width;
+    int screen_height;
 public:
-    Engine();
+    Engine(int screen_width, int screen_height);
     void start();
     void shutdown();
     Display* display();
     void flush();
+    void commit();
     bool is_window_open();
     void set_keyboard_handler(const GLFWkeyfun &routine);
     void set_mouse_click_handler(const GLFWmousebuttonfun &routine);

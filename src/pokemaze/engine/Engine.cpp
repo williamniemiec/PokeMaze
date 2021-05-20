@@ -4,10 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-Engine::Engine()
+Engine::Engine(int screen_width, int screen_height)
 {
-    g_screen_width = 800;
-    g_screen_height = 600;
+    this->screen_width = screen_width;
+    this->screen_height = screen_height;
 }
 
 void Engine::start()
@@ -34,7 +34,7 @@ void Engine::start()
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(g_screen_width, g_screen_height, "PokeMaze", NULL, NULL);
+    window = glfwCreateWindow(screen_width, screen_height, "PokeMaze", NULL, NULL);
 
     if (!window)
     {
@@ -65,6 +65,11 @@ bool Engine::is_window_open()
 }
 
 void Engine::flush()
+{
+    glEnable(GL_DEPTH_TEST);
+}
+
+void Engine::commit()
 {
     glfwSwapBuffers(window);
     glfwPollEvents();
