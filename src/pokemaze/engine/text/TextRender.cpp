@@ -3,12 +3,6 @@
 #include "pokemaze/engine/Renderer.hpp"
 #include "pokemaze/engine/text/dejavufont.h"
 
-GLuint TextRender::textVAO;
-GLuint TextRender::textVBO;
-GLuint TextRender::textprogram_id;
-GLuint TextRender::texttexture_id;
-float TextRender::textscale = 1.5f;
-
 const GLchar* const TextRender::textvertexshader_source = ""
 "#version 330\n"
 "layout (location = 0) in vec4 position;\n"
@@ -30,6 +24,12 @@ const GLchar* const TextRender::textfragmentshader_source = ""
     "fragColor = vec4(0, 0, 0, texture(tex, texCoords).r);\n"
 "}\n"
 "\0";
+
+TextRender::TextRender()
+{
+    textscale = 1.5f;
+    TextRendering_Init();
+}
 
 void TextRender::TextRendering_LoadShader(const GLchar* const shader_string, GLuint shader_id)
 {
@@ -100,7 +100,7 @@ void TextRender::TextRendering_Init()
     TextRendering_LoadShader(textfragmentshader_source, textfragmentshader_id);
     glCheckError();
 
-    textprogram_id = Renderer::create_gpu_program(textvertexshader_id, textfragmentshader_id);
+    textprogram_id = create_gpu_program(textvertexshader_id, textfragmentshader_id);
     glLinkProgram(textprogram_id);
     glCheckError();
 

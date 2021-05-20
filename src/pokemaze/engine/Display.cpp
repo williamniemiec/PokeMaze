@@ -4,36 +4,37 @@
 Display::Display(GLFWwindow* window)
 {
     this->window = window;
+    text_renderer = new TextRender();
 }
 
 void Display::show_controls()
 {
-    float pad = TextRender::TextRendering_LineHeight(window);
+    float pad = text_renderer->TextRendering_LineHeight(window);
 
     char buffer[80];
     snprintf(buffer, 80, "Controls: W,A,S,D: Move | C: Free camera / Fixed camera | Pause Break: Pause");
 
-    TextRender::TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
+    text_renderer->TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
 }
 
 void Display::show_pause()
 {
-    float pad = TextRender::TextRendering_LineHeight(window);
+    float pad = text_renderer->TextRendering_LineHeight(window);
     int width, height;
     glfwGetWindowSize(window, &width, &height);
 
-    TextRender::TextRendering_PrintString(window, "PAUSED", -0.33+pad, -0.1+pad, 5.0f);
+    text_renderer->TextRendering_PrintString(window, "PAUSED", -0.33+pad, -0.1+pad, 5.0f);
 }
 
 void Display::show_projection(bool is_perspective)
 {
-    float lineheight = TextRender::TextRendering_LineHeight(window);
-    float charwidth = TextRender::TextRendering_CharWidth(window);
+    float lineheight = text_renderer->TextRendering_LineHeight(window);
+    float charwidth = text_renderer->TextRendering_CharWidth(window);
 
     if (is_perspective)
-        TextRender::TextRendering_PrintString(window, "Perspective", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
+        text_renderer->TextRendering_PrintString(window, "Perspective", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
     else
-        TextRender::TextRendering_PrintString(window, "Orthographic", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
+        text_renderer->TextRendering_PrintString(window, "Orthographic", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
 }
 
 void Display::show_fps()
@@ -59,8 +60,8 @@ void Display::show_fps()
         ellapsed_frames = 0;
     }
 
-    float lineheight = TextRender::TextRendering_LineHeight(window);
-    float charwidth = TextRender::TextRendering_CharWidth(window);
+    float lineheight = text_renderer->TextRendering_LineHeight(window);
+    float charwidth = text_renderer->TextRendering_CharWidth(window);
 
-    TextRender::TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
+    text_renderer->TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
 }

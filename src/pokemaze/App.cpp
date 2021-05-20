@@ -160,19 +160,19 @@ int main(int argc, char* argv[])
 
 
     // dump_gpu();
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
+    /*const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);
     const GLubyte *glversion   = glGetString(GL_VERSION);
     const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
-
-    Renderer::LoadShadersFromFiles();
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);*/
+    Renderer* renderer = new Renderer();
+    renderer->LoadShadersFromFiles();
 
     std::vector<SceneObject*> obstacles;
 
     Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
-    Renderer::load_object(floor);
+    renderer->load_object(floor);
     g_VirtualScene["floor"] = floor;
     obstacles.push_back(floor);
 
@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
     for (int i = 0; i <= 4; i++)
     {
         sky = sky->create_copy(); // Avoids parsing obj info again
-        Renderer::load_object(sky);
+        renderer->load_object(sky);
 
         g_VirtualScene["sky_" + std::to_string(i)] = sky;
 
@@ -190,19 +190,19 @@ int main(int argc, char* argv[])
     }
 
     AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
-    Renderer::load_object(ash);
+    renderer->load_object(ash);
     g_VirtualScene["Ash_Ketchum"] = ash;
 
     Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
-    Renderer::load_object(pokeball);
+    renderer->load_object(pokeball);
     g_VirtualScene["Pokeball"] = pokeball;
 
     Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
-    Renderer::load_object(pikachu);
+    renderer->load_object(pikachu);
     g_VirtualScene["Pikachu"] = pikachu;
 
     Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
-    Renderer::load_object(charizard);
+    renderer->load_object(charizard);
     g_VirtualScene["Charizard"] = charizard;
 
     std::vector<SceneObject*> walls;
@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
     for (int i = 0; i <= 26; i++)
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
-        Renderer::load_object(wall);
+        renderer->load_object(wall);
 
         g_VirtualScene["wall_" + std::to_string(i)] = wall;
         walls.push_back(wall);
@@ -219,25 +219,24 @@ int main(int argc, char* argv[])
 
     SceneObject* secret_wall = wall->create_copy();
     secret_wall->set_name("secret_wall");
-    Renderer::load_object(secret_wall);
+    renderer->load_object(secret_wall);
     g_VirtualScene["secret_wall"] = secret_wall;
     obstacles.push_back(secret_wall);
 
     SceneObject* garage_door = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
-    Renderer::load_object(garage_door);
+    renderer->load_object(garage_door);
     g_VirtualScene["pikachu_door"] = garage_door;
     //obstacles.push_back(garage_door);
 
     SceneObject* garage_ceiling = garage_door->create_copy();
-    Renderer::load_object(garage_ceiling);
+    renderer->load_object(garage_ceiling);
     g_VirtualScene["pikachu_ceiling"] = garage_ceiling;
     obstacles.push_back(garage_ceiling);
 
     Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
-    Renderer::load_object(tree);
+    renderer->load_object(tree);
     g_VirtualScene["Tree"] = tree;
 
-    TextRender::TextRendering_Init();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -261,8 +260,7 @@ int main(int argc, char* argv[])
 
     while (engine->is_window_open() && !pokeball_catched)
     {
-
-        Renderer::pre_render();
+        renderer->pre_render();
 
         current_time = (float)glfwGetTime();
         delta_time = current_time - previous_time;
@@ -385,8 +383,8 @@ int main(int argc, char* argv[])
             view = fixed_camera->get_view_matrix();
         }
 
-        Renderer::render_view(view);
-        Renderer::render_projection(g_projection->get_projection_matrix());
+        renderer->render_view(view);
+        renderer->render_projection(g_projection->get_projection_matrix());
 
 
 /// Desenha jogador
@@ -395,14 +393,14 @@ int main(int argc, char* argv[])
                 ->translate(fixed_camera->get_x(), -1.4f, fixed_camera->get_z())
                 ->rotate_y(g_player_direction)
                 ->end();
-        Renderer::render_object(ash, PLAYER);
+        renderer->render_object(ash, PLAYER);
 
         tree->movement()
                 ->begin()
                 ->translate(8.6f, -1.4f, 8.8f)
                 ->scale(0.5f, 0.5f, 0.5f)
                 ->end();
-        Renderer::render_object(tree, TREE);
+        renderer->render_object(tree, TREE);
 
 
         pokeball->movement()
@@ -413,7 +411,7 @@ int main(int argc, char* argv[])
                 ->rotate_x(g_AngleX + (float) glfwGetTime() * 1.5f)
                 ->scale(0.2, 0.2, 0.2)
                 ->end();
-        Renderer::render_object(pokeball, POKEBALL);
+        renderer->render_object(pokeball, POKEBALL);
 
         float charizard_current_time = (float)glfwGetTime();
         if (charizard_current_time - charizard_previous_time>= 0.04)
@@ -447,7 +445,7 @@ int main(int argc, char* argv[])
                 ->rotate_y(PI)
                 ->rotate_x(PI / 4)
                 ->end();
-        Renderer::render_object(charizard, CHARIZARD);
+        renderer->render_object(charizard, CHARIZARD);
 
 
 // Desenhamos o plano do chão
@@ -456,7 +454,7 @@ int main(int argc, char* argv[])
                 ->translate(0.0f,-1.4f,0.0f)
                 ->scale(20.5f, 10.5f, 20.5f)
                 ->end();
-        Renderer::render_object(floor, PLANE);
+        renderer->render_object(floor, PLANE);
 
 
         if (!pikachu_catched)
@@ -467,7 +465,7 @@ int main(int argc, char* argv[])
                     ->scale(0.1, 0.1, 0.1)
                     ->rotate_y(PI)
                     ->end();
-            Renderer::render_object(pikachu, PIKACHU);
+            renderer->render_object(pikachu, PIKACHU);
         }
 
         //Wall from Z 3.5 to z 10.5
@@ -476,7 +474,7 @@ int main(int argc, char* argv[])
                 ->translate(0.0f, 1.0f, 7.0f)
                 ->scale(0.5f, 2.5f, 7.0f)
                 ->end();
-        Renderer::render_object(walls[0], ZCUBE);
+        renderer->render_object(walls[0], ZCUBE);
 
         //Wall from X 3.5 Z 0 to z 7
         walls[1]->movement()
@@ -484,7 +482,7 @@ int main(int argc, char* argv[])
                 ->translate(3.5f, 1.0f, 3.5f)
                 ->scale(0.5f, 2.5f, 7.0f)
                 ->end();
-        Renderer::render_object(walls[1], ZCUBE);
+        renderer->render_object(walls[1], ZCUBE);
 
         //Wall from X -7 Z 0 to z -7
         walls[2]->movement()
@@ -492,7 +490,7 @@ int main(int argc, char* argv[])
                 ->translate(-7.0f, 1.0f, -3.5f)
                 ->scale(0.5f, 2.5f, 7.0f)
                 ->end();
-        Renderer::render_object(walls[2], ZCUBE);
+        renderer->render_object(walls[2], ZCUBE);
 
         //Wall from Z 0 X -3.5 to Z 3.5
         walls[3]->movement()
@@ -500,7 +498,7 @@ int main(int argc, char* argv[])
                 ->translate(-3.5f, 1.0f, 1.75f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[3], ZCUBE);
+        renderer->render_object(walls[3], ZCUBE);
 
         //Wall from Z 3.5 X -7 to Z 7
         walls[4]->movement()
@@ -508,7 +506,7 @@ int main(int argc, char* argv[])
                 ->translate(-7.0f, 1.0f, 5.25f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[4], ZCUBE);
+        renderer->render_object(walls[4], ZCUBE);
 
         //Wall from Z 3.5 X 7 to Z 7
         walls[5]->movement()
@@ -516,7 +514,7 @@ int main(int argc, char* argv[])
                 ->translate(7.0f, 1.0f, 5.25f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[5], ZCUBE);
+        renderer->render_object(walls[5], ZCUBE);
 
         //Wall from Z -3.5 X 3.5 to Z -7
         walls[6]->movement()
@@ -524,7 +522,7 @@ int main(int argc, char* argv[])
                 ->translate(3.5f, 1.0f, -5.25f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[6], ZCUBE);
+        renderer->render_object(walls[6], ZCUBE);
 
         //Wall from Z 0 X 7 to Z -3.5
         walls[7]->movement()
@@ -532,7 +530,7 @@ int main(int argc, char* argv[])
                 ->translate(7.0f, 1.0f, -1.75f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[7], ZCUBE);
+        renderer->render_object(walls[7], ZCUBE);
 
         //Wall from Z 7 X -3.5 to Z 10.5
         walls[8]->movement()
@@ -540,7 +538,7 @@ int main(int argc, char* argv[])
                 ->translate(-3.5f,1.0f,8.75f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[8], ZCUBE);
+        renderer->render_object(walls[8], ZCUBE);
 
         //Wall from Z 0 to Z -3.5
         walls[9]->movement()
@@ -548,7 +546,7 @@ int main(int argc, char* argv[])
                 ->translate(0.0f, 1.0f,- 1.75f)
                 ->scale(0.5f, 2.5f, 3.5f)
                 ->end();
-        Renderer::render_object(walls[9], ZCUBE);
+        renderer->render_object(walls[9], ZCUBE);
 
         //Wall from X 0 to X 10.5
         walls[10]->movement()
@@ -556,7 +554,7 @@ int main(int argc, char* argv[])
                 ->translate(5.25f, 1.0f, 0.0f)
                 ->scale(10.50f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[10], XCUBE);
+        renderer->render_object(walls[10], XCUBE);
 
         //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
         if (!pikachu_catched)
@@ -566,7 +564,7 @@ int main(int argc, char* argv[])
                     ->translate(5.25f, 1.0f, 3.5f)
                     ->scale(3.5f, 2.5f, 0.5f)
                     ->end();
-            Renderer::render_object(secret_wall, XCUBE);
+            renderer->render_object(secret_wall, XCUBE);
         }
 
         //Wall from X 0 Z -7 to X -7
@@ -575,7 +573,7 @@ int main(int argc, char* argv[])
                 ->translate(-3.5f,1.0f,-7.0f)
                 ->scale(7.0f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[11], XCUBE);
+        renderer->render_object(walls[11], XCUBE);
 
 
         //Wall from X 0 Z -3.5 to X -3.5
@@ -584,7 +582,7 @@ int main(int argc, char* argv[])
                 ->translate(-1.75f,1.0f,-3.5f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[12], XCUBE);
+        renderer->render_object(walls[12], XCUBE);
 
 
         //Wall from X 3.5 Z -3.5 to X 7
@@ -593,7 +591,7 @@ int main(int argc, char* argv[])
                 ->translate(5.25f,1.0f,-3.5f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[13], XCUBE);
+        renderer->render_object(walls[13], XCUBE);
 
 
         //Wall from X 3.5 Z -7 to X 7
@@ -602,7 +600,7 @@ int main(int argc, char* argv[])
                 ->translate(5.25f,1.0f,-7.0f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[14], XCUBE);
+        renderer->render_object(walls[14], XCUBE);
 
         //Wall from X -7 to X -10.5
         walls[15]->movement()
@@ -610,7 +608,7 @@ int main(int argc, char* argv[])
                 ->translate(-8.75f,1.0f,0.0f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[15], XCUBE);
+        renderer->render_object(walls[15], XCUBE);
 
         //Wall from X 7 Z 7 to X 10.5
         walls[16]->movement()
@@ -618,7 +616,7 @@ int main(int argc, char* argv[])
                 ->translate(8.75f, 1.0f, 7.0f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[16], XCUBE);
+        renderer->render_object(walls[16], XCUBE);
 
         //Wall from X 0 Z 3.5 to X -7
         walls[17]->movement()
@@ -626,7 +624,7 @@ int main(int argc, char* argv[])
                 ->translate(-3.5f,1.0f,3.5f)
                 ->scale(7.0f, 2.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[17], XCUBE);
+        renderer->render_object(walls[17], XCUBE);
 
         //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
 
@@ -643,7 +641,7 @@ int main(int argc, char* argv[])
                 ->translate(8.75f, 1.60f, -3.5f)
                 ->scale(3.5f, door_y, 0.5f)
                 ->end();
-        Renderer::render_object(garage_door, XDOOR);
+        renderer->render_object(garage_door, XDOOR);
 
         //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
         garage_ceiling->movement()
@@ -651,7 +649,7 @@ int main(int argc, char* argv[])
                 ->translate(8.625f, 1.5f, -1.5f)
                 ->scale(3.75f, 0.5f, 3.5f)
                 ->end();
-        Renderer::render_object(garage_ceiling, XDOOR);
+        renderer->render_object(garage_ceiling, XDOOR);
 
         // Bound obstacles
 
@@ -661,7 +659,7 @@ int main(int argc, char* argv[])
                 ->translate(10.75f,5.0f,0.0f)
                 ->scale(0.5f, 6.5f, 21.0f)
                 ->end();
-        Renderer::render_object(walls[18], ZCUBE);
+        renderer->render_object(walls[18], ZCUBE);
 
         // -x
         walls[19]->movement()
@@ -669,7 +667,7 @@ int main(int argc, char* argv[])
                 ->translate(-10.75f,5.0f,0.0f)
                 ->scale(0.5f, 6.5f, 21.0f)
                 ->end();
-        Renderer::render_object(walls[19], ZCUBE);
+        renderer->render_object(walls[19], ZCUBE);
 
         // Z
         walls[20]->movement()
@@ -677,7 +675,7 @@ int main(int argc, char* argv[])
                 ->translate(0.0f,5.0f,10.75f)
                 ->scale(21.0f, 6.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[20], XCUBE);
+        renderer->render_object(walls[20], XCUBE);
 
 
         // -Z
@@ -686,42 +684,42 @@ int main(int argc, char* argv[])
                 ->translate(0.0f,5.0f,-10.75f)
                 ->scale(21.0f, 6.5f, 0.5f)
                 ->end();
-        Renderer::render_object(walls[21], XCUBE);
+        renderer->render_object(walls[21], XCUBE);
 
         walls[22]->movement()
                 ->begin()
                 ->translate(0.0f, 6.5f, 19.99f)
                 ->scale(40.0f, 8.0f, 1.0f)
                 ->end();
-        Renderer::render_object(walls[22], XCUBE);
+        renderer->render_object(walls[22], XCUBE);
 
         walls[23]->movement()
                 ->begin()
                 ->translate(0.0f, 6.5f, 19.99f)
                 ->scale(40.0f, 8.0f, 1.0f)
                 ->end();
-        Renderer::render_object(walls[23], XCUBE);
+        renderer->render_object(walls[23], XCUBE);
 
         walls[24]->movement()
                 ->begin()
                 ->translate(0.0f, 6.5f, -19.99f)
                 ->scale(40.0f, 8.0f, 1.0f)
                 ->end();
-        Renderer::render_object(walls[24], XCUBE);
+        renderer->render_object(walls[24], XCUBE);
 
         walls[25]->movement()
                 ->begin()
                 ->translate(19.99f, 6.5f, 0.0f)
                 ->scale(1.0f, 8.0f, 40.0f)
                 ->end();
-        Renderer::render_object(walls[25], ZCUBE);
+        renderer->render_object(walls[25], ZCUBE);
 
         walls[26]->movement()
                 ->begin()
                 ->translate(-19.99f, 6.5f, 0.0f)
                 ->scale(1.0f, 8.0f, 40.0f)
                 ->end();
-        Renderer::render_object(walls[26], ZCUBE);
+        renderer->render_object(walls[26], ZCUBE);
 
 
         // Background sky
@@ -731,7 +729,7 @@ int main(int argc, char* argv[])
                 ->rotate_x(PI / 2)
                 ->scale(20.0f, 0.0f, 5.0f)
                 ->end();
-        Renderer::render_object(skies[0], SKY);
+        renderer->render_object(skies[0], SKY);
 
 
         skies[1]->movement()
@@ -740,7 +738,7 @@ int main(int argc, char* argv[])
                 ->rotate_x(PI / 2)
                 ->scale(20.0f, 0.0f, 5.0f)
                 ->end();
-        Renderer::render_object(skies[1], SKY);
+        renderer->render_object(skies[1], SKY);
 
 
         skies[2]->movement()
@@ -750,7 +748,7 @@ int main(int argc, char* argv[])
                 ->rotate_x(PI / 2)
                 ->scale(20.0f, 0.0f, 5.0f)
                 ->end();
-        Renderer::render_object(skies[2], SKY);
+        renderer->render_object(skies[2], SKY);
 
 
 
@@ -761,7 +759,7 @@ int main(int argc, char* argv[])
                 ->rotate_x(PI / 2)
                 ->scale(20.0f, 0.0f, 5.0f)
                 ->end();
-        Renderer::render_object(skies[3], SKY);
+        renderer->render_object(skies[3], SKY);
 
 
 
@@ -771,7 +769,7 @@ int main(int argc, char* argv[])
                 ->translate(0.0f, 8.1f, 0.0f)
                 ->scale(20.0f, 10.0f, 20.0f)
                 ->end();
-        Renderer::render_object(skies[4], SKY);
+        renderer->render_object(skies[4], SKY);
 
 
         if (pause)

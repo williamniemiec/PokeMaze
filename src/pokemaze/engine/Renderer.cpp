@@ -6,15 +6,11 @@
 #include <pokemaze/engine/loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
 
-GLuint Renderer::program_id = 0;
-GLint Renderer::model_uniform;
-GLint Renderer::view_uniform;
-GLint Renderer::projection_uniform;
-GLint Renderer::object_id_uniform;
-GLint Renderer::bbox_min_uniform;
-GLint Renderer::bbox_max_uniform;
-GLuint Renderer::total_loaded_textures = 0;
-std::list<std::string> Renderer::loaded_textures;
+Renderer::Renderer()
+{
+    program_id = 0;
+    total_loaded_textures = 0;
+}
 
 void Renderer::pre_render()
 {

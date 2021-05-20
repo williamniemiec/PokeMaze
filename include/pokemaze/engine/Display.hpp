@@ -2,11 +2,13 @@
 
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
+#include "pokemaze/engine/text/TextRender.hpp"
 
 class Display
 {
 private:
     GLFWwindow* window;
+    TextRender* text_renderer;
 
 public:
     Display(GLFWwindow* window);
