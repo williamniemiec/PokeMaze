@@ -10,9 +10,31 @@
 #include <stack>
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/BoundingBox.hpp"
+//#include "pokemaze/engine/moviment/Movimentation.hpp"
 
 class SceneObject
 {
+public:
+    class Movement
+    {
+    private:
+        glm::mat4 model_matrix;
+        SceneObject* sceneObject;
+
+    public:
+        Movement(SceneObject* sceneObject);
+
+    public:
+        Movement* begin();
+        Movement* rotate_x(float angle);
+        Movement* rotate_y(float angle);
+        Movement* rotate_z(float angle);
+        Movement* translate(float x, float y, float z);
+        Movement* scale(float sx, float sy, float sz);
+        void end();
+        glm::mat4 get_model_matrix();
+    };
+
 public:
     std::vector<GLuint> indexes;
     std::vector<float> model_coefficients;
@@ -25,6 +47,7 @@ public:
     std::string name;
     glm::vec4 position;
     std::vector<std::string> textures;
+    Movement* obj_movement;
     //std::string filename;
     //std::string mtl_path;
     //bool triangulate;
@@ -105,6 +128,7 @@ public:
     void undo();
     void apply(glm::mat4 matrix);
     SceneObject* create_copy();
+    Movement* movement();
 
     std::string get_name();
     void set_name(std::string name);

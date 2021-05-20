@@ -37,6 +37,12 @@ void Renderer::pre_render()
     glUseProgram(program_id);
 }
 
+void Renderer::render_object(SceneObject* object, GLuint model_id)
+{
+    render_model(object->movement()->get_model_matrix(), model_id);
+    draw_virtual_object(object);
+}
+
 void Renderer::render_view(glm::mat4 view)
 {
     glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
@@ -57,11 +63,6 @@ void Renderer::render_bbox(BoundingBox* bbox)
 {
     glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
     glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
-}
-
-void Renderer::render_object_id(GLuint obj_id)
-{
-
 }
 
 GLuint Renderer::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id)
@@ -364,19 +365,19 @@ void Renderer::LoadTextureImage(std::string filename, bool is_plane)
     loaded_textures.push_back(filename);
 }
 
-void Renderer::render_object(SceneObject* object)
+void Renderer::load_object(SceneObject* object)
 {
     object->set_vertex_array_object(request_vao());
 
-    render_object_model(object->get_model_coefficients());
-    render_object_normal(object->get_normal_coefficients());
-    render_object_texture(object->get_texture_coefficients(), object->get_textures_id(), object->get_textures(), object->is_2D());
-    render_object_indexes(object->get_indexes());
+    parse_object_model(object->get_model_coefficients());
+    parse_object_normal(object->get_normal_coefficients());
+    parse_object_texture(object->get_texture_coefficients(), object->get_textures_id(), object->get_textures(), object->is_2D());
+    parse_object_indexes(object->get_indexes());
 
     glBindVertexArray(0);   // Avoids bugs
 }
 
-void Renderer::render_object_indexes(std::vector<GLuint> indexes)
+void Renderer::parse_object_indexes(std::vector<GLuint> indexes)
 {
     GLuint indexes_id;
 
@@ -386,7 +387,7 @@ void Renderer::render_object_indexes(std::vector<GLuint> indexes)
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexes.size() * sizeof(GLuint), indexes.data());
 }
 
-void Renderer::render_object_model(std::vector<float> model_coefficients)
+void Renderer::parse_object_model(std::vector<float> model_coefficients)
 {
     GLuint VBO_model_coefficients_id;
 
@@ -405,7 +406,7 @@ void Renderer::send_to_shader(GLuint location, GLint number_of_dimensions, GLenu
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Renderer::render_object_normal(std::vector<float> normal_coefficients)
+void Renderer::parse_object_normal(std::vector<float> normal_coefficients)
 {
     if (normal_coefficients.empty())
         return;
@@ -419,7 +420,7 @@ void Renderer::render_object_normal(std::vector<float> normal_coefficients)
     send_to_shader(1, 4, GL_FLOAT);
 }
 
-void Renderer::render_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, std::vector<std::string> textures, bool is_plane)
+void Renderer::parse_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, std::vector<std::string> textures, bool is_plane)
 {
     if (!texture_coefficients.empty())
     {
@@ -468,4 +469,36 @@ GLint Renderer::request_vao()
     glBindVertexArray(vertex_array_object_id);
 
     return vertex_array_object_id;
+}
+
+void Renderer::draw_virtual_object(SceneObject* object)
+{
+// "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
+    // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
+    // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
+    glBindVertexArray(object->get_vertex_array_object());
+
+    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
+    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
+    BoundingBox* bbox = object->get_bounding_box();
+
+    //glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
+    //glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
+    render_bbox(bbox);
+
+    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
+    // apontados pelo VAO como linhas. Veja a definição de
+    // g_VirtualScene[""] dentro da função BuildTrianglesAndAddToVirtualScene(), e veja
+    // a documentação da função glDrawElements() em
+    // http://docs.gl/gl3/glDrawElements.
+    glDrawElements(
+        object->get_rendering_mode(),
+        object->get_total_indexes(),
+        GL_UNSIGNED_INT,
+        (void*) (object->get_first_index() * sizeof(GLuint))
+    );
+
+    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // alterar o mesmo. Isso evita bugs.
+    glBindVertexArray(0);
 }

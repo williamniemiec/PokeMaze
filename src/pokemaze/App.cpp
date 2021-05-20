@@ -174,7 +174,6 @@ float delta_time = (float)(current_time - previous_time);
 
 // Variável que guarda a teclado atualmente sendo pressionada.
 bool w_key = false, a_key = false, s_key = false, d_key = false;
-bool first_run = true;
 
 Projection* g_projection;
 
@@ -239,58 +238,72 @@ int main(int argc, char* argv[])
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
     Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);*/
 
-    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
-    Renderer::render_object(floor);
-    g_VirtualScene["floor"] = floor;
+    std::vector<SceneObject*> obstacles;
 
+    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
+    Renderer::load_object(floor);
+    g_VirtualScene["floor"] = floor;
+    obstacles.push_back(floor);
+
+    std::vector<SceneObject*> skies;
     SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
-    for (int i = 1; i <= 5; i++)
+    for (int i = 0; i <= 4; i++)
     {
         sky = sky->create_copy(); // Avoids parsing obj info again
-        Renderer::render_object(sky);
+        Renderer::load_object(sky);
 
         g_VirtualScene["sky_" + std::to_string(i)] = sky;
+
+        skies.push_back(sky);
+        obstacles.push_back(sky);
     }
 
     AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
-    Renderer::render_object(ash);
+    Renderer::load_object(ash);
     g_VirtualScene["Ash_Ketchum"] = ash;
 
     Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
-    Renderer::render_object(pokeball);
+    Renderer::load_object(pokeball);
     g_VirtualScene["Pokeball"] = pokeball;
 
     Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
-    Renderer::render_object(pikachu);
+    Renderer::load_object(pikachu);
     g_VirtualScene["Pikachu"] = pikachu;
 
     Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
-    Renderer::render_object(charizard);
+    Renderer::load_object(charizard);
     g_VirtualScene["Charizard"] = charizard;
 
+    std::vector<SceneObject*> walls;
     SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
-    for (int i = 1; i <= 26; i++)
+    for (int i = 0; i <= 26; i++)
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
-        Renderer::render_object(wall);
+        Renderer::load_object(wall);
 
         g_VirtualScene["wall_" + std::to_string(i)] = wall;
+        walls.push_back(wall);
+        obstacles.push_back(wall);
     }
 
-    wall = wall->create_copy();
-    Renderer::render_object(wall);
-    g_VirtualScene["secret_wall"] = wall;
+    SceneObject* secret_wall = wall->create_copy();
+    secret_wall->set_name("secret_wall");
+    Renderer::load_object(secret_wall);
+    g_VirtualScene["secret_wall"] = secret_wall;
+    obstacles.push_back(secret_wall);
 
-    SceneObject* garage = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
-    Renderer::render_object(garage);
-    g_VirtualScene["pikachu_door"] = garage;
+    SceneObject* garage_door = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
+    Renderer::load_object(garage_door);
+    g_VirtualScene["pikachu_door"] = garage_door;
+    //obstacles.push_back(garage_door);
 
-    garage = garage->create_copy();
-    Renderer::render_object(garage);
-    g_VirtualScene["pikachu_ceiling"] = garage;
+    SceneObject* garage_ceiling = garage_door->create_copy();
+    Renderer::load_object(garage_ceiling);
+    g_VirtualScene["pikachu_ceiling"] = garage_ceiling;
+    obstacles.push_back(garage_ceiling);
 
     Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
-    Renderer::render_object(tree);
+    Renderer::load_object(tree);
     g_VirtualScene["Tree"] = tree;
 
     TextRender::TextRendering_Init();
@@ -309,7 +322,7 @@ int main(int argc, char* argv[])
     LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
     FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
 
-    std::vector<SceneObject*> walls;
+
     bool pikachu_catched = false;
     bool pokeball_catched = false;
     bool pikachu_door_touched = false;
@@ -356,7 +369,7 @@ int main(int argc, char* argv[])
                 }
             }
 
-            for (SceneObject* obj : walls)
+            for (SceneObject* obj : obstacles)
             {
                 if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
                 {
@@ -394,7 +407,7 @@ int main(int argc, char* argv[])
                 fixed_camera->move_right(CAMERA_SPEED * delta_time);
             }
 
-            for (SceneObject* obj : walls)
+            for (SceneObject* obj : obstacles)
             {
                 if (pikachu_catched && obj->get_name() == "secret_wall")
                     continue;
@@ -427,7 +440,7 @@ int main(int argc, char* argv[])
 
         }
 
-/// FIM CAMERA
+        /// FIM CAMERA
 
 // Computamos a matriz "View" utilizando os parâmetros da câmera para
 // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -449,74 +462,32 @@ int main(int argc, char* argv[])
         Renderer::render_view(view);
         Renderer::render_projection(g_projection->get_projection_matrix());
 
-        glm::mat4 model = Matrix_Identity();
+
 /// Desenha jogador
-        model = Matrix_Translate(fixed_camera->get_x(),-1.4f,fixed_camera->get_z())
-                * Matrix_Rotate_Y(g_player_direction);
-        Renderer::render_model(model, PLAYER);
-        DrawVirtualObject("Ash_Ketchum");
-        g_VirtualScene["Ash_Ketchum"]->apply(model);
-        g_VirtualScene["Ash_Ketchum"]->set_position(fixed_camera->get_x(),-1.4f,fixed_camera->get_z());
+        ash->movement()
+                ->begin()
+                ->translate(fixed_camera->get_x(), -1.4f, fixed_camera->get_z())
+                ->rotate_y(g_player_direction)
+                ->end();
+        Renderer::render_object(ash, PLAYER);
+
+        tree->movement()
+                ->begin()
+                ->translate(8.6f, -1.4f, 8.8f)
+                ->scale(0.5f, 0.5f, 0.5f)
+                ->end();
+        Renderer::render_object(tree, TREE);
 
 
-        model = Matrix_Translate(8.6f, -1.4f, 8.8f)
-            * Matrix_Scale(0.5f, 0.5f, 0.5f);
-        Renderer::render_model(model, TREE);
-
-        DrawVirtualObject("Tree");
-        g_VirtualScene["Tree"]->apply(model);
-
-        // WALLS
-        model = Matrix_Translate(0.0f, 6.5f, 19.99f)
-                * Matrix_Scale(40.0f, 8.0f, 1.0f);
-        Renderer::render_model(model, XCUBE);
-
-        DrawVirtualObject("wall_23");
-        g_VirtualScene["wall_23"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_23"]);
-
-        model = Matrix_Translate(0.0f, 6.5f, -19.99f)
-                * Matrix_Scale(40.0f, 8.0f, 1.0f);
-        Renderer::render_model(model, XCUBE);
-
-        DrawVirtualObject("wall_24");
-        g_VirtualScene["wall_24"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_24"]);
-
-
-        model = Matrix_Translate(19.99f, 6.5f, 0.0f)
-                * Matrix_Scale(1.0f, 8.0f, 40.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_25");
-        g_VirtualScene["wall_25"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_25"]);
-
-
-
-        model = Matrix_Translate(-19.99f, 6.5f, 0.0f)
-                * Matrix_Scale(1.0f, 8.0f, 40.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_26");
-        g_VirtualScene["wall_26"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_26"]);
-
-        model = Matrix_Translate(8.75f,0.0f,5.25f)
-                * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 1.0f)
-                * Matrix_Rotate_Z(g_AngleZ + (float)glfwGetTime() * 0.5f)
-                * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 1.5f)
-                * Matrix_Scale(0.2, 0.2, 0.2);
-        Renderer::render_model(model, POKEBALL);
-        DrawVirtualObject("Pokeball");
-        g_VirtualScene["Pokeball"]->set_position(8.75f,0.0f,5.25f);
-        g_VirtualScene["Pokeball"]->apply(model);
+        pokeball->movement()
+                ->begin()
+                ->translate(8.75f,0.0f,5.25f)
+                ->rotate_y(g_AngleY + (float) glfwGetTime() * 1.0f)
+                ->rotate_z(g_AngleZ + (float) glfwGetTime() * 0.5f)
+                ->rotate_x(g_AngleX + (float) glfwGetTime() * 1.5f)
+                ->scale(0.2, 0.2, 0.2)
+                ->end();
+        Renderer::render_object(pokeball, POKEBALL);
 
         float charizard_current_time = (float)glfwGetTime();
         if (charizard_current_time - charizard_previous_time>= 0.04)
@@ -538,241 +509,194 @@ int main(int argc, char* argv[])
             charizard_previous_time = charizard_current_time;
         }
 
+        /// Desenha charizard
+        charizard->movement()
+                ->begin()
+                ->translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
+                ->scale(0.1, 0.1, 0.1)
+                ->rotate_y(PI)
+                ->rotate_x(PI / 4)
+                ->end();
+        Renderer::render_object(charizard, CHARIZARD);
+
+
 // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.4f,0.0f) * Matrix_Scale(20.5f, 10.5f, 20.5f);
-        Renderer::render_model(model, PLANE);
-        DrawVirtualObject("floor");
-        g_VirtualScene["floor"]->apply(model);
+        floor->movement()
+                ->begin()
+                ->translate(0.0f,-1.4f,0.0f)
+                ->scale(20.5f, 10.5f, 20.5f)
+                ->end();
+        Renderer::render_object(floor, PLANE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["floor"]);
-
-// Desenhamos o plano do ceu
-        model = Matrix_Translate(0.0f,8.1f,0.0f) * Matrix_Scale(20.0f, 10.0f, 20.0f);
-        Renderer::render_model(model, SKY);
-        DrawVirtualObject("sky_5");
-        g_VirtualScene["sky_5"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["sky_5"]);
-
-
-/// Desenha charizard
-        model = Matrix_Translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
-                * Matrix_Scale(0.1, 0.1, 0.1)
-                * Matrix_Rotate_Y(PI)
-                * Matrix_Rotate_X(PI/4);
-        Renderer::render_model(model, CHARIZARD);
-        DrawVirtualObject("Charizard");
-        g_VirtualScene["Charizard"]->apply(model);
 
         if (!pikachu_catched)
         {
-            model = Matrix_Translate(8.75f, -1.4f, -1.75f)
-                    * Matrix_Scale(0.1, 0.1, 0.1)
-                    * Matrix_Rotate_Y(PI);
-            Renderer::render_model(model, PIKACHU);
-            DrawVirtualObject("Pikachu");
-            g_VirtualScene["Pikachu"]->apply(model);
+            pikachu->movement()
+                    ->begin()
+                    ->translate(8.75f, -1.4f, -1.75f)
+                    ->scale(0.1, 0.1, 0.1)
+                    ->rotate_y(PI)
+                    ->end();
+            Renderer::render_object(pikachu, PIKACHU);
         }
 
         //Wall from Z 3.5 to z 10.5
-        model = Matrix_Translate(0.0f,1.0f,7.0f)
-                *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_1");
-        g_VirtualScene["wall_1"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_1"]);
+        walls[0]->movement()
+                ->begin()
+                ->translate(0.0f, 1.0f, 7.0f)
+                ->scale(0.5f, 2.5f, 7.0f)
+                ->end();
+        Renderer::render_object(walls[0], ZCUBE);
 
         //Wall from X 3.5 Z 0 to z 7
-        model = Matrix_Translate(3.5f,1.0f,3.5f)
-                *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_2");
-        g_VirtualScene["wall_2"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_2"]);
+        walls[1]->movement()
+                ->begin()
+                ->translate(3.5f, 1.0f, 3.5f)
+                ->scale(0.5f, 2.5f, 7.0f)
+                ->end();
+        Renderer::render_object(walls[1], ZCUBE);
 
         //Wall from X -7 Z 0 to z -7
-        model = Matrix_Translate(-7.0f,1.0f,-3.5f)
-                *Matrix_Scale(0.5f, 2.5f, 7.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_3");
-        g_VirtualScene["wall_3"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_3"]);
+        walls[2]->movement()
+                ->begin()
+                ->translate(-7.0f, 1.0f, -3.5f)
+                ->scale(0.5f, 2.5f, 7.0f)
+                ->end();
+        Renderer::render_object(walls[2], ZCUBE);
 
         //Wall from Z 0 X -3.5 to Z 3.5
-        model = Matrix_Translate(-3.5f,1.0f,1.750f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_4");
-        g_VirtualScene["wall_4"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_4"]);
+        walls[3]->movement()
+                ->begin()
+                ->translate(-3.5f, 1.0f, 1.75f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[3], ZCUBE);
 
         //Wall from Z 3.5 X -7 to Z 7
-        model = Matrix_Translate(-7.0f,1.0f,5.25f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_5");
-        g_VirtualScene["wall_5"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_5"]);
+        walls[4]->movement()
+                ->begin()
+                ->translate(-7.0f, 1.0f, 5.25f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[4], ZCUBE);
 
         //Wall from Z 3.5 X 7 to Z 7
-        model = Matrix_Translate(7.0f,1.0f,5.25f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_6");
-        g_VirtualScene["wall_6"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_6"]);
+        walls[5]->movement()
+                ->begin()
+                ->translate(7.0f, 1.0f, 5.25f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[5], ZCUBE);
 
         //Wall from Z -3.5 X 3.5 to Z -7
-        model = Matrix_Translate(3.5f,1.0f,-5.25f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_7");
-        g_VirtualScene["wall_7"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_7"]);
+        walls[6]->movement()
+                ->begin()
+                ->translate(3.5f, 1.0f, -5.25f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[6], ZCUBE);
 
         //Wall from Z 0 X 7 to Z -3.5
-        model = Matrix_Translate(7.0f,1.0f,-1.75f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_8");
-        g_VirtualScene["wall_8"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_8"]);
+        walls[7]->movement()
+                ->begin()
+                ->translate(7.0f, 1.0f, -1.75f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[7], ZCUBE);
 
         //Wall from Z 7 X -3.5 to Z 10.5
-        model = Matrix_Translate(-3.5f,1.0f,8.75f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_9");
-        g_VirtualScene["wall_9"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_9"]);
+        walls[8]->movement()
+                ->begin()
+                ->translate(-3.5f,1.0f,8.75f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[8], ZCUBE);
 
         //Wall from Z 0 to Z -3.5
-        model = Matrix_Translate(0.0f,1.0f,-1.75f)
-                *Matrix_Scale(0.5f, 2.5f, 3.50f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_10");
-        g_VirtualScene["wall_10"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_10"]);
+        walls[9]->movement()
+                ->begin()
+                ->translate(0.0f, 1.0f,- 1.75f)
+                ->scale(0.5f, 2.5f, 3.5f)
+                ->end();
+        Renderer::render_object(walls[9], ZCUBE);
 
         //Wall from X 0 to X 10.5
-        model = Matrix_Translate(5.25f,1.0f,0.0f)
-                *Matrix_Scale(10.50f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_11");
-        g_VirtualScene["wall_11"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_11"]);
+        walls[10]->movement()
+                ->begin()
+                ->translate(5.25f, 1.0f, 0.0f)
+                ->scale(10.50f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[10], XCUBE);
 
         //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
         if (!pikachu_catched)
         {
-            model = Matrix_Translate(5.25f,1.0f,3.5f)
-                    *Matrix_Scale(3.5f, 2.5f, 0.5f);
-            Renderer::render_model(model, XCUBE);
-            DrawVirtualObject("secret_wall");
-            g_VirtualScene["secret_wall"]->apply(model);
-            g_VirtualScene["secret_wall"]->set_name("secret_wall");
-
-            if (first_run)
-                walls.push_back(g_VirtualScene["secret_wall"]);
+            secret_wall->movement()
+                    ->begin()
+                    ->translate(5.25f, 1.0f, 3.5f)
+                    ->scale(3.5f, 2.5f, 0.5f)
+                    ->end();
+            Renderer::render_object(secret_wall, XCUBE);
         }
 
-
-
-
         //Wall from X 0 Z -7 to X -7
-        model = Matrix_Translate(-3.5f,1.0f,-7.0f)
-                *Matrix_Scale(7.0f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_12");
-        g_VirtualScene["wall_12"]->apply(model);
+        walls[11]->movement()
+                ->begin()
+                ->translate(-3.5f,1.0f,-7.0f)
+                ->scale(7.0f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[11], XCUBE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_12"]);
 
         //Wall from X 0 Z -3.5 to X -3.5
-        model = Matrix_Translate(-1.75f,1.0f,-3.5f)
-                *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_13");
-        g_VirtualScene["wall_13"]->apply(model);
+        walls[12]->movement()
+                ->begin()
+                ->translate(-1.75f,1.0f,-3.5f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[12], XCUBE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_13"]);
 
         //Wall from X 3.5 Z -3.5 to X 7
-        model = Matrix_Translate(5.25f,1.0f,-3.5f)
-                *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_14");
-        g_VirtualScene["wall_14"]->apply(model);
+        walls[13]->movement()
+                ->begin()
+                ->translate(5.25f,1.0f,-3.5f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[13], XCUBE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_14"]);
 
         //Wall from X 3.5 Z -7 to X 7
-        model = Matrix_Translate(5.25f,1.0f,-7.0f)
-                *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_15");
-        g_VirtualScene["wall_15"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_15"]);
+        walls[14]->movement()
+                ->begin()
+                ->translate(5.25f,1.0f,-7.0f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[14], XCUBE);
 
         //Wall from X -7 to X -10.5
-        model = Matrix_Translate(-8.75f,1.0f,0.0f)
-                *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_16");
-        g_VirtualScene["wall_16"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_16"]);
+        walls[15]->movement()
+                ->begin()
+                ->translate(-8.75f,1.0f,0.0f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[15], XCUBE);
 
         //Wall from X 7 Z 7 to X 10.5
-        model = Matrix_Translate(8.75f,1.0f,7.0f)
-                *Matrix_Scale(3.5f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_17");
-        g_VirtualScene["wall_17"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_17"]);
+        walls[16]->movement()
+                ->begin()
+                ->translate(8.75f, 1.0f, 7.0f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[16], XCUBE);
 
         //Wall from X 0 Z 3.5 to X -7
-        model = Matrix_Translate(-3.5f,1.0f,3.5f)
-                *Matrix_Scale(7.0f, 2.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_18");
-        g_VirtualScene["wall_18"]->apply(model);
-
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_18"]);
+        walls[17]->movement()
+                ->begin()
+                ->translate(-3.5f,1.0f,3.5f)
+                ->scale(7.0f, 2.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[17], XCUBE);
 
         //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
 
@@ -784,107 +708,141 @@ int main(int argc, char* argv[])
                 pikachu_door_opened = true;
         }
 
-        model = Matrix_Translate(8.75f,1.60f,-3.5f)
-                *Matrix_Scale(3.5f, door_y, 0.5f);
-        Renderer::render_model(model, XDOOR);
-        DrawVirtualObject("pikachu_door");
-        g_VirtualScene["pikachu_door"]->apply(model);
-        g_VirtualScene["pikachu_door"]->set_name("pikachu_door");
+        garage_door->movement()
+                ->begin()
+                ->translate(8.75f, 1.60f, -3.5f)
+                ->scale(3.5f, door_y, 0.5f)
+                ->end();
+        Renderer::render_object(garage_door, XDOOR);
 
         //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
-        model = Matrix_Translate(8.625f,1.5f,-1.5f)
-                *Matrix_Scale(3.75f, 0.5f, 3.5f);
-        Renderer::render_model(model, XDOOR);
-        DrawVirtualObject("pikachu_ceiling");
-        g_VirtualScene["pikachu_ceiling"]->apply(model);
+        garage_ceiling->movement()
+                ->begin()
+                ->translate(8.625f, 1.5f, -1.5f)
+                ->scale(3.75f, 0.5f, 3.5f)
+                ->end();
+        Renderer::render_object(garage_ceiling, XDOOR);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["pikachu_ceiling"]);
-        // Bound walls
+        // Bound obstacles
 
         // +X
-        model = Matrix_Translate(10.75f,5.0f,0.0f)
-                *Matrix_Scale(0.5f, 6.5f, 21.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_19");
-        g_VirtualScene["wall_19"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_19"]);
+        walls[18]->movement()
+                ->begin()
+                ->translate(10.75f,5.0f,0.0f)
+                ->scale(0.5f, 6.5f, 21.0f)
+                ->end();
+        Renderer::render_object(walls[18], ZCUBE);
 
         // -x
-        model = Matrix_Translate(-10.75f,5.0f,0.0f)
-                *Matrix_Scale(0.5f, 6.5f, 21.0f);
-        Renderer::render_model(model, ZCUBE);
-        DrawVirtualObject("wall_20");
-        g_VirtualScene["wall_20"]->apply(model);
-
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_20"]);
+        walls[19]->movement()
+                ->begin()
+                ->translate(-10.75f,5.0f,0.0f)
+                ->scale(0.5f, 6.5f, 21.0f)
+                ->end();
+        Renderer::render_object(walls[19], ZCUBE);
 
         // Z
-        model = Matrix_Translate(0.0f,5.0f,10.75f)
-                *Matrix_Scale(21.0f, 6.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_21");
-        g_VirtualScene["wall_21"]->apply(model);
+        walls[20]->movement()
+                ->begin()
+                ->translate(0.0f,5.0f,10.75f)
+                ->scale(21.0f, 6.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[20], XCUBE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_21"]);
 
         // -Z
-        model = Matrix_Translate(0.0f,5.0f,-10.75f)
-                *Matrix_Scale(21.0f, 6.5f, 0.5f);
-        Renderer::render_model(model, XCUBE);
-        DrawVirtualObject("wall_22");
-        g_VirtualScene["wall_22"]->apply(model);
+        walls[21]->movement()
+                ->begin()
+                ->translate(0.0f,5.0f,-10.75f)
+                ->scale(21.0f, 6.5f, 0.5f)
+                ->end();
+        Renderer::render_object(walls[21], XCUBE);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["wall_22"]);
+        walls[22]->movement()
+                ->begin()
+                ->translate(0.0f, 6.5f, 19.99f)
+                ->scale(40.0f, 8.0f, 1.0f)
+                ->end();
+        Renderer::render_object(walls[22], XCUBE);
+
+        walls[23]->movement()
+                ->begin()
+                ->translate(0.0f, 6.5f, 19.99f)
+                ->scale(40.0f, 8.0f, 1.0f)
+                ->end();
+        Renderer::render_object(walls[23], XCUBE);
+
+        walls[24]->movement()
+                ->begin()
+                ->translate(0.0f, 6.5f, -19.99f)
+                ->scale(40.0f, 8.0f, 1.0f)
+                ->end();
+        Renderer::render_object(walls[24], XCUBE);
+
+        walls[25]->movement()
+                ->begin()
+                ->translate(19.99f, 6.5f, 0.0f)
+                ->scale(1.0f, 8.0f, 40.0f)
+                ->end();
+        Renderer::render_object(walls[25], ZCUBE);
+
+        walls[26]->movement()
+                ->begin()
+                ->translate(-19.99f, 6.5f, 0.0f)
+                ->scale(1.0f, 8.0f, 40.0f)
+                ->end();
+        Renderer::render_object(walls[26], ZCUBE);
 
 
         // Background sky
-        model = Matrix_Translate(0.0f, 4.0f, 20.0f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        Renderer::render_model(model, SKY);
-        DrawVirtualObject("sky_1");
-        g_VirtualScene["sky_1"]->apply(model);
+        skies[0]->movement()
+                ->begin()
+                ->translate(0.0f, 4.0f, 20.0f)
+                ->rotate_x(PI / 2)
+                ->scale(20.0f, 0.0f, 5.0f)
+                ->end();
+        Renderer::render_object(skies[0], SKY);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["sky_1"]);
 
-        model = Matrix_Translate(0.0f, 4.0f, -20.0f)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        Renderer::render_model(model, SKY);
-        DrawVirtualObject("sky_2");
-        g_VirtualScene["sky_2"]->apply(model);
+        skies[1]->movement()
+                ->begin()
+                ->translate(0.0f, 4.0f, -20.0f)
+                ->rotate_x(PI / 2)
+                ->scale(20.0f, 0.0f, 5.0f)
+                ->end();
+        Renderer::render_object(skies[1], SKY);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["sky_2"]);
 
-        model = Matrix_Translate(20.0f, 4.0f, 0.0f)
-                * Matrix_Rotate_Y(PI/2)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        Renderer::render_model(model, SKY);
-        DrawVirtualObject("sky_3");
-        g_VirtualScene["sky_3"]->apply(model);
+        skies[2]->movement()
+                ->begin()
+                ->translate(20.0f, 4.0f, 0.0f)
+                ->rotate_y(PI / 2)
+                ->rotate_x(PI / 2)
+                ->scale(20.0f, 0.0f, 5.0f)
+                ->end();
+        Renderer::render_object(skies[2], SKY);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["sky_3"]);
 
-        model = Matrix_Translate(-20.0f, 4.0f, 0.0f)
-                * Matrix_Rotate_Y(PI/2)
-                * Matrix_Rotate_X(PI/2)
-                * Matrix_Scale(20.0f, 0.0f, 5.0f);
-        Renderer::render_model(model, SKY);
-        DrawVirtualObject("sky_4");
-        g_VirtualScene["sky_4"]->apply(model);
 
-        if (first_run)
-            walls.push_back(g_VirtualScene["sky_4"]);
+        skies[3]->movement()
+                ->begin()
+                ->translate(-20.0f, 4.0f, 0.0f)
+                ->rotate_y(PI / 2)
+                ->rotate_x(PI / 2)
+                ->scale(20.0f, 0.0f, 5.0f)
+                ->end();
+        Renderer::render_object(skies[3], SKY);
+
+
+
+
+        skies[4]->movement()
+                ->begin()
+                ->translate(0.0f, 8.1f, 0.0f)
+                ->scale(20.0f, 10.0f, 20.0f)
+                ->end();
+        Renderer::render_object(skies[4], SKY);
+
 
         if (pause)
             display->show_pause();
@@ -895,8 +853,6 @@ int main(int argc, char* argv[])
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        first_run = false;
     }
 
     // Finalizamos o uso dos recursos do sistema operacional

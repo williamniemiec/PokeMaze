@@ -14,6 +14,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->vertex_array_object_id = -1;
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
+    obj_movement = new Movement(this);
 
     if (!filename.empty()) // TEMP
     {
@@ -53,6 +54,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->texture_id = texture_id;
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
+    obj_movement = new Movement(this);
 
 
     //build();
@@ -159,6 +161,11 @@ void SceneObject::apply(glm::mat4 matrix)
 {
     transformations.push(matrix);
     bounding_box->apply(matrix);
+}
+
+SceneObject::Movement* SceneObject::movement()
+{
+    return obj_movement;
 }
 
 std::string SceneObject::get_name()
@@ -448,4 +455,70 @@ size_t SceneObject::get_total_indexes()
 bool SceneObject::is_2D()
 {
     return has_only_2_dimensions;
+}
+
+
+
+
+
+
+
+
+SceneObject::Movement::Movement(SceneObject* sceneObject)
+{
+    this->sceneObject = sceneObject;
+}
+
+SceneObject::Movement* SceneObject::Movement::begin()
+{
+    model_matrix = Matrix_Identity();
+
+    return this;
+}
+
+SceneObject::Movement* SceneObject::Movement::rotate_x(float angle)
+{
+    model_matrix *= Matrix_Rotate_X(angle);
+
+    return this;
+}
+
+SceneObject::Movement* SceneObject::Movement::rotate_y(float angle)
+{
+    model_matrix *= Matrix_Rotate_Y(angle);
+
+    return this;
+}
+
+SceneObject::Movement* SceneObject::Movement::rotate_z(float angle)
+{
+    model_matrix *= Matrix_Rotate_Z(angle);
+
+    return this;
+}
+
+SceneObject::Movement* SceneObject::Movement::translate(float x, float y, float z)
+{
+    model_matrix *= Matrix_Translate(x, y, z);
+
+    sceneObject->set_position(x, y, z);
+
+    return this;
+}
+
+SceneObject::Movement* SceneObject::Movement::scale(float sx, float sy, float sz)
+{
+    model_matrix *= Matrix_Scale(sx, sy, sz);
+
+    return this;
+}
+
+void SceneObject::Movement::end()
+{
+    sceneObject->apply(model_matrix);
+}
+
+glm::mat4 SceneObject::Movement::get_model_matrix()
+{
+    return model_matrix;
 }
