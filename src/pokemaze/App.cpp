@@ -70,7 +70,29 @@
 #define XDOOR 11
 #define TREE 12
 
+void build_cameras();
+void build_floor();
+void build_tree();
+void build_sky();
+void build_ash();
+void build_garage();
+void build_charizard();
+void build_pikachu();
+void build_pokeball();
+void build_walls();
 
+void animation();
+
+void draw_camera();
+void draw_floor();
+void draw_tree();
+void draw_sky();
+void draw_ash();
+void draw_garage();
+void draw_charizard();
+void draw_pikachu();
+void draw_pokeball();
+void draw_walls();
 
 
 // Funções callback para comunicação com o sistema operacional e interação do
@@ -142,7 +164,21 @@ bool w_key = false, a_key = false, s_key = false, d_key = false;
 
 Projection* g_projection;
 
-
+std::vector<SceneObject*> obstacles;
+std::vector<SceneObject*> skies;
+std::vector<SceneObject*> walls;
+Renderer* renderer;
+float charizard_previous_time = 0;
+double param_t = 2.0;
+bool bezier_forward = true;
+bool pikachu_catched = false;
+bool pokeball_catched = false;
+bool pikachu_door_touched = false;
+bool pikachu_door_opened = false;
+float door_y = 3.5f;
+FreeCamera* free_camera;
+LookAtCamera* lookat_camera;
+FixedCamera* fixed_camera;
 
 int main(int argc, char* argv[])
 {
@@ -159,101 +195,25 @@ int main(int argc, char* argv[])
     g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
 
 
-    // dump_gpu();
-    /*const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);*/
-    Renderer* renderer = new Renderer();
+    renderer = new Renderer();
     renderer->LoadShadersFromFiles();
 
-    std::vector<SceneObject*> obstacles;
-
-    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
-    renderer->load_object(floor);
-    g_VirtualScene["floor"] = floor;
-    obstacles.push_back(floor);
-
-    std::vector<SceneObject*> skies;
-    SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
-    for (int i = 0; i <= 4; i++)
-    {
-        sky = sky->create_copy(); // Avoids parsing obj info again
-        renderer->load_object(sky);
-
-        g_VirtualScene["sky_" + std::to_string(i)] = sky;
-
-        skies.push_back(sky);
-        obstacles.push_back(sky);
-    }
-
-    AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
-    renderer->load_object(ash);
-    g_VirtualScene["Ash_Ketchum"] = ash;
-
-    Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
-    renderer->load_object(pokeball);
-    g_VirtualScene["Pokeball"] = pokeball;
-
-    Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
-    renderer->load_object(pikachu);
-    g_VirtualScene["Pikachu"] = pikachu;
-
-    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
-    renderer->load_object(charizard);
-    g_VirtualScene["Charizard"] = charizard;
-
-    std::vector<SceneObject*> walls;
-    SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
-    for (int i = 0; i <= 26; i++)
-    {
-        wall = wall->create_copy(); // Avoids parsing obj info again
-        renderer->load_object(wall);
-
-        g_VirtualScene["wall_" + std::to_string(i)] = wall;
-        walls.push_back(wall);
-        obstacles.push_back(wall);
-    }
-
-    SceneObject* secret_wall = wall->create_copy();
-    secret_wall->set_name("secret_wall");
-    renderer->load_object(secret_wall);
-    g_VirtualScene["secret_wall"] = secret_wall;
-    obstacles.push_back(secret_wall);
-
-    SceneObject* garage_door = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
-    renderer->load_object(garage_door);
-    g_VirtualScene["pikachu_door"] = garage_door;
-    //obstacles.push_back(garage_door);
-
-    SceneObject* garage_ceiling = garage_door->create_copy();
-    renderer->load_object(garage_ceiling);
-    g_VirtualScene["pikachu_ceiling"] = garage_ceiling;
-    obstacles.push_back(garage_ceiling);
-
-    Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
-    renderer->load_object(tree);
-    g_VirtualScene["Tree"] = tree;
+    // Order is important (defines textures order at shader_fragment.glsl)
+    build_floor();
+    build_sky();
+    build_ash();
+    build_pokeball();
+    build_pikachu();
+    build_charizard();
+    build_walls();
+    build_garage();
+    build_tree();
 
 
     glEnable(GL_DEPTH_TEST);
 
-    float charizard_previous_time = 0;
-    double param_t = 2.0;
-    bool bezier_forward = true;
 
-    FreeCamera* free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
-    LookAtCamera* lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
-    FixedCamera* fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
-
-
-    bool pikachu_catched = false;
-    bool pokeball_catched = false;
-    bool pikachu_door_touched = false;
-    bool pikachu_door_opened = false;
-    float door_y = 3.5f;
+    build_cameras();
 
     std::string soundtrack = IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
     WavPlayer* player = new WavPlayer(soundtrack);
@@ -263,519 +223,18 @@ int main(int argc, char* argv[])
     {
         renderer->pre_render();
 
-        current_time = (float)glfwGetTime();
-        delta_time = current_time - previous_time;
-        previous_time = current_time;
-
-
-        /// CAMERA E TESTE DE COLISOES
-        if (FREE_MODE && !pause)
-        {
-            free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
-
-            if (w_key || a_key || s_key || d_key)
-            {
-                if (w_key == true)
-                {
-                    free_camera->move_up(CAMERA_SPEED * delta_time);
-                }
-                if (a_key == true)
-                {
-                    free_camera->move_left(CAMERA_SPEED * delta_time);
-
-                }
-                if (s_key == true)
-                {
-                    free_camera->move_down(CAMERA_SPEED * delta_time);
-                }
-                if (d_key == true)
-                {
-                    free_camera->move_right(CAMERA_SPEED * delta_time);
-                }
-            }
-
-            for (SceneObject* obj : obstacles)
-            {
-                if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
-                {
-                    free_camera->undo();
-
-                    break;
-                }
-            }
-        }
-        else if (pause)
-        {
-            glm::vec4 offset = glm::vec4(g_VirtualScene["Ash_Ketchum"]->get_position_x(),0.0f,g_VirtualScene["Ash_Ketchum"]->get_position_z(),0.0f);
-            lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
-        }
-        else
-        {
-            g_player_direction = -1*g_PlayerCameraTheta;
-
-            fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
-
-            if (w_key == true)
-            {
-                fixed_camera->move_up(CAMERA_SPEED * delta_time);
-            }
-            if (a_key == true)
-            {
-                fixed_camera->move_left(CAMERA_SPEED * delta_time);
-            }
-            if (s_key == true)
-            {
-                fixed_camera->move_down(CAMERA_SPEED * delta_time);
-            }
-            if (d_key == true)
-            {
-                fixed_camera->move_right(CAMERA_SPEED * delta_time);
-            }
-
-            for (SceneObject* obj : obstacles)
-            {
-                if (pikachu_catched && obj->get_name() == "secret_wall")
-                    continue;
-
-                if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], obj))
-                {
-                    fixed_camera->undo();
-                    g_VirtualScene["Ash_Ketchum"]->undo();
-
-                    break;
-                }
-            }
-
-            if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["pikachu_door"]))
-            {
-                if (!pikachu_door_opened)
-                {
-                    pikachu_door_touched = true;
-
-                    fixed_camera->undo();
-                    g_VirtualScene["Ash_Ketchum"]->undo();
-                }
-            }
-
-            if (Collisions::has_collision_plane_plane(g_VirtualScene["Ash_Ketchum"], g_VirtualScene["Pikachu"]))
-                pikachu_catched = true;
-
-            if (Collisions::has_collision_sphere_plane(g_VirtualScene["Pokeball"], g_VirtualScene["Ash_Ketchum"]))
-                pokeball_catched = true;
-
-        }
-
-        /// FIM CAMERA
-
-// Computamos a matriz "View" utilizando os parâmetros da câmera para
-// definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view;
-
-        if(FREE_MODE && !pause)
-        {
-            view = free_camera->get_view_matrix();
-        }
-        else if (pause)
-        {
-            view = lookat_camera->get_view_matrix();
-        }
-        else
-        {
-            view = fixed_camera->get_view_matrix();
-        }
-
-        renderer->render_view(view);
-        renderer->render_projection(g_projection->get_projection_matrix());
-
-
-/// Desenha jogador
-        ash->movement()
-                ->begin()
-                ->translate(fixed_camera->get_x(), -1.4f, fixed_camera->get_z())
-                ->rotate_y(g_player_direction)
-                ->end();
-        renderer->render_object(ash, PLAYER);
-
-        tree->movement()
-                ->begin()
-                ->translate(8.6f, -1.4f, 8.8f)
-                ->scale(0.5f, 0.5f, 0.5f)
-                ->end();
-        renderer->render_object(tree, TREE);
-
-
-        pokeball->movement()
-                ->begin()
-                ->translate(8.75f,0.0f,5.25f)
-                ->rotate_y(g_AngleY + (float) glfwGetTime() * 1.0f)
-                ->rotate_z(g_AngleZ + (float) glfwGetTime() * 0.5f)
-                ->rotate_x(g_AngleX + (float) glfwGetTime() * 1.5f)
-                ->scale(0.2, 0.2, 0.2)
-                ->end();
-        renderer->render_object(pokeball, POKEBALL);
-
-        float charizard_current_time = (float)glfwGetTime();
-        if (charizard_current_time - charizard_previous_time>= 0.04)
-        {
-            if (param_t <= 0.1)
-                bezier_forward = true;
-            else if (param_t >= 0.9)
-                bezier_forward = false;
-
-            if (bezier_forward)
-                param_t += 0.01;
-            else
-                param_t -= 0.01;
-
-            Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
-            Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
-            Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
-            Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
-            Point p = Bezier::calculate_cubic_bezier(P0, P1, P2, P3, param_t);
-
-            g_offset_x_charizard = p.get_x();
-            g_offset_z_charizard = p.get_y();
-            charizard_previous_time = charizard_current_time;
-        }
-
-        /// Desenha charizard
-        charizard->movement()
-                ->begin()
-                ->translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
-                ->scale(0.1, 0.1, 0.1)
-                ->rotate_y(PI)
-                ->rotate_x(PI / 4)
-                ->end();
-        renderer->render_object(charizard, CHARIZARD);
-
-
-// Desenhamos o plano do chão
-        floor->movement()
-                ->begin()
-                ->translate(0.0f,-1.4f,0.0f)
-                ->scale(20.5f, 10.5f, 20.5f)
-                ->end();
-        renderer->render_object(floor, PLANE);
-
+        draw_camera();
+        draw_ash();
+        draw_tree();
+        draw_pokeball();
+        draw_charizard();
+        draw_floor();
+        draw_walls();
+        draw_garage();
+        draw_sky();
 
         if (!pikachu_catched)
-        {
-            pikachu->movement()
-                    ->begin()
-                    ->translate(8.75f, -1.4f, -1.75f)
-                    ->scale(0.1, 0.1, 0.1)
-                    ->rotate_y(PI)
-                    ->end();
-            renderer->render_object(pikachu, PIKACHU);
-        }
-
-        //Wall from Z 3.5 to z 10.5
-        walls[0]->movement()
-                ->begin()
-                ->translate(0.0f, 1.0f, 7.0f)
-                ->scale(0.5f, 2.5f, 7.0f)
-                ->end();
-        renderer->render_object(walls[0], ZCUBE);
-
-        //Wall from X 3.5 Z 0 to z 7
-        walls[1]->movement()
-                ->begin()
-                ->translate(3.5f, 1.0f, 3.5f)
-                ->scale(0.5f, 2.5f, 7.0f)
-                ->end();
-        renderer->render_object(walls[1], ZCUBE);
-
-        //Wall from X -7 Z 0 to z -7
-        walls[2]->movement()
-                ->begin()
-                ->translate(-7.0f, 1.0f, -3.5f)
-                ->scale(0.5f, 2.5f, 7.0f)
-                ->end();
-        renderer->render_object(walls[2], ZCUBE);
-
-        //Wall from Z 0 X -3.5 to Z 3.5
-        walls[3]->movement()
-                ->begin()
-                ->translate(-3.5f, 1.0f, 1.75f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[3], ZCUBE);
-
-        //Wall from Z 3.5 X -7 to Z 7
-        walls[4]->movement()
-                ->begin()
-                ->translate(-7.0f, 1.0f, 5.25f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[4], ZCUBE);
-
-        //Wall from Z 3.5 X 7 to Z 7
-        walls[5]->movement()
-                ->begin()
-                ->translate(7.0f, 1.0f, 5.25f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[5], ZCUBE);
-
-        //Wall from Z -3.5 X 3.5 to Z -7
-        walls[6]->movement()
-                ->begin()
-                ->translate(3.5f, 1.0f, -5.25f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[6], ZCUBE);
-
-        //Wall from Z 0 X 7 to Z -3.5
-        walls[7]->movement()
-                ->begin()
-                ->translate(7.0f, 1.0f, -1.75f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[7], ZCUBE);
-
-        //Wall from Z 7 X -3.5 to Z 10.5
-        walls[8]->movement()
-                ->begin()
-                ->translate(-3.5f,1.0f,8.75f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[8], ZCUBE);
-
-        //Wall from Z 0 to Z -3.5
-        walls[9]->movement()
-                ->begin()
-                ->translate(0.0f, 1.0f,- 1.75f)
-                ->scale(0.5f, 2.5f, 3.5f)
-                ->end();
-        renderer->render_object(walls[9], ZCUBE);
-
-        //Wall from X 0 to X 10.5
-        walls[10]->movement()
-                ->begin()
-                ->translate(5.25f, 1.0f, 0.0f)
-                ->scale(10.50f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[10], XCUBE);
-
-        //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
-        if (!pikachu_catched)
-        {
-            secret_wall->movement()
-                    ->begin()
-                    ->translate(5.25f, 1.0f, 3.5f)
-                    ->scale(3.5f, 2.5f, 0.5f)
-                    ->end();
-            renderer->render_object(secret_wall, XCUBE);
-        }
-
-        //Wall from X 0 Z -7 to X -7
-        walls[11]->movement()
-                ->begin()
-                ->translate(-3.5f,1.0f,-7.0f)
-                ->scale(7.0f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[11], XCUBE);
-
-
-        //Wall from X 0 Z -3.5 to X -3.5
-        walls[12]->movement()
-                ->begin()
-                ->translate(-1.75f,1.0f,-3.5f)
-                ->scale(3.5f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[12], XCUBE);
-
-
-        //Wall from X 3.5 Z -3.5 to X 7
-        walls[13]->movement()
-                ->begin()
-                ->translate(5.25f,1.0f,-3.5f)
-                ->scale(3.5f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[13], XCUBE);
-
-
-        //Wall from X 3.5 Z -7 to X 7
-        walls[14]->movement()
-                ->begin()
-                ->translate(5.25f,1.0f,-7.0f)
-                ->scale(3.5f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[14], XCUBE);
-
-        //Wall from X -7 to X -10.5
-        walls[15]->movement()
-                ->begin()
-                ->translate(-8.75f,1.0f,0.0f)
-                ->scale(3.5f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[15], XCUBE);
-
-        //Wall from X 7 Z 7 to X 10.5
-        walls[16]->movement()
-                ->begin()
-                ->translate(8.75f, 1.0f, 7.0f)
-                ->scale(3.5f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[16], XCUBE);
-
-        //Wall from X 0 Z 3.5 to X -7
-        walls[17]->movement()
-                ->begin()
-                ->translate(-3.5f,1.0f,3.5f)
-                ->scale(7.0f, 2.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[17], XCUBE);
-
-        // Bound obstacles
-
-        // +X
-        walls[18]->movement()
-                ->begin()
-                ->translate(10.75f,5.0f,0.0f)
-                ->scale(0.5f, 6.5f, 21.0f)
-                ->end();
-        renderer->render_object(walls[18], ZCUBE);
-
-        // -x
-        walls[19]->movement()
-                ->begin()
-                ->translate(-10.75f,5.0f,0.0f)
-                ->scale(0.5f, 6.5f, 21.0f)
-                ->end();
-        renderer->render_object(walls[19], ZCUBE);
-
-        // Z
-        walls[20]->movement()
-                ->begin()
-                ->translate(0.0f,5.0f,10.75f)
-                ->scale(21.0f, 6.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[20], XCUBE);
-
-
-        // -Z
-        walls[21]->movement()
-                ->begin()
-                ->translate(0.0f,5.0f,-10.75f)
-                ->scale(21.0f, 6.5f, 0.5f)
-                ->end();
-        renderer->render_object(walls[21], XCUBE);
-
-        walls[22]->movement()
-                ->begin()
-                ->translate(0.0f, 6.5f, 19.99f)
-                ->scale(40.0f, 8.0f, 1.0f)
-                ->end();
-        renderer->render_object(walls[22], XCUBE);
-
-        walls[23]->movement()
-                ->begin()
-                ->translate(0.0f, 6.5f, 19.99f)
-                ->scale(40.0f, 8.0f, 1.0f)
-                ->end();
-        renderer->render_object(walls[23], XCUBE);
-
-        walls[24]->movement()
-                ->begin()
-                ->translate(0.0f, 6.5f, -19.99f)
-                ->scale(40.0f, 8.0f, 1.0f)
-                ->end();
-        renderer->render_object(walls[24], XCUBE);
-
-        walls[25]->movement()
-                ->begin()
-                ->translate(19.99f, 6.5f, 0.0f)
-                ->scale(1.0f, 8.0f, 40.0f)
-                ->end();
-        renderer->render_object(walls[25], ZCUBE);
-
-        walls[26]->movement()
-                ->begin()
-                ->translate(-19.99f, 6.5f, 0.0f)
-                ->scale(1.0f, 8.0f, 40.0f)
-                ->end();
-        renderer->render_object(walls[26], ZCUBE);
-
-
-
-        //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
-
-        if(pikachu_door_touched)
-        {
-            if (door_y > 0.5f)
-                door_y -= delta_time + 0.0025f;
-            else
-                pikachu_door_opened = true;
-        }
-
-        garage_door->movement()
-                ->begin()
-                ->translate(8.75f, 1.60f, -3.5f)
-                ->scale(3.5f, door_y, 0.5f)
-                ->end();
-        renderer->render_object(garage_door, XDOOR);
-
-        //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
-        garage_ceiling->movement()
-                ->begin()
-                ->translate(8.625f, 1.5f, -1.5f)
-                ->scale(3.75f, 0.5f, 3.5f)
-                ->end();
-        renderer->render_object(garage_ceiling, XDOOR);
-
-
-
-
-        // Background sky
-        skies[0]->movement()
-                ->begin()
-                ->translate(0.0f, 4.0f, 20.0f)
-                ->rotate_x(PI / 2)
-                ->scale(20.0f, 0.0f, 5.0f)
-                ->end();
-        renderer->render_object(skies[0], SKY);
-
-
-        skies[1]->movement()
-                ->begin()
-                ->translate(0.0f, 4.0f, -20.0f)
-                ->rotate_x(PI / 2)
-                ->scale(20.0f, 0.0f, 5.0f)
-                ->end();
-        renderer->render_object(skies[1], SKY);
-
-
-        skies[2]->movement()
-                ->begin()
-                ->translate(20.0f, 4.0f, 0.0f)
-                ->rotate_y(PI / 2)
-                ->rotate_x(PI / 2)
-                ->scale(20.0f, 0.0f, 5.0f)
-                ->end();
-        renderer->render_object(skies[2], SKY);
-
-
-
-        skies[3]->movement()
-                ->begin()
-                ->translate(-20.0f, 4.0f, 0.0f)
-                ->rotate_y(PI / 2)
-                ->rotate_x(PI / 2)
-                ->scale(20.0f, 0.0f, 5.0f)
-                ->end();
-        renderer->render_object(skies[3], SKY);
-
-
-
-
-        skies[4]->movement()
-                ->begin()
-                ->translate(0.0f, 8.1f, 0.0f)
-                ->scale(20.0f, 10.0f, 20.0f)
-                ->end();
-        renderer->render_object(skies[4], SKY);
-
+            draw_pikachu();
 
         if (pause)
             engine->display()->show_pause();
@@ -800,6 +259,641 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+void build_cameras()
+{
+    free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
+    lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, g_CameraDistance);
+    fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
+}
+
+void build_floor()
+{
+    Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
+    renderer->load_object(floor);
+    g_VirtualScene["floor"] = floor;
+    obstacles.push_back(floor);
+}
+
+void build_tree()
+{
+    Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
+    renderer->load_object(tree);
+    g_VirtualScene["tree"] = tree;
+}
+
+void build_sky()
+{
+    SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
+    for (int i = 0; i <= 4; i++)
+    {
+        sky = sky->create_copy(); // Avoids parsing obj info again
+        renderer->load_object(sky);
+
+        g_VirtualScene["sky_" + std::to_string(i)] = sky;
+
+        skies.push_back(sky);
+        obstacles.push_back(sky);
+    }
+}
+
+void build_ash()
+{
+    AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
+    renderer->load_object(ash);
+    g_VirtualScene["ash_ketchum"] = ash;
+}
+
+void build_garage()
+{
+    SceneObject* garage_door = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
+    renderer->load_object(garage_door);
+    g_VirtualScene["garage_door"] = garage_door;
+    //obstacles.push_back(garage_door);
+
+    SceneObject* garage_ceiling = garage_door->create_copy();
+    renderer->load_object(garage_ceiling);
+    g_VirtualScene["garage_ceiling"] = garage_ceiling;
+    obstacles.push_back(garage_ceiling);
+}
+
+void build_charizard()
+{
+    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+    renderer->load_object(charizard);
+    g_VirtualScene["charizard"] = charizard;
+}
+
+void build_pikachu()
+{
+    Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
+    renderer->load_object(pikachu);
+    g_VirtualScene["pikachu"] = pikachu;
+}
+
+void build_pokeball()
+{
+    Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
+    renderer->load_object(pokeball);
+    g_VirtualScene["pokeball"] = pokeball;
+}
+
+void build_walls()
+{
+    SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
+    for (int i = 0; i <= 26; i++)
+    {
+        wall = wall->create_copy(); // Avoids parsing obj info again
+        renderer->load_object(wall);
+
+        g_VirtualScene["wall_" + std::to_string(i)] = wall;
+        walls.push_back(wall);
+        obstacles.push_back(wall);
+    }
+
+    SceneObject* secret_wall = wall->create_copy();
+    secret_wall->set_name("secret_wall");
+    renderer->load_object(secret_wall);
+    g_VirtualScene["secret_wall"] = secret_wall;
+    obstacles.push_back(secret_wall);
+}
+
+void animation()
+{
+    current_time = (float)glfwGetTime();
+    delta_time = current_time - previous_time;
+    previous_time = current_time;
+}
+
+void draw_camera()
+{
+    /// CAMERA E TESTE DE COLISOES
+    if (FREE_MODE && !pause)
+    {
+        free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
+
+
+        if (w_key == true)
+        {
+            free_camera->move_up(CAMERA_SPEED * delta_time);
+        }
+        if (a_key == true)
+        {
+            free_camera->move_left(CAMERA_SPEED * delta_time);
+        }
+        if (s_key == true)
+        {
+            free_camera->move_down(CAMERA_SPEED * delta_time);
+        }
+        if (d_key == true)
+        {
+            free_camera->move_right(CAMERA_SPEED * delta_time);
+        }
+
+
+        for (SceneObject* obj : obstacles)
+        {
+            if (Collisions::has_collision_point_plane(free_camera->get_last_movement(), obj))
+            {
+                free_camera->undo();
+
+                break;
+            }
+        }
+    }
+    else if (pause)
+    {
+        glm::vec4 offset = glm::vec4(g_VirtualScene["ash_ketchum"]->get_position_x(),0.0f,g_VirtualScene["ash_ketchum"]->get_position_z(),0.0f);
+        lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
+    }
+    else
+    {
+        g_player_direction = -1*g_PlayerCameraTheta;
+
+        fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
+
+        if (w_key == true)
+        {
+            fixed_camera->move_up(CAMERA_SPEED * delta_time);
+        }
+        if (a_key == true)
+        {
+            fixed_camera->move_left(CAMERA_SPEED * delta_time);
+        }
+        if (s_key == true)
+        {
+            fixed_camera->move_down(CAMERA_SPEED * delta_time);
+        }
+        if (d_key == true)
+        {
+            fixed_camera->move_right(CAMERA_SPEED * delta_time);
+        }
+
+        for (SceneObject* obj : obstacles)
+        {
+            if (pikachu_catched && obj->get_name() == "secret_wall")
+                continue;
+
+            if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], obj))
+            {
+                fixed_camera->undo();
+                g_VirtualScene["ash_ketchum"]->undo();
+
+                break;
+            }
+        }
+
+        if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], g_VirtualScene["garage_door"]))
+        {
+            if (!pikachu_door_opened)
+            {
+                pikachu_door_touched = true;
+
+                fixed_camera->undo();
+                g_VirtualScene["ash_ketchum"]->undo();
+            }
+        }
+
+        if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], g_VirtualScene["pikachu"]))
+            pikachu_catched = true;
+
+        if (Collisions::has_collision_sphere_plane(g_VirtualScene["pokeball"], g_VirtualScene["ash_ketchum"]))
+            pokeball_catched = true;
+
+    }
+
+    /// FIM CAMERA
+
+    // Computamos a matriz "View" utilizando os parâmetros da câmera para
+    // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+    glm::mat4 view;
+
+    if(FREE_MODE && !pause)
+    {
+        view = free_camera->get_view_matrix();
+    }
+    else if (pause)
+    {
+        view = lookat_camera->get_view_matrix();
+    }
+    else
+    {
+        view = fixed_camera->get_view_matrix();
+    }
+
+    renderer->render_view(view);
+    renderer->render_projection(g_projection->get_projection_matrix());
+}
+
+
+void draw_floor()
+{
+    g_VirtualScene["floor"]->movement()
+            ->begin()
+            ->translate(0.0f,-1.4f,0.0f)
+            ->scale(20.5f, 10.5f, 20.5f)
+            ->end();
+    renderer->render_object(g_VirtualScene["floor"], PLANE);
+}
+
+void draw_sky()
+{
+    skies[0]->movement()
+            ->begin()
+            ->translate(0.0f, 4.0f, 20.0f)
+            ->rotate_x(PI / 2)
+            ->scale(20.0f, 0.0f, 5.0f)
+            ->end();
+    renderer->render_object(skies[0], SKY);
+
+
+    skies[1]->movement()
+            ->begin()
+            ->translate(0.0f, 4.0f, -20.0f)
+            ->rotate_x(PI / 2)
+            ->scale(20.0f, 0.0f, 5.0f)
+            ->end();
+    renderer->render_object(skies[1], SKY);
+
+
+    skies[2]->movement()
+            ->begin()
+            ->translate(20.0f, 4.0f, 0.0f)
+            ->rotate_y(PI / 2)
+            ->rotate_x(PI / 2)
+            ->scale(20.0f, 0.0f, 5.0f)
+            ->end();
+    renderer->render_object(skies[2], SKY);
+
+
+
+    skies[3]->movement()
+            ->begin()
+            ->translate(-20.0f, 4.0f, 0.0f)
+            ->rotate_y(PI / 2)
+            ->rotate_x(PI / 2)
+            ->scale(20.0f, 0.0f, 5.0f)
+            ->end();
+    renderer->render_object(skies[3], SKY);
+
+
+
+
+    skies[4]->movement()
+            ->begin()
+            ->translate(0.0f, 8.1f, 0.0f)
+            ->scale(20.0f, 10.0f, 20.0f)
+            ->end();
+    renderer->render_object(skies[4], SKY);
+}
+
+void draw_tree()
+{
+    g_VirtualScene["tree"]->movement()
+            ->begin()
+            ->translate(8.6f, -1.4f, 8.8f)
+            ->scale(0.5f, 0.5f, 0.5f)
+            ->end();
+    renderer->render_object(g_VirtualScene["tree"], TREE);
+}
+
+void draw_garage()
+{
+    //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
+    if(pikachu_door_touched)
+    {
+        if (door_y > 0.5f)
+            door_y -= delta_time + 0.0025f;
+        else
+            pikachu_door_opened = true;
+    }
+
+    g_VirtualScene["garage_door"]->movement()
+            ->begin()
+            ->translate(8.75f, 1.60f, -3.5f)
+            ->scale(3.5f, door_y, 0.5f)
+            ->end();
+    renderer->render_object(g_VirtualScene["garage_door"], XDOOR);
+
+    //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
+    g_VirtualScene["garage_ceiling"]->movement()
+            ->begin()
+            ->translate(8.625f, 1.5f, -1.5f)
+            ->scale(3.75f, 0.5f, 3.5f)
+            ->end();
+    renderer->render_object(g_VirtualScene["garage_ceiling"], XDOOR);
+}
+
+void draw_ash()
+{
+    g_VirtualScene["ash_ketchum"]->movement()
+            ->begin()
+            ->translate(fixed_camera->get_x(), -1.4f, fixed_camera->get_z())
+            ->rotate_y(g_player_direction)
+            ->end();
+    renderer->render_object(g_VirtualScene["ash_ketchum"], PLAYER);
+}
+
+void draw_charizard()
+{
+    float charizard_current_time = (float)glfwGetTime();
+    if (charizard_current_time - charizard_previous_time>= 0.04)
+    {
+        if (param_t <= 0.1)
+            bezier_forward = true;
+        else if (param_t >= 0.9)
+            bezier_forward = false;
+
+        if (bezier_forward)
+            param_t += 0.01;
+        else
+            param_t -= 0.01;
+
+        Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
+        Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
+        Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
+        Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
+        Point p = Bezier::calculate_cubic_bezier(P0, P1, P2, P3, param_t);
+
+        g_offset_x_charizard = p.get_x();
+        g_offset_z_charizard = p.get_y();
+        charizard_previous_time = charizard_current_time;
+    }
+
+    /// Desenha charizard
+    g_VirtualScene["charizard"]->movement()
+            ->begin()
+            ->translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
+            ->scale(0.1, 0.1, 0.1)
+            ->rotate_y(PI)
+            ->rotate_x(PI / 4)
+            ->end();
+    renderer->render_object(g_VirtualScene["charizard"], CHARIZARD);
+}
+
+void draw_pikachu()
+{
+    g_VirtualScene["pikachu"]->movement()
+            ->begin()
+            ->translate(8.75f, -1.4f, -1.75f)
+            ->scale(0.1, 0.1, 0.1)
+            ->rotate_y(PI)
+            ->end();
+    renderer->render_object(g_VirtualScene["pikachu"], PIKACHU);
+}
+
+void draw_pokeball()
+{
+    g_VirtualScene["pokeball"]->movement()
+            ->begin()
+            ->translate(8.75f,0.0f,5.25f)
+            ->rotate_y(g_AngleY + (float) glfwGetTime() * 1.0f)
+            ->rotate_z(g_AngleZ + (float) glfwGetTime() * 0.5f)
+            ->rotate_x(g_AngleX + (float) glfwGetTime() * 1.5f)
+            ->scale(0.2, 0.2, 0.2)
+            ->end();
+    renderer->render_object(g_VirtualScene["pokeball"], POKEBALL);
+}
+
+void draw_walls()
+{
+    //Wall from Z 3.5 to z 10.5
+    walls[0]->movement()
+            ->begin()
+            ->translate(0.0f, 1.0f, 7.0f)
+            ->scale(0.5f, 2.5f, 7.0f)
+            ->end();
+    renderer->render_object(walls[0], ZCUBE);
+
+    //Wall from X 3.5 Z 0 to z 7
+    walls[1]->movement()
+            ->begin()
+            ->translate(3.5f, 1.0f, 3.5f)
+            ->scale(0.5f, 2.5f, 7.0f)
+            ->end();
+    renderer->render_object(walls[1], ZCUBE);
+
+    //Wall from X -7 Z 0 to z -7
+    walls[2]->movement()
+            ->begin()
+            ->translate(-7.0f, 1.0f, -3.5f)
+            ->scale(0.5f, 2.5f, 7.0f)
+            ->end();
+    renderer->render_object(walls[2], ZCUBE);
+
+    //Wall from Z 0 X -3.5 to Z 3.5
+    walls[3]->movement()
+            ->begin()
+            ->translate(-3.5f, 1.0f, 1.75f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[3], ZCUBE);
+
+    //Wall from Z 3.5 X -7 to Z 7
+    walls[4]->movement()
+            ->begin()
+            ->translate(-7.0f, 1.0f, 5.25f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[4], ZCUBE);
+
+    //Wall from Z 3.5 X 7 to Z 7
+    walls[5]->movement()
+            ->begin()
+            ->translate(7.0f, 1.0f, 5.25f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[5], ZCUBE);
+
+    //Wall from Z -3.5 X 3.5 to Z -7
+    walls[6]->movement()
+            ->begin()
+            ->translate(3.5f, 1.0f, -5.25f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[6], ZCUBE);
+
+    //Wall from Z 0 X 7 to Z -3.5
+    walls[7]->movement()
+            ->begin()
+            ->translate(7.0f, 1.0f, -1.75f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[7], ZCUBE);
+
+    //Wall from Z 7 X -3.5 to Z 10.5
+    walls[8]->movement()
+            ->begin()
+            ->translate(-3.5f,1.0f,8.75f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[8], ZCUBE);
+
+    //Wall from Z 0 to Z -3.5
+    walls[9]->movement()
+            ->begin()
+            ->translate(0.0f, 1.0f,- 1.75f)
+            ->scale(0.5f, 2.5f, 3.5f)
+            ->end();
+    renderer->render_object(walls[9], ZCUBE);
+
+    //Wall from X 0 to X 10.5
+    walls[10]->movement()
+            ->begin()
+            ->translate(5.25f, 1.0f, 0.0f)
+            ->scale(10.50f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[10], XCUBE);
+
+    //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
+    if (!pikachu_catched)
+    {
+        g_VirtualScene["secret_wall"]->movement()
+                ->begin()
+                ->translate(5.25f, 1.0f, 3.5f)
+                ->scale(3.5f, 2.5f, 0.5f)
+                ->end();
+        renderer->render_object(g_VirtualScene["secret_wall"], XCUBE);
+    }
+
+    //Wall from X 0 Z -7 to X -7
+    walls[11]->movement()
+            ->begin()
+            ->translate(-3.5f,1.0f,-7.0f)
+            ->scale(7.0f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[11], XCUBE);
+
+
+    //Wall from X 0 Z -3.5 to X -3.5
+    walls[12]->movement()
+            ->begin()
+            ->translate(-1.75f,1.0f,-3.5f)
+            ->scale(3.5f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[12], XCUBE);
+
+
+    //Wall from X 3.5 Z -3.5 to X 7
+    walls[13]->movement()
+            ->begin()
+            ->translate(5.25f,1.0f,-3.5f)
+            ->scale(3.5f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[13], XCUBE);
+
+
+    //Wall from X 3.5 Z -7 to X 7
+    walls[14]->movement()
+            ->begin()
+            ->translate(5.25f,1.0f,-7.0f)
+            ->scale(3.5f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[14], XCUBE);
+
+    //Wall from X -7 to X -10.5
+    walls[15]->movement()
+            ->begin()
+            ->translate(-8.75f,1.0f,0.0f)
+            ->scale(3.5f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[15], XCUBE);
+
+    //Wall from X 7 Z 7 to X 10.5
+    walls[16]->movement()
+            ->begin()
+            ->translate(8.75f, 1.0f, 7.0f)
+            ->scale(3.5f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[16], XCUBE);
+
+    //Wall from X 0 Z 3.5 to X -7
+    walls[17]->movement()
+            ->begin()
+            ->translate(-3.5f,1.0f,3.5f)
+            ->scale(7.0f, 2.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[17], XCUBE);
+
+    // Bound obstacles
+
+    // +X
+    walls[18]->movement()
+            ->begin()
+            ->translate(10.75f,5.0f,0.0f)
+            ->scale(0.5f, 6.5f, 21.0f)
+            ->end();
+    renderer->render_object(walls[18], ZCUBE);
+
+    // -x
+    walls[19]->movement()
+            ->begin()
+            ->translate(-10.75f,5.0f,0.0f)
+            ->scale(0.5f, 6.5f, 21.0f)
+            ->end();
+    renderer->render_object(walls[19], ZCUBE);
+
+    // Z
+    walls[20]->movement()
+            ->begin()
+            ->translate(0.0f,5.0f,10.75f)
+            ->scale(21.0f, 6.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[20], XCUBE);
+
+
+    // -Z
+    walls[21]->movement()
+            ->begin()
+            ->translate(0.0f,5.0f,-10.75f)
+            ->scale(21.0f, 6.5f, 0.5f)
+            ->end();
+    renderer->render_object(walls[21], XCUBE);
+
+    walls[22]->movement()
+            ->begin()
+            ->translate(0.0f, 6.5f, 19.99f)
+            ->scale(40.0f, 8.0f, 1.0f)
+            ->end();
+    renderer->render_object(walls[22], XCUBE);
+
+    walls[23]->movement()
+            ->begin()
+            ->translate(0.0f, 6.5f, 19.99f)
+            ->scale(40.0f, 8.0f, 1.0f)
+            ->end();
+    renderer->render_object(walls[23], XCUBE);
+
+    walls[24]->movement()
+            ->begin()
+            ->translate(0.0f, 6.5f, -19.99f)
+            ->scale(40.0f, 8.0f, 1.0f)
+            ->end();
+    renderer->render_object(walls[24], XCUBE);
+
+    walls[25]->movement()
+            ->begin()
+            ->translate(19.99f, 6.5f, 0.0f)
+            ->scale(1.0f, 8.0f, 40.0f)
+            ->end();
+    renderer->render_object(walls[25], ZCUBE);
+
+    walls[26]->movement()
+            ->begin()
+            ->translate(-19.99f, 6.5f, 0.0f)
+            ->scale(1.0f, 8.0f, 40.0f)
+            ->end();
+    renderer->render_object(walls[26], ZCUBE);
+}
+
+
+
+
+
+
+
+
+
 
 
 // Definição da função que será chamada sempre que a janela do sistema

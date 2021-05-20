@@ -23,5 +23,6 @@ public:
     void set_mouse_move_handler(const GLFWcursorposfun &routine);
     void set_mouse_scroll_handler(const GLFWscrollfun &routine);
     void set_window_resize_handler(const GLFWframebuffersizefun &routine);
+    void dump_gpu();
     static void on_error(int error, const char* description);
 };

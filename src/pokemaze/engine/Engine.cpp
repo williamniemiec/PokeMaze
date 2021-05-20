@@ -96,6 +96,16 @@ void Engine::set_window_resize_handler(const GLFWframebuffersizefun &routine)
     //routine(window, g_screen_width, g_screen_height);
 }
 
+void Engine::dump_gpu()
+{
+    const GLubyte *vendor      = glGetString(GL_VENDOR);
+    const GLubyte *renderer    = glGetString(GL_RENDERER);
+    const GLubyte *glversion   = glGetString(GL_VERSION);
+    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
+}
+
 void Engine::on_error(int error, const char* description)
 {
     fprintf(stderr, "ERROR: GLFW: %s\n", description);
