@@ -32,7 +32,7 @@
 #include "pokemaze/models/camera/FreeCamera.hpp"
 #include "pokemaze/models/Point.hpp"
 #include "pokemaze/engine/Engine.hpp"
-#include "pokemaze/engine/player/Player.hpp"
+#include "pokemaze/engine/player/WavPlayer.hpp"
 #include "pokemaze/util/algebra/Bezier.hpp"
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 #include "pokemaze/engine/projection/PerspectiveProjection.hpp"
@@ -256,7 +256,8 @@ int main(int argc, char* argv[])
     float door_y = 3.5f;
 
     std::string soundtrack = IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
-    Player::play(soundtrack);
+    WavPlayer* player = new WavPlayer(soundtrack);
+    player->play();
 
     while (engine->is_window_open() && !pokeball_catched)
     {
@@ -626,31 +627,6 @@ int main(int argc, char* argv[])
                 ->end();
         renderer->render_object(walls[17], XCUBE);
 
-        //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
-
-        if(pikachu_door_touched)
-        {
-            if (door_y > 0.5f)
-                door_y -= delta_time + 0.0025f;
-            else
-                pikachu_door_opened = true;
-        }
-
-        garage_door->movement()
-                ->begin()
-                ->translate(8.75f, 1.60f, -3.5f)
-                ->scale(3.5f, door_y, 0.5f)
-                ->end();
-        renderer->render_object(garage_door, XDOOR);
-
-        //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
-        garage_ceiling->movement()
-                ->begin()
-                ->translate(8.625f, 1.5f, -1.5f)
-                ->scale(3.75f, 0.5f, 3.5f)
-                ->end();
-        renderer->render_object(garage_ceiling, XDOOR);
-
         // Bound obstacles
 
         // +X
@@ -722,6 +698,35 @@ int main(int argc, char* argv[])
         renderer->render_object(walls[26], ZCUBE);
 
 
+
+        //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
+
+        if(pikachu_door_touched)
+        {
+            if (door_y > 0.5f)
+                door_y -= delta_time + 0.0025f;
+            else
+                pikachu_door_opened = true;
+        }
+
+        garage_door->movement()
+                ->begin()
+                ->translate(8.75f, 1.60f, -3.5f)
+                ->scale(3.5f, door_y, 0.5f)
+                ->end();
+        renderer->render_object(garage_door, XDOOR);
+
+        //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
+        garage_ceiling->movement()
+                ->begin()
+                ->translate(8.625f, 1.5f, -1.5f)
+                ->scale(3.75f, 0.5f, 3.5f)
+                ->end();
+        renderer->render_object(garage_ceiling, XDOOR);
+
+
+
+
         // Background sky
         skies[0]->movement()
                 ->begin()
@@ -784,7 +789,7 @@ int main(int argc, char* argv[])
 
     engine->shutdown();
 
-    Player::stop();
+    player->stop();
 
     if (pokeball_catched)
     {
