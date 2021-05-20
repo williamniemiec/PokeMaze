@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <windows.h>
-#include <mmsystem.h>
 #include <map>
 #include <stack>
 #include <string>
@@ -33,6 +32,8 @@
 #include "pokemaze/models/camera/FreeCamera.hpp"
 #include "pokemaze/models/Point.hpp"
 #include "pokemaze/engine/Engine.hpp"
+#include "pokemaze/engine/player/Player.hpp"
+#include "pokemaze/util/algebra/Bezier.hpp"
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 #include "pokemaze/engine/projection/PerspectiveProjection.hpp"
 #include "pokemaze/engine/projection/Projection.hpp"
@@ -70,52 +71,16 @@
 #define TREE 12
 
 
-/// --- BEZIER ---
-int factorial(int n)
-{
-    if (n<=1)
-        return(1);
-    else
-        n=n*factorial(n-1);
-    return n;
-}
-
-float binomial_coff(float n,float k)
-{
-    float ans;
-    ans = factorial(n) / (factorial(k)*factorial(n-k));
-    return ans;
-}
-
-//Calculate the bezier point
-Point calculate_cubic_bezier(Point P0, Point P1, Point P2, Point P3, double t)
-{
-
-    float x = pow((1 - t), 3) * P0.get_x() + 3 * t * pow((1 -t), 2) * P1.get_x() + 3 * (1-t) * pow(t, 2)* P2.get_x() + pow (t, 3)* P3.get_x();
-    float y = pow((1 - t), 3) * P0.get_y() + 3 * t * pow((1 -t), 2) * P1.get_y() + 3 * (1-t) * pow(t, 2)* P2.get_y() + pow (t, 3)* P3.get_y();
-
-    return Point(P0.get_name() + P1.get_name(), x, y, 0.0f);
-}
-
-Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
-Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
-Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
-Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
-/// --- FIM BEZIER ---
-
-
-
-void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
 
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void ErrorCallback(int error, const char* description);
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void window_resize_handler(GLFWwindow* window, int width, int height);
+void error_handler(int error, const char* description);
+void keyboard_handler(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_click_handler(GLFWwindow* window, int button, int action, int mods);
+void mouse_move_handler(GLFWwindow* window, double xpos, double ypos);
+void mouse_scroll_handler(GLFWwindow* window, double xoffset, double yoffset);
 
 
 
@@ -134,13 +99,13 @@ std::map<std::string, SceneObject*> g_VirtualScene;
 
 
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
-// pressionado no momento atual. Veja função MouseButtonCallback().
+// pressionado no momento atual. Veja função mouse_click_handler().
 bool g_LeftMouseButtonPressed = false;
 bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
-// usuário através do mouse (veja função CursorPosCallback()). A posição
+// usuário através do mouse (veja função mouse_move_handler()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
 float g_FreeModeCameraTheta = 1.25f*PI; // Ângulo no plano ZX em relação ao eixo Z
@@ -178,32 +143,23 @@ bool w_key = false, a_key = false, s_key = false, d_key = false;
 Projection* g_projection;
 
 
+
 int main(int argc, char* argv[])
 {
-    Engine::start();
-    GLFWwindow* window;
-    window = glfwCreateWindow(g_screen_width, g_screen_height, "PokeMaze", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
+    Engine* engine = new Engine();
+
+    engine->start();
+
+    engine->set_keyboard_handler(keyboard_handler);
+    engine->set_mouse_click_handler(mouse_click_handler);
+    engine->set_mouse_move_handler(mouse_move_handler);
+    engine->set_mouse_scroll_handler(mouse_scroll_handler);
+    engine->set_window_resize_handler(window_resize_handler);
 
     g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
 
-    Display* display = new Display(window);
 
-    glfwSetKeyCallback(window, KeyCallback);
-    glfwSetMouseButtonCallback(window, MouseButtonCallback);
-    glfwSetCursorPosCallback(window, CursorPosCallback);
-    glfwSetScrollCallback(window, ScrollCallback);
-
-    glfwMakeContextCurrent(window);
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, g_screen_width, g_screen_height); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
-
+    // dump_gpu();
     const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);
     const GLubyte *glversion   = glGetString(GL_VERSION);
@@ -212,31 +168,6 @@ int main(int argc, char* argv[])
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
     Renderer::LoadShadersFromFiles();
-
-    /*Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/grass.jpg").c_str());
-    Renderer::LoadTextureImage((IOUtils::get_project_absolute_path() + "data/sky.png").c_str());
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/Ash_arms_hat_hair.png").c_str(), 3);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/PokeTra_Ash_face.png").c_str(), 4);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_body_col.png").c_str(), 5);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Ash_Ketchum/trAsh_00_obj_col.png").c_str(), 6);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pokeball/ob0204_00.png").c_str(), 7);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_B.png").c_str(), 8);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_C.png").c_str(), 9);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_E.png").c_str(), 10);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Pikachu/Pikachu_M.png").c_str(), 11);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardon.png").c_str(), 12);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Charizard/FitPokeLizardonEyeIris.png").c_str(), 13);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/bricks.jpg").c_str(), 14);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/garagedoor.jpg").c_str(), 15);
-
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_leaves.jpg").c_str(), 16);
-    Renderer::LoadObjTextureImage((IOUtils::get_project_absolute_path() + "data/Tree/3DPaz_fir-tree_trunk.jpg").c_str(), 17);*/
 
     std::vector<SceneObject*> obstacles;
 
@@ -310,10 +241,6 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
 
-    glm::mat4 the_projection;
-    glm::mat4 the_model;
-    glm::mat4 the_view;
-
     float charizard_previous_time = 0;
     double param_t = 2.0;
     bool bezier_forward = true;
@@ -329,11 +256,10 @@ int main(int argc, char* argv[])
     bool pikachu_door_opened = false;
     float door_y = 3.5f;
 
-
     std::string soundtrack = IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
-    PlaySound(soundtrack.c_str(), NULL, SND_LOOP | SND_ASYNC);
+    Player::play(soundtrack);
 
-    while (!glfwWindowShouldClose(window) && !pokeball_catched)
+    while (engine->is_window_open() && !pokeball_catched)
     {
 
         Renderer::pre_render();
@@ -502,7 +428,11 @@ int main(int argc, char* argv[])
             else
                 param_t -= 0.01;
 
-            Point p = calculate_cubic_bezier(P0, P1, P2, P3, param_t);
+            Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
+            Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
+            Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
+            Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
+            Point p = Bezier::calculate_cubic_bezier(P0, P1, P2, P3, param_t);
 
             g_offset_x_charizard = p.get_x();
             g_offset_z_charizard = p.get_y();
@@ -845,21 +775,18 @@ int main(int argc, char* argv[])
 
 
         if (pause)
-            display->show_pause();
+            engine->display()->show_pause();
 
-        display->show_controls();
-        display->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
-        display->show_fps();
+        engine->display()->show_controls();
+        engine->display()->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
+        engine->display()->show_fps();
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        engine->flush();
     }
 
-    // Finalizamos o uso dos recursos do sistema operacional
-    glfwTerminate();
-    Engine::shutdown();
+    engine->shutdown();
 
-    PlaySound(NULL, NULL,SND_SYNC);
+    Player::stop();
 
     if (pokeball_catched)
     {
@@ -872,12 +799,10 @@ int main(int argc, char* argv[])
 }
 
 
-
-
 // Definição da função que será chamada sempre que a janela do sistema
 // operacional for redimensionada, por consequência alterando o tamanho do
 // "framebuffer" (região de memória onde são armazenados os pixels da imagem).
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+void window_resize_handler(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 
@@ -885,47 +810,6 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     g_screen_height = height;
     g_projection->set_screen_dimensions(width, height);
 }
-
-
-//
-// Render
-//
-
-// Função que desenha um objeto armazenado em g_VirtualScene. Veja definição
-// dos objetos na função BuildTrianglesAndAddToVirtualScene().
-void DrawVirtualObject(const char* object_name)
-{
-    // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-    // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
-    // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
-    glBindVertexArray(g_VirtualScene[object_name]->get_vertex_array_object());
-
-    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
-    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
-    BoundingBox* bbox = g_VirtualScene[object_name]->get_bounding_box();
-
-    //glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
-    //glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
-    Renderer::render_bbox(bbox);
-
-    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-    // apontados pelo VAO como linhas. Veja a definição de
-    // g_VirtualScene[""] dentro da função BuildTrianglesAndAddToVirtualScene(), e veja
-    // a documentação da função glDrawElements() em
-    // http://docs.gl/gl3/glDrawElements.
-    glDrawElements(
-        g_VirtualScene[object_name]->get_rendering_mode(),
-        g_VirtualScene[object_name]->get_total_indexes(),
-        GL_UNSIGNED_INT,
-        (void*) (g_VirtualScene[object_name]->get_first_index() * sizeof(GLuint))
-    );
-
-    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-    // alterar o mesmo. Isso evita bugs.
-    glBindVertexArray(0);
-}
-
-
 
 
 
@@ -937,11 +821,11 @@ void DrawVirtualObject(const char* object_name)
 
 // Variáveis globais que armazenam a última posição do cursor do mouse, para
 // que possamos calcular quanto que o mouse se movimentou entre dois instantes
-// de tempo. Utilizadas no callback CursorPosCallback() abaixo.
+// de tempo. Utilizadas no callback mouse_move_handler() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
 
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void mouse_click_handler(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
@@ -995,7 +879,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 // Função callback chamada sempre que o usuário movimentar o cursor do mouse em
 // cima da janela OpenGL.
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+void mouse_move_handler(GLFWwindow* window, double xpos, double ypos)
 {
     // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
     // pressionado, computamos quanto que o mouse se movimento desde o último
@@ -1080,7 +964,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void mouse_scroll_handler(GLFWwindow* window, double xoffset, double yoffset)
 {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
@@ -1094,16 +978,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
+void keyboard_handler(GLFWwindow* window, int key, int scancode, int action, int mod)
 {
-    // ==============
-    // Não modifique este loop! Ele é utilizando para correção automatizada dos
-    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
-    for (int i = 0; i < 10; ++i)
-        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
-            std::exit(100 + i);
-    // ==============
-
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -1225,7 +1101,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 }
 
 // Definimos o callback para impressão de erros da GLFW no terminal
-void ErrorCallback(int error, const char* description)
+void error_handler(int error, const char* description)
 {
     fprintf(stderr, "ERROR: GLFW: %s\n", description);
 }
