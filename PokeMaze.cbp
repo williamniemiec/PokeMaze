@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Release (CBlocks 17.12 32-bit)">
-				<Option output="dist/1.x/1.0/pokemaze-1.0.0" prefix_auto="1" extension_auto="1" />
+				<Option output="dist/1.x/1.0/pokemaze-1.0" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/Release/" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -310,6 +310,7 @@
 		<Unit filename="include/glm/vec3.hpp" />
 		<Unit filename="include/glm/vec4.hpp" />
 		<Unit filename="include/glm/vector_relational.hpp" />
+		<Unit filename="include/pokemaze/PokeMaze.hpp" />
 		<Unit filename="include/pokemaze/engine/Collisions.hpp" />
 		<Unit filename="include/pokemaze/engine/Display.hpp" />
 		<Unit filename="include/pokemaze/engine/Engine.hpp" />
@@ -345,6 +346,7 @@
 		<Unit filename="include/pokemaze/util/io/IOUtils.hpp" />
 		<Unit filename="include/pokemaze/util/utils.h" />
 		<Unit filename="src/pokemaze/App.cpp" />
+		<Unit filename="src/pokemaze/PokeMaze.cpp" />
 		<Unit filename="src/pokemaze/engine/Collisions.cpp" />
 		<Unit filename="src/pokemaze/engine/Display.cpp" />
 		<Unit filename="src/pokemaze/engine/Engine.cpp" />
