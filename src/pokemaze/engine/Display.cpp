@@ -21,7 +21,13 @@ void Display::show_controls()
     char buffer[80];
     snprintf(buffer, 80, "Controls: W,A,S,D: Move | C: Free camera / Fixed camera | Pause Break: Pause");
 
-    text_renderer->TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
+    text_renderer->TextRendering_PrintString(
+            window,
+            buffer,
+            -1.0f+pad/10,
+            -1.0f+2*pad/10,
+            1.0f
+    );
 }
 
 void Display::show_pause()
@@ -31,10 +37,10 @@ void Display::show_pause()
     glfwGetWindowSize(window, &width, &height);
 
     text_renderer->TextRendering_PrintString(
-            window, 
-            "PAUSED", 
-            -0.33+pad, 
-            -0.1+pad, 
+            window,
+            "PAUSED",
+            -0.33+pad,
+            -0.1+pad,
             5.0f
     );
 }
@@ -46,10 +52,10 @@ void Display::show_projection(bool is_perspective)
     std::string projection_type = is_perspective ? "Perspective" : "Orthographic";
 
     text_renderer->TextRendering_PrintString(
-            window, 
-            projection_type, 
-            1.0f-13*charwidth, 
-            -1.0f+2*lineheight/10, 
+            window,
+            projection_type,
+            1.0f-13*charwidth,
+            -1.0f+2*lineheight/10,
             1.0f
     );
 }
@@ -78,9 +84,19 @@ void Display::show_fps()
     float charwidth = text_renderer->TextRendering_CharWidth(window);
 
     text_renderer->TextRendering_PrintString(
-            window, 
+            window,
             buffer,
-            1.0f-(numchars + 1)*charwidth, 
+            1.0f-(numchars + 1)*charwidth,
             1.0f-lineheight, 1.0f
     );
+}
+
+void Display::show_gpu()
+{
+    const GLubyte *vendor = glGetString(GL_VENDOR);
+    const GLubyte *renderer = glGetString(GL_RENDERER);
+    const GLubyte *glversion = glGetString(GL_VERSION);
+    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 }

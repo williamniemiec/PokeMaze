@@ -452,9 +452,9 @@ size_t SceneObject::get_total_indexes()
     return total_indexes;
 }
 
-bool SceneObject::is_2D()
+bool SceneObject::is_3D()
 {
-    return has_only_2_dimensions;
+    return !has_only_2_dimensions;
 }
 
 

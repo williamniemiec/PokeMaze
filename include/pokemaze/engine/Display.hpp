@@ -1,7 +1,7 @@
 #pragma once
 
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>  // Creating operationg system windows
-#include <pokemaze/engine/loader/glad.h>   
 #include "pokemaze/engine/text/TextRender.hpp"
 
 /**
@@ -23,7 +23,7 @@ private:
 public:
     /**
      * Display handler.
-     * 
+     *
      * @param       window Application window
      */
     Display(GLFWwindow* window);
@@ -45,8 +45,8 @@ public:
 
     /**
      * Displays which projection matrix is being used.
-     * 
-     * @param       is_perspective Indicates whether the projection matrix 
+     *
+     * @param       is_perspective Indicates whether the projection matrix
      * used is perspective
      */
     void show_projection(bool is_perspective);
@@ -55,4 +55,9 @@ public:
      * Displays frames per second.
      */
     void show_fps();
+
+    /**
+     * Displays GPU information.
+     */
+    void show_gpu();
 };

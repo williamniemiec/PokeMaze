@@ -1,8 +1,7 @@
 #include "pokemaze/engine/Engine.hpp"
 
 #include <iostream>
-#include <pokemaze/engine/loader/glad.h>
-#include <GLFW/glfw3.h>
+
 
 //-------------------------------------------------------------------------
 //		Constructor
@@ -20,6 +19,7 @@ Engine::Engine(int screen_width, int screen_height)
 void Engine::start()
 {
     int success = glfwInit();
+
     if (!success)
     {
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
@@ -28,12 +28,17 @@ void Engine::start()
 
     glfwSetErrorCallback(on_error);
 
+    build_window();
+}
+
+void Engine::build_window()
+{
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    #ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -101,16 +106,6 @@ void Engine::set_mouse_scroll_handler(const GLFWscrollfun &routine)
 void Engine::set_window_resize_handler(const GLFWframebuffersizefun &routine)
 {
     glfwSetFramebufferSizeCallback(window, routine);
-}
-
-void Engine::dump_gpu()
-{
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 }
 
 void Engine::on_error(int error, const char* description)

@@ -149,7 +149,7 @@ public:
     std::vector<int> get_textures_id();
 
     std::vector<std::string> get_textures();
-    bool is_2D();
+    bool is_3D();
 
 private:
     void load(std::string filename, std::string mtl_path, bool triangulate);

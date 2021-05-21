@@ -103,6 +103,7 @@ void PokeMaze::run()
     Engine* engine = new Engine(g_screen_width, g_screen_height);
 
     engine->start();
+    engine->display()->show_gpu();
 
     engine->set_keyboard_handler(keyboard_handler);
     engine->set_mouse_click_handler(mouse_click_handler);
@@ -111,9 +112,7 @@ void PokeMaze::run()
 
     g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
 
-
     renderer = new Renderer();
-    renderer->LoadShadersFromFiles();
 
     // Order is important (defines textures order at shader_fragment.glsl)
     build_floor();
