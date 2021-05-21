@@ -6,30 +6,23 @@
 #include <pokemaze/engine/loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 Renderer::Renderer()
 {
     program_id = 0;
     total_loaded_textures = 0;
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void Renderer::pre_render()
 {
-    // Aqui executamos as operações de renderização
-
-    // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
-    // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
-    // Vermelho, Verde, Azul, Alpha (valor de transparência).
-    // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-    //
-    //           R     G     B     A
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-    // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
-    // e também resetamos todos os pixels do Z-buffer (depth buffer).
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
-    // os shaders de vértice e fragmentos).
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);               // RGBA
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Resets Z-buffer
     glUseProgram(program_id);
 }
 
@@ -98,8 +91,8 @@ GLuint Renderer::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_sha
 }
 
 
-// Função que carrega os shaders de vértices e de fragmentos que serão
-// utilizados para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
+// Funï¿½ï¿½o que carrega os shaders de vï¿½rtices e de fragmentos que serï¿½o
+// utilizados para renderizaï¿½ï¿½o. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
 //
 void Renderer::LoadShadersFromFiles()
 {
@@ -112,17 +105,17 @@ void Renderer::LoadShadersFromFiles()
 
     program_id = Renderer::create_gpu_program(vertex_shader_id, fragment_shader_id);
 
-    // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
-    // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
+    // Buscamos o endereï¿½o das variï¿½veis definidas dentro do Vertex Shader.
+    // Utilizaremos estas variï¿½veis para enviar dados para a placa de vï¿½deo
     // (GPU)! Veja arquivo "shader_vertex.glsl" e "shader_fragment.glsl".
-    model_uniform           = glGetUniformLocation(program_id, "model"); // Variável da matriz "model"
-    view_uniform            = glGetUniformLocation(program_id, "view"); // Variável da matriz "view" em shader_vertex.glsl
-    projection_uniform      = glGetUniformLocation(program_id, "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    object_id_uniform       = glGetUniformLocation(program_id, "object_id"); // Variável "object_id" em shader_fragment.glsl
+    model_uniform           = glGetUniformLocation(program_id, "model"); // Variï¿½vel da matriz "model"
+    view_uniform            = glGetUniformLocation(program_id, "view"); // Variï¿½vel da matriz "view" em shader_vertex.glsl
+    projection_uniform      = glGetUniformLocation(program_id, "projection"); // Variï¿½vel da matriz "projection" em shader_vertex.glsl
+    object_id_uniform       = glGetUniformLocation(program_id, "object_id"); // Variï¿½vel "object_id" em shader_fragment.glsl
     bbox_min_uniform        = glGetUniformLocation(program_id, "bbox_min");
     bbox_max_uniform        = glGetUniformLocation(program_id, "bbox_max");
 
-    // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
+    // Variï¿½veis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(program_id);
     /*glUniform1i(glGetUniformLocation(program_id, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(program_id, "TextureImage1"), 1);
@@ -145,11 +138,11 @@ void Renderer::LoadShadersFromFiles()
     glUseProgram(0);
 }
 
-// Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
+// Carrega um Vertex Shader de um arquivo GLSL. Veja definiï¿½ï¿½o de LoadShader() abaixo.
 GLuint Renderer::LoadShader_Vertex(const char* filename)
 {
     // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos vértices.
+    // serï¿½ aplicado nos vï¿½rtices.
     GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
 
     // Carregamos e compilamos o shader
@@ -159,11 +152,11 @@ GLuint Renderer::LoadShader_Vertex(const char* filename)
     return vertex_shader_id;
 }
 
-// Carrega um Fragment Shader de um arquivo GLSL . Veja definição de LoadShader() abaixo.
+// Carrega um Fragment Shader de um arquivo GLSL . Veja definiï¿½ï¿½o de LoadShader() abaixo.
 GLuint Renderer::LoadShader_Fragment(const char* filename)
 {
     // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos fragmentos.
+    // serï¿½ aplicado nos fragmentos.
     GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
     // Carregamos e compilamos o shader
@@ -173,12 +166,12 @@ GLuint Renderer::LoadShader_Fragment(const char* filename)
     return fragment_shader_id;
 }
 
-// Função auxilar, utilizada pelas duas funções acima. Carrega código de GPU de
-// um arquivo GLSL e faz sua compilação.
+// Funï¿½ï¿½o auxilar, utilizada pelas duas funï¿½ï¿½es acima. Carrega cï¿½digo de GPU de
+// um arquivo GLSL e faz sua compilaï¿½ï¿½o.
 void Renderer::LoadShader(const char* filename, GLuint shader_id)
 {
-    // Lemos o arquivo de texto indicado pela variável "filename"
-    // e colocamos seu conteúdo em memória, apontado pela variável
+    // Lemos o arquivo de texto indicado pela variï¿½vel "filename"
+    // e colocamos seu conteï¿½do em memï¿½ria, apontado pela variï¿½vel
     // "shader_string".
     std::ifstream file;
     try
@@ -197,25 +190,25 @@ void Renderer::LoadShader(const char* filename, GLuint shader_id)
     const GLchar* shader_string = str.c_str();
     const GLint   shader_string_length = static_cast<GLint>( str.length() );
 
-    // Define o código do shader GLSL, contido na string "shader_string"
+    // Define o cï¿½digo do shader GLSL, contido na string "shader_string"
     glShaderSource(shader_id, 1, &shader_string, &shader_string_length);
 
-    // Compila o código do shader GLSL (em tempo de execução)
+    // Compila o cï¿½digo do shader GLSL (em tempo de execuï¿½ï¿½o)
     glCompileShader(shader_id);
 
-    // Verificamos se ocorreu algum erro ou "warning" durante a compilação
+    // Verificamos se ocorreu algum erro ou "warning" durante a compilaï¿½ï¿½o
     GLint compiled_ok;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled_ok);
 
     GLint log_length = 0;
     glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
 
-    // Alocamos memória para guardar o log de compilação.
-    // A chamada "new" em C++ é equivalente ao "malloc()" do C.
+    // Alocamos memï¿½ria para guardar o log de compilaï¿½ï¿½o.
+    // A chamada "new" em C++ ï¿½ equivalente ao "malloc()" do C.
     GLchar* log = new GLchar[log_length];
     glGetShaderInfoLog(shader_id, log_length, &log_length, log);
 
-    // Imprime no terminal qualquer erro ou "warning" de compilação
+    // Imprime no terminal qualquer erro ou "warning" de compilaï¿½ï¿½o
     if ( log_length != 0 )
     {
         std::string  output;
@@ -242,67 +235,8 @@ void Renderer::LoadShader(const char* filename, GLuint shader_id)
         fprintf(stderr, "%s", output.c_str());
     }
 
-    // A chamada "delete" em C++ é equivalente ao "free()" do C
+    // A chamada "delete" em C++ ï¿½ equivalente ao "free()" do C
     delete [] log;
-}
-
-void Renderer::LoadBackground(const char* filename)
-{
-    /*
-    printf("Carregando imagem \"%s\"... ", filename);
-
-    // Primeiro fazemos a leitura da imagem do disco
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
-
-    if ( data == NULL )
-    {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-
-    printf("OK (%dx%d).\n", width, height);
-
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
-
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-
-    GLuint textureunit = g_NumLoadedTextures;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
-
-    stbi_image_free(data);
-
-    g_NumLoadedTextures += 1;*/
 }
 
 void Renderer::LoadTextureImage(std::string filename, bool is_plane)
@@ -332,7 +266,7 @@ void Renderer::LoadTextureImage(std::string filename, bool is_plane)
     glGenTextures(1, &texture_id);
     glGenSamplers(1, &sampler_id);
 
-    // Parâmetros de amostragem da textura.
+    // Parï¿½metros de amostragem da textura.
     if (is_plane)
     {
         glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -470,22 +404,22 @@ GLint Renderer::request_vao()
 void Renderer::draw_virtual_object(SceneObject* object)
 {
 // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-    // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
-    // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
+    // vï¿½rtices apontados pelo VAO criado pela funï¿½ï¿½o BuildTrianglesAndAddToVirtualScene(). Veja
+    // comentï¿½rios detalhados dentro da definiï¿½ï¿½o de BuildTrianglesAndAddToVirtualScene().
     glBindVertexArray(object->get_vertex_array_object());
 
-    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
-    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
+    // Setamos as variï¿½veis "bbox_min" e "bbox_max" do fragment shader
+    // com os parï¿½metros da axis-aligned bounding box (AABB) do modelo.
     BoundingBox* bbox = object->get_bounding_box();
 
     //glUniform4f(bbox_min_uniform, bbox->get_local_min_x(), bbox->get_local_min_y(), bbox->get_local_min_z(), 1.0f);
     //glUniform4f(bbox_max_uniform, bbox->get_local_max_x(), bbox->get_local_max_y(), bbox->get_local_max_z(), 1.0f);
     render_bbox(bbox);
 
-    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-    // apontados pelo VAO como linhas. Veja a definição de
-    // g_VirtualScene[""] dentro da função BuildTrianglesAndAddToVirtualScene(), e veja
-    // a documentação da função glDrawElements() em
+    // Pedimos para a GPU rasterizar os vï¿½rtices dos eixos XYZ
+    // apontados pelo VAO como linhas. Veja a definiï¿½ï¿½o de
+    // g_VirtualScene[""] dentro da funï¿½ï¿½o BuildTrianglesAndAddToVirtualScene(), e veja
+    // a documentaï¿½ï¿½o da funï¿½ï¿½o glDrawElements() em
     // http://docs.gl/gl3/glDrawElements.
     glDrawElements(
         object->get_rendering_mode(),
@@ -494,7 +428,7 @@ void Renderer::draw_virtual_object(SceneObject* object)
         (void*) (object->get_first_index() * sizeof(GLuint))
     );
 
-    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // "Desligamos" o VAO, evitando assim que operaï¿½ï¿½es posteriores venham a
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
 }
