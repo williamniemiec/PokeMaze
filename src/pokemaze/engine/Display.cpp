@@ -1,12 +1,19 @@
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/engine/text/TextRender.hpp"
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 Display::Display(GLFWwindow* window)
 {
     this->window = window;
     text_renderer = new TextRender();
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void Display::show_controls()
 {
     float pad = text_renderer->TextRendering_LineHeight(window);
@@ -23,18 +30,28 @@ void Display::show_pause()
     int width, height;
     glfwGetWindowSize(window, &width, &height);
 
-    text_renderer->TextRendering_PrintString(window, "PAUSED", -0.33+pad, -0.1+pad, 5.0f);
+    text_renderer->TextRendering_PrintString(
+            window, 
+            "PAUSED", 
+            -0.33+pad, 
+            -0.1+pad, 
+            5.0f
+    );
 }
 
 void Display::show_projection(bool is_perspective)
 {
     float lineheight = text_renderer->TextRendering_LineHeight(window);
     float charwidth = text_renderer->TextRendering_CharWidth(window);
+    std::string projection_type = is_perspective ? "Perspective" : "Orthographic";
 
-    if (is_perspective)
-        text_renderer->TextRendering_PrintString(window, "Perspective", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
-    else
-        text_renderer->TextRendering_PrintString(window, "Orthographic", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
+    text_renderer->TextRendering_PrintString(
+            window, 
+            projection_type, 
+            1.0f-13*charwidth, 
+            -1.0f+2*lineheight/10, 
+            1.0f
+    );
 }
 
 void Display::show_fps()
@@ -46,13 +63,10 @@ void Display::show_fps()
 
     ellapsed_frames += 1;
 
-    // Recuperamos o número de segundos que passou desde a execução do programa
     float seconds = (float)glfwGetTime();
-
-    // Número de segundos desde o último cálculo do fps
     float ellapsed_seconds = seconds - old_seconds;
 
-    if ( ellapsed_seconds > 1.0f )
+    if (ellapsed_seconds > 1.0f)
     {
         numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
 
@@ -63,5 +77,10 @@ void Display::show_fps()
     float lineheight = text_renderer->TextRendering_LineHeight(window);
     float charwidth = text_renderer->TextRendering_CharWidth(window);
 
-    text_renderer->TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
+    text_renderer->TextRendering_PrintString(
+            window, 
+            buffer,
+            1.0f-(numchars + 1)*charwidth, 
+            1.0f-lineheight, 1.0f
+    );
 }

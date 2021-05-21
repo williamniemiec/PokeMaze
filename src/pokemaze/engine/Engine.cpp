@@ -4,16 +4,21 @@
 #include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 Engine::Engine(int screen_width, int screen_height)
 {
     this->screen_width = screen_width;
     this->screen_height = screen_height;
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void Engine::start()
 {
-    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
-    // sistema operacional, onde poderemos renderizar com OpenGL.
     int success = glfwInit();
     if (!success)
     {
@@ -21,10 +26,8 @@ void Engine::start()
         std::exit(EXIT_FAILURE);
     }
 
-    // Definimos o callback para impressão de erros da GLFW no terminal
     glfwSetErrorCallback(on_error);
 
-    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
@@ -98,7 +101,6 @@ void Engine::set_mouse_scroll_handler(const GLFWscrollfun &routine)
 void Engine::set_window_resize_handler(const GLFWframebuffersizefun &routine)
 {
     glfwSetFramebufferSizeCallback(window, routine);
-    //routine(window, g_screen_width, g_screen_height);
 }
 
 void Engine::dump_gpu()

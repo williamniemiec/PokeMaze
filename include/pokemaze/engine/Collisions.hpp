@@ -1,8 +1,7 @@
 #pragma once
 
-#include "pokemaze/models/SceneObject.hpp"
-
 #include <glm/vec4.hpp>
+#include "pokemaze/models/SceneObject.hpp"
 
 /**
  * Responsible for collision tests.
