@@ -1,6 +1,6 @@
 #include "pokemaze/PokeMaze.hpp"
 
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/engine/Collisions.hpp"
 #include "pokemaze/util/io/IOUtils.hpp"

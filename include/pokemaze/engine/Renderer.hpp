@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <list>
 #include <vector>
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/models/BoundingBox.hpp"
 #include "pokemaze/models/SceneObject.hpp"
@@ -12,7 +12,7 @@ class Renderer
 {
 private:
     GLuint program_id;
-    // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
+    // Variï¿½veis que definem um programa de GPU (shaders). Veja funï¿½ï¿½o LoadShadersFromFiles().
     GLint model_uniform;
     GLint view_uniform;
     GLint projection_uniform;

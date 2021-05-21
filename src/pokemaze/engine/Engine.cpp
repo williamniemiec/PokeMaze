@@ -1,7 +1,7 @@
 #include "pokemaze/engine/Engine.hpp"
 
 #include <iostream>
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 
 Engine::Engine(int screen_width, int screen_height)

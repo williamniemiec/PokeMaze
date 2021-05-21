@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>

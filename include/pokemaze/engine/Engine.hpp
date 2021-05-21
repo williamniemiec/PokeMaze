@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/engine/Display.hpp"
 

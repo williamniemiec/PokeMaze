@@ -67,7 +67,7 @@
 		<Unit filename="include/GLFW/glfw3.h" />
 		<Unit filename="include/GLFW/glfw3native.h" />
 		<Unit filename="include/KHR/khrplatform.h" />
-		<Unit filename="include/glad/glad.h" />
+		<Unit filename="include/pokemaze/engine/loader/glad.h" />
 		<Unit filename="include/glm/common.hpp" />
 		<Unit filename="include/glm/detail/_features.hpp" />
 		<Unit filename="include/glm/detail/_fixes.hpp" />
@@ -351,7 +351,7 @@
 		<Unit filename="src/pokemaze/engine/Display.cpp" />
 		<Unit filename="src/pokemaze/engine/Engine.cpp" />
 		<Unit filename="src/pokemaze/engine/Renderer.cpp" />
-		<Unit filename="src/pokemaze/engine/glad.c">
+		<Unit filename="src/pokemaze/engine/loader/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/pokemaze/engine/loader/stb_image.cpp" />

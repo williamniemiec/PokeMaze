@@ -2,7 +2,7 @@
 
 #include <map>
 #include <vector>
-#include <glad/glad.h>
+#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/models/camera/LookAtCamera.hpp"
@@ -13,7 +13,7 @@
 #include "pokemaze/engine/Renderer.hpp"
 
 /**
- * Maze game with Pokémon theme.
+ * Maze game with Pokï¿½mon theme.
  */
 class PokeMaze
 {
@@ -21,7 +21,7 @@ class PokeMaze
 //		Attributes
 //-------------------------------------------------------------------------
 private:
-    // Ângulos que controlam a pokebola
+    // ï¿½ngulos que controlam a pokebola
     static float g_AngleX;
     static float g_AngleY;
     static float g_AngleZ;
