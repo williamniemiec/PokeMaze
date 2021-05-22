@@ -2,6 +2,9 @@
 
 #include <algorithm>
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 BoundingBox::BoundingBox(glm::vec3 min_bounding_box, glm::vec3 max_bounding_box)
 {
     bounding_box_local_min = min_bounding_box;
@@ -11,7 +14,11 @@ BoundingBox::BoundingBox(glm::vec3 min_bounding_box, glm::vec3 max_bounding_box)
     bounding_box_world_min = max_bounding_box;
 }
 
-void BoundingBox::apply(glm::mat4 matrix)
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
+void BoundingBox::apply(glm::mat4 transformation_matrix)
 {
     glm::vec4 top_left_back;
     top_left_back.x = bounding_box_local_min.x;
@@ -61,14 +68,14 @@ void BoundingBox::apply(glm::mat4 matrix)
     bottom_right_front.z = bounding_box_local_min.z;
     bottom_right_front.w = 1;
 
-    top_left_back = matrix * top_left_back;
-    top_left_front = matrix * top_left_front;
-    top_right_back = matrix * top_right_back;
-    top_right_front = matrix * top_right_front;
-    bottom_left_back = matrix * bottom_left_back;
-    bottom_left_front = matrix * bottom_left_front;
-    bottom_right_back = matrix * bottom_right_back;
-    bottom_right_front = matrix * bottom_right_front;
+    top_left_back = transformation_matrix * top_left_back;
+    top_left_front = transformation_matrix * top_left_front;
+    top_right_back = transformation_matrix * top_right_back;
+    top_right_front = transformation_matrix * top_right_front;
+    bottom_left_back = transformation_matrix * bottom_left_back;
+    bottom_left_front = transformation_matrix * bottom_left_front;
+    bottom_right_back = transformation_matrix * bottom_right_back;
+    bottom_right_front = transformation_matrix * bottom_right_front;
 
     bounding_box_world_min.x = std::min({
             top_left_back.x,
@@ -133,6 +140,10 @@ void BoundingBox::apply(glm::mat4 matrix)
     });
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 BoundingBox* BoundingBox::get_copy()
 {
     return new BoundingBox(bounding_box_local_min, bounding_box_local_max);
