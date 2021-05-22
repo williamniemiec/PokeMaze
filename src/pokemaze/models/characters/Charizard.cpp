@@ -2,11 +2,21 @@
 
 #include "pokemaze/util/io/IOUtils.hpp"
 
-Charizard::Charizard(std::string name, glm::vec4 position, std::string filename, std::string mtl_path, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, mtl_path, triangulate, rendering_mode, get_textures(), false)
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
+Charizard::Charizard(std::string name, glm::vec4 position,
+                     std::string filename, std::string mtl_path,
+                     GLenum rendering_mode)
+        : SceneObject(name, position, filename, mtl_path, true,
+                      rendering_mode, get_textures(), false)
 {
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 Charizard* Charizard::create(std::string name, float x, float y, float z)
 {
     return new Charizard(
@@ -14,11 +24,14 @@ Charizard* Charizard::create(std::string name, float x, float y, float z)
             {x, y, z, 1.0f},
             IOUtils::get_project_absolute_path() + "data/Charizard/Charizard.obj",
             IOUtils::get_project_absolute_path() + "data/Charizard/",
-            true,
             GL_TRIANGLES
     );
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 std::vector<std::string> Charizard::get_textures()
 {
     return std::vector<std::string>({

@@ -5,8 +5,8 @@
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
-Pokeball::Pokeball(std::string name, glm::vec4 position, std::string filename,
-                   GLenum rendering_mode)
+Pokeball::Pokeball(std::string name, glm::vec4 position,
+                   std::string filename, GLenum rendering_mode)
         : Sphere(name, position, filename, "", rendering_mode, get_textures())
 {
 }

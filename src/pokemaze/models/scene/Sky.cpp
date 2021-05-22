@@ -2,22 +2,34 @@
 
 #include "pokemaze/util/io/IOUtils.hpp"
 
-Sky::Sky(std::string name, glm::vec4 position, std::string filename, bool triangulate, GLenum rendering_mode)
-        : SceneObject(name, position, filename, "", triangulate, rendering_mode, get_textures(), true)
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
+Sky::Sky(std::string name, glm::vec4 position, std::string filename,
+         GLenum rendering_mode)
+        : SceneObject(name, position, filename, "", true, rendering_mode,
+                      get_textures(), true)
 {
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 Sky* Sky::create(std::string name, float x, float y, float z)
 {
     return new Sky(
             name,
             {x, y, z, 1.0f},
             IOUtils::get_project_absolute_path() + "data/plane.obj",
-            true,
             GL_TRIANGLES
     );
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 std::vector<std::string> Sky::get_textures()
 {
     return std::vector<std::string>({
