@@ -3,6 +3,8 @@
 #include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/engine/Display.hpp"
+#include "pokemaze/controllers/KeyboardController.hpp"
+#include "pokemaze/controllers/MouseController.hpp"
 
 /**
  * Responsible for initializing OpenGL, defining event handlers and displaying
@@ -14,10 +16,13 @@ class Engine
 //		Attributes
 //-------------------------------------------------------------------------
 private:
+    KeyboardController* keyboard_controller;
+    MouseController* mouse_controller;
     GLFWwindow* window;
-    Display* screen;
+    Display* display;
     int screen_width;
     int screen_height;
+    bool should_close_window;
 
 
 //-------------------------------------------------------------------------
@@ -49,13 +54,6 @@ public:
     void shutdown();
 
     /**
-     * Gets display handler.
-     *
-     * @return      Display handler
-     */
-    Display* display();
-
-    /**
      * Clears rendering buffer.
      */
     void flush();
@@ -66,6 +64,11 @@ public:
     void commit();
 
     /**
+     * Asks the operating system to close the application window.
+     */
+    void close_window();
+
+    /**
      * Checks whether the application window is open.
      *
      * @return      True if window has not been closed; false otherwise
@@ -73,41 +76,84 @@ public:
     bool is_window_open();
 
     /**
-     * Defines a routine to be executed when there is a keyboard event.
+     * Checks whether a key has pressed.
      *
-     * @param       routine Callback routine
+     * @param       key Keyboard key
+     *
+     * @return      True if key has pressed; false otherwise
      */
-    void set_keyboard_handler(const GLFWkeyfun &routine);
+    bool was_key_pressed(GLenum key);
 
-     /**
-     * Defines a routine to be executed when there is a mouse click event.
+    /**
+     * Checks whether a mouse button has clicked.
      *
-     * @param       routine Callback routine
+     * @param       button Mouse button
+     *
+     * @return      True if button has clicked; false otherwise
      */
-    void set_mouse_click_handler(const GLFWmousebuttonfun &routine);
+    bool was_button_clicked(GLenum button);
 
-     /**
-     * Defines a routine to be executed when there is a mouse move event.
+    /**
+     * Checks whether mouse has moved.
      *
-     * @param       routine Callback routine
+     * @return      True if mouse has moved; false otherwise
      */
-    void set_mouse_move_handler(const GLFWcursorposfun &routine);
+    bool has_mouse_moved();
 
-     /**
-     * Defines a routine to be executed when there is a mouse scroll event.
-     *
-     * @param       routine Callback routine
+    /**
+     * Displays game controls.
      */
-    void set_mouse_scroll_handler(const GLFWscrollfun &routine);
+    void show_controls();
 
-     /**
-     * Defines a routine to be executed when there is a window resize event.
-     *
-     * @param       routine Callback routine
+    /**
+     * Displays 'paused' in the middle of the screen.
      */
-    void set_window_resize_handler(const GLFWframebuffersizefun &routine);
+    void show_pause();
+
+    /**
+     * Displays which projection matrix is being used.
+     *
+     * @param       is_perspective Indicates whether the projection matrix
+     * used is perspective
+     */
+    void show_projection(bool is_perspective);
+
+    /**
+     * Displays frames per second.
+     */
+    void show_fps();
+
+    /**
+     * Displays GPU information.
+     */
+    void show_gpu();
 
 private:
     static void on_error(int error, const char* description);
     void build_window();
+    void build_event_handlers();
+
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
+public:
+    /**
+     * Obtain the displacement on the x axis between the last left click and
+     * the left button release.
+     *
+     * @return      Displacement on the x axis
+     */
+    double get_offset_click_x();
+
+    /**
+     * Obtain the displacement on the y axis between the last left click and
+     * the left button release.
+     *
+     * @return      Displacement on the y axis
+     */
+    double get_offset_click_y();
+
+    int get_screen_width();
+    int get_screen_height();
 };

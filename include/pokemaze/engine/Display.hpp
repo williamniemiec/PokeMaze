@@ -13,6 +13,8 @@ class Display
 //		Attributes
 //-------------------------------------------------------------------------
 private:
+    static int screen_width;
+    static int screen_height;
     GLFWwindow* window;
     TextRender* text_renderer;
 
@@ -60,4 +62,15 @@ public:
      * Displays GPU information.
      */
     void show_gpu();
+
+private:
+    static void window_resize_handler(GLFWwindow* window, int width, int height);
+
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
+public:
+    int get_screen_width();
+    int get_screen_height();
 };

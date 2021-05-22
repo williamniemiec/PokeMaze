@@ -7,7 +7,6 @@
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/engine/text/TextRender.hpp"
 #include "pokemaze/models/Point.hpp"
-#include "pokemaze/engine/Engine.hpp"
 #include "pokemaze/util/algebra/Bezier.hpp"
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 #include "pokemaze/engine/projection/PerspectiveProjection.hpp"
@@ -48,11 +47,6 @@
 float PokeMaze::g_AngleX = 0.0f;
 float PokeMaze::g_AngleY = 0.0f;
 float PokeMaze::g_AngleZ = 0.0f;
-double PokeMaze::g_LastCursorPosX;
-double PokeMaze::g_LastCursorPosY;
-bool PokeMaze::g_LeftMouseButtonPressed = false;
-bool PokeMaze::g_RightMouseButtonPressed = false;
-bool PokeMaze::g_MiddleMouseButtonPressed = false;
 float PokeMaze::g_FreeModeCameraTheta = 1.25f*PI;
 float PokeMaze::g_FreeModeCameraPhi = -0.4f;
 float PokeMaze::g_PlayerCameraTheta = 0.0f;
@@ -61,12 +55,6 @@ float PokeMaze::g_PauseModeCameraTheta = 0.0f;
 float PokeMaze::g_PauseModeCameraPhi = 0.0f;
 bool PokeMaze::FREE_MODE = true;
 bool PokeMaze::pause = false;
-bool PokeMaze::w_key = false;
-bool PokeMaze::a_key = false;
-bool PokeMaze::s_key = false;
-bool PokeMaze::d_key = false;
-float PokeMaze::g_screen_width;
-float PokeMaze::g_screen_height;
 Projection* PokeMaze::g_projection;
 FreeCamera* PokeMaze::free_camera;
 LookAtCamera* PokeMaze::lookat_camera;
@@ -74,14 +62,13 @@ FixedCamera* PokeMaze::fixed_camera;
 float PokeMaze::previous_time = 0.0f;
 float PokeMaze::delta_time = 0.0f;
 
-
+#include <thread>
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
 PokeMaze::PokeMaze(int screen_width, int screen_height)
 {
-    g_screen_width = screen_width;
-    g_screen_height = screen_height;
+    engine = new Engine(screen_width, screen_height);
     g_player_direction = PLAYER_DIRECTION_UP;
     g_offset_x_charizard = 0.0f;
     g_offset_z_charizard = 0.0f;
@@ -101,17 +88,10 @@ PokeMaze::PokeMaze(int screen_width, int screen_height)
 //-------------------------------------------------------------------------
 void PokeMaze::run()
 {
-    Engine* engine = new Engine(g_screen_width, g_screen_height);
-
     engine->start();
-    engine->display()->show_gpu();
+    engine->show_gpu();
 
-    engine->set_keyboard_handler(keyboard_handler);
-    engine->set_mouse_click_handler(mouse_click_handler);
-    engine->set_mouse_move_handler(mouse_move_handler);
-    engine->set_window_resize_handler(window_resize_handler);
-
-    g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
+    g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
 
     renderer = new Renderer();
 
@@ -134,11 +114,121 @@ void PokeMaze::run()
     WavPlayer* player = new WavPlayer(soundtrack);
     player->play();
 
+    // TODO: use Scheduler::set_interval()
+    std::thread keyboard_thread = std::thread([&]()
+    {
+        bool key_pressed = false;
+        while (engine->is_window_open())
+        {
+            key_pressed = false;
+
+            if (engine->was_key_pressed(GLFW_KEY_C))
+            {
+                FREE_MODE = !FREE_MODE;
+                key_pressed = true;
+            }
+
+            if (engine->was_key_pressed(GLFW_KEY_ESCAPE))
+            {
+                engine->close_window();
+                key_pressed = true;
+            }
+
+            if (engine->was_key_pressed(GLFW_KEY_PAUSE))
+            {
+                pause = !pause;
+                key_pressed = true;
+            }
+
+            if (engine->was_key_pressed(GLFW_KEY_P))
+            {
+                g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
+                key_pressed = true;
+            }
+            else if (engine->was_key_pressed(GLFW_KEY_O))
+            {
+                g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
+                key_pressed = true;
+            }
+
+            if (key_pressed)
+            {
+                Sleep(150);
+                key_pressed = false;
+            }
+        }
+    });
+    keyboard_thread.detach();
+
+    // TODO: refactor
+    std::thread mouse_thread = std::thread([&]()
+    {
+        while (engine->is_window_open())
+        {
+            while (engine->has_mouse_moved())
+            {
+                if (engine->was_button_clicked(GLFW_MOUSE_BUTTON_LEFT))
+                {
+                    float dx = engine->get_offset_click_x();
+                    float dy = engine->get_offset_click_y();
+
+                    if (FREE_MODE && !pause)
+                    {
+                        g_FreeModeCameraTheta += 0.01f*dx;
+                        g_FreeModeCameraPhi   -= 0.01f*dy;
+                    }
+                    else if (pause)
+                    {
+                        g_PauseModeCameraTheta -= 0.01f*dx;
+                        g_PauseModeCameraPhi   += 0.01f*dy;
+                    }
+                    else
+                    {
+                        g_PlayerCameraTheta += 0.01f*dx;
+                        g_PlayerCameraPhi   -= 0.01f*dy;
+                    }
+                    // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+                    float phimax = PI/2;
+                    float phimin = -phimax;
+
+
+                    if(FREE_MODE && !pause)
+                    {
+                        if (g_FreeModeCameraPhi > phimax)
+                            g_FreeModeCameraPhi = phimax;
+
+                        if (g_FreeModeCameraPhi < phimin)
+                            g_FreeModeCameraPhi = phimin;
+                    }
+                    else if (pause)
+                    {
+                        if (g_PauseModeCameraPhi > phimax)
+                            g_PauseModeCameraPhi = phimax;
+
+                        if (g_PauseModeCameraPhi < phimin)
+                            g_PauseModeCameraPhi = phimin;
+                    }
+                    else
+                    {
+                        if (g_PlayerCameraPhi > phimax)
+                            g_PlayerCameraPhi = phimax;
+
+                        if (g_PlayerCameraPhi < phimin)
+                            g_PlayerCameraPhi = phimin;
+                    }
+                }
+            }
+        }
+    });
+    mouse_thread.detach();
+
+
     while (engine->is_window_open() && !pokeball_catched)
     {
         renderer->pre_render();
 
         animation();
+
         draw_camera();
         draw_ash();
         draw_tree();
@@ -153,11 +243,11 @@ void PokeMaze::run()
             draw_pikachu();
 
         if (pause)
-            engine->display()->show_pause();
+            engine->show_pause();
 
-        engine->display()->show_controls();
-        engine->display()->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
-        engine->display()->show_fps();
+        engine->show_controls();
+        engine->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
+        engine->show_fps();
 
         engine->commit();
     }
@@ -295,26 +385,17 @@ void PokeMaze::draw_camera()
     {
         free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
 
-        if (w_key)
-        {
-                free_camera->move_up(CAMERA_SPEED * delta_time);
+        if (engine->was_key_pressed(GLFW_KEY_W))
+            free_camera->move_up(CAMERA_SPEED * delta_time);
 
-        }
-        if (a_key)
-        {
-                free_camera->move_left(CAMERA_SPEED * delta_time);
+        if (engine->was_key_pressed(GLFW_KEY_A))
+            free_camera->move_left(CAMERA_SPEED * delta_time);
 
-        }
-        if (s_key)
-        {
-                free_camera->move_down(CAMERA_SPEED * delta_time);
+        if (engine->was_key_pressed(GLFW_KEY_S))
+            free_camera->move_down(CAMERA_SPEED * delta_time);
 
-        }
-        if (d_key)
-        {
-                free_camera->move_right(CAMERA_SPEED * delta_time);
-
-        }
+        if (engine->was_key_pressed(GLFW_KEY_D))
+            free_camera->move_right(CAMERA_SPEED * delta_time);
 
         for (SceneObject* obj : obstacles)
         {
@@ -330,7 +411,13 @@ void PokeMaze::draw_camera()
     }
     else if (pause)
     {
-        glm::vec4 offset = glm::vec4(g_VirtualScene["ash_ketchum"]->get_position_x(),0.0f,g_VirtualScene["ash_ketchum"]->get_position_z(),0.0f);
+        glm::vec4 offset = glm::vec4(
+                g_VirtualScene["ash_ketchum"]->get_position_x(),
+                0.0f,
+                g_VirtualScene["ash_ketchum"]->get_position_z(),
+                0.0f
+        );
+
         lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
 
         renderer->render_view(lookat_camera->get_view_matrix());
@@ -341,22 +428,17 @@ void PokeMaze::draw_camera()
 
         fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
 
-        if (w_key)
-        {
-                fixed_camera->move_up(CAMERA_SPEED * delta_time);
-        }
-        if (a_key)
-        {
-                fixed_camera->move_left(CAMERA_SPEED * delta_time);
-        }
-        if (s_key)
-        {
-                fixed_camera->move_down(CAMERA_SPEED * delta_time);
-        }
-        if (d_key)
-        {
-                fixed_camera->move_right(CAMERA_SPEED * delta_time);
-        }
+        if (engine->was_key_pressed(GLFW_KEY_W))
+            fixed_camera->move_up(CAMERA_SPEED * delta_time);
+
+        if (engine->was_key_pressed(GLFW_KEY_A))
+            fixed_camera->move_left(CAMERA_SPEED * delta_time);
+
+        if (engine->was_key_pressed(GLFW_KEY_S))
+            fixed_camera->move_down(CAMERA_SPEED * delta_time);
+
+        if (engine->was_key_pressed(GLFW_KEY_D))
+            fixed_camera->move_right(CAMERA_SPEED * delta_time);
 
         for (SceneObject* obj : obstacles)
         {
@@ -392,6 +474,7 @@ void PokeMaze::draw_camera()
         renderer->render_view(fixed_camera->get_view_matrix());
     }
 
+    g_projection->set_screen_dimensions(engine->get_screen_width(), engine->get_screen_height());
     renderer->render_projection(g_projection->get_projection_matrix());
 }
 
@@ -795,238 +878,3 @@ void PokeMaze::draw_walls()
             ->end();
     renderer->render_object(walls[26], ZCUBE);
 }
-
-
-// Definição da função que será chamada sempre que a janela do sistema
-// operacional for redimensionada, por consequência alterando o tamanho do
-// "framebuffer" (região de memória onde são armazenados os pixels da imagem).
-void PokeMaze::window_resize_handler(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-
-    g_screen_width = width;
-    g_screen_height = height;
-    g_projection->set_screen_dimensions(width, height);
-}
-
-
-// Função callback chamada sempre que o usuário aperta algum dos botões do mouse
-void PokeMaze::mouse_click_handler(GLFWwindow* window, int button, int action, int mods)
-{
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_LeftMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_LeftMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_LeftMouseButtonPressed = false;
-    }
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_RightMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_RightMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_RightMouseButtonPressed = false;
-    }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_MiddleMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_MiddleMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_MiddleMouseButtonPressed = false;
-    }
-}
-
-// Função callback chamada sempre que o usuário movimentar o cursor do mouse em
-// cima da janela OpenGL.
-void PokeMaze::mouse_move_handler(GLFWwindow* window, double xpos, double ypos)
-{
-    // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
-    // pressionado, computamos quanto que o mouse se movimento desde o último
-    // instante de tempo, e usamos esta movimentação para atualizar os
-    // parâmetros que definem a posição da câmera dentro da cena virtual.
-    // Assim, temos que o usuário consegue controlar a câmera.
-
-    if (g_LeftMouseButtonPressed)
-    {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-
-        // Atualizamos parâmetros da câmera com os deslocamentos
-        if (FREE_MODE && !pause)
-        {
-            g_FreeModeCameraTheta += 0.01f*dx;
-            g_FreeModeCameraPhi   -= 0.01f*dy;
-        }
-        else if (pause)
-        {
-            g_PauseModeCameraTheta -= 0.01f*dx;
-            g_PauseModeCameraPhi   += 0.01f*dy;
-        }
-        else
-        {
-            g_PlayerCameraTheta += 0.01f*dx;
-            g_PlayerCameraPhi   -= 0.01f*dy;
-        }
-        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = PI/2;
-        float phimin = -phimax;
-
-
-        if(FREE_MODE && !pause)
-        {
-            if (g_FreeModeCameraPhi > phimax)
-                g_FreeModeCameraPhi = phimax;
-
-            if (g_FreeModeCameraPhi < phimin)
-                g_FreeModeCameraPhi = phimin;
-        }
-        else if (pause)
-        {
-            if (g_PauseModeCameraPhi > phimax)
-                g_PauseModeCameraPhi = phimax;
-
-            if (g_PauseModeCameraPhi < phimin)
-                g_PauseModeCameraPhi = phimin;
-        }
-        else
-        {
-            if (g_PlayerCameraPhi > phimax)
-                g_PlayerCameraPhi = phimax;
-
-            if (g_PlayerCameraPhi < phimin)
-                g_PlayerCameraPhi = phimin;
-        }
-
-
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-
-    if (g_RightMouseButtonPressed)
-    {
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-
-    if (g_MiddleMouseButtonPressed)
-    {
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-}
-
-// Definição da função que será chamada sempre que o usuário pressionar alguma
-// tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
-void PokeMaze::keyboard_handler(GLFWwindow* window, int key, int scancode, int action, int mod)
-{
-    // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
-    // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    {
-        g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height);
-    }
-
-    // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
-    if (key == GLFW_KEY_O && action == GLFW_PRESS)
-    {
-        g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, g_screen_width, g_screen_height, CAMERA_DISTANCE);
-    }
-
-    if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS)
-    {
-        if (pause)
-            pause = false;
-        else
-            pause = true;
-
-        if(pause)
-            printf("Paused: True\n");
-        else
-            printf("Paused: False\n");
-    }
-
-    if (key == GLFW_KEY_C && action == GLFW_PRESS)
-    {
-        if (pause)
-            return;
-
-        if (FREE_MODE)
-            FREE_MODE = false;
-        else FREE_MODE = true;
-
-        if(FREE_MODE)
-            printf("Freemode: True\n");
-        else printf("Freemode: False\n");
-    }
-
-    if (!pause)
-    {
-        if (key == GLFW_KEY_W)
-            w_key = true;
-
-        if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-            w_key = false;
-
-        if (key == GLFW_KEY_S)
-            s_key = true;
-
-        if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-            s_key = false;
-
-        if (key == GLFW_KEY_A)
-            a_key = true;
-
-        if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-            a_key = false;
-
-        if (key == GLFW_KEY_D)
-            d_key = true;
-
-        if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-            d_key = false;
-    }
-}
-
-// Definimos o callback para impressão de erros da GLFW no terminal
-void PokeMaze::error_handler(int error, const char* description)
-{
-    fprintf(stderr, "ERROR: GLFW: %s\n", description);
-}
-

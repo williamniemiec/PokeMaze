@@ -2,12 +2,22 @@
 #include "pokemaze/engine/text/TextRender.hpp"
 
 //-------------------------------------------------------------------------
+//		Attributes
+//-------------------------------------------------------------------------
+int Display::screen_width;
+int Display::screen_height;
+
+
+//-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
 Display::Display(GLFWwindow* window)
 {
     this->window = window;
     text_renderer = new TextRender();
+
+    glfwGetWindowSize(window, &screen_width, &screen_height);
+    glfwSetFramebufferSizeCallback(window, window_resize_handler);
 }
 
 
@@ -99,4 +109,26 @@ void Display::show_gpu()
     const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
+}
+
+void Display::window_resize_handler(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+
+    screen_width = width;
+    screen_height = height;
+}
+
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
+int Display::get_screen_width()
+{
+    return screen_width;
+}
+
+int Display::get_screen_height()
+{
+    return screen_height;
 }
