@@ -27,8 +27,6 @@ void Engine::start()
         std::exit(EXIT_FAILURE);
     }
 
-    glfwSetErrorCallback(on_error);
-
     build_window();
     build_event_handlers();
 }
@@ -63,6 +61,7 @@ void Engine::build_event_handlers()
 {
     keyboard_controller = new KeyboardController(window);
     mouse_controller = new MouseController(window);
+    error_controller = new ErrorController(window);
 }
 
 void Engine::shutdown()
@@ -131,11 +130,6 @@ void Engine::show_fps()
 void Engine::show_gpu()
 {
     display->show_gpu();
-}
-
-void Engine::on_error(int error, const char* description)
-{
-    fprintf(stderr, "ERROR: GLFW: %s\n", description);
 }
 
 

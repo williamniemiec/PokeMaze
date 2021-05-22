@@ -5,6 +5,7 @@
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/controllers/KeyboardController.hpp"
 #include "pokemaze/controllers/MouseController.hpp"
+#include "pokemaze/controllers/ErrorController.hpp"
 
 /**
  * Responsible for initializing OpenGL, defining event handlers and displaying
@@ -18,6 +19,7 @@ class Engine
 private:
     KeyboardController* keyboard_controller;
     MouseController* mouse_controller;
+    ErrorController* error_controller;
     GLFWwindow* window;
     Display* display;
     int screen_width;
@@ -129,7 +131,6 @@ public:
     void show_gpu();
 
 private:
-    static void on_error(int error, const char* description);
     void build_window();
     void build_event_handlers();
 
