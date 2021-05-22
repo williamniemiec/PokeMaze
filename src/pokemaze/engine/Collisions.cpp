@@ -93,9 +93,8 @@ bool Collisions::has_collision_point_plane(glm::vec4 point, SceneObject* plane)
     return  has_colision;
 }
 
-bool Collisions::has_collision_sphere_plane(SceneObject* sphere, SceneObject* plane)
+bool Collisions::has_collision_sphere_plane(Sphere* sphere, SceneObject* plane)
 {
-    double sphere_radius = 1.0;
     BoundingBox* bbox_world = plane->get_bounding_box();
 
     double x = std::max(
@@ -121,7 +120,7 @@ bool Collisions::has_collision_sphere_plane(SceneObject* sphere, SceneObject* pl
         sphere->get_position_z()
     };
 
-    return (euclidian_distance(position, sphere_position) < sphere_radius);
+    return (euclidian_distance(position, sphere_position) < sphere->get_radius());
 }
 
 double Collisions::euclidian_distance(glm::vec3 p1, glm::vec3 p2)

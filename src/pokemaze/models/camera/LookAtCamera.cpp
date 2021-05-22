@@ -1,11 +1,17 @@
 #include "pokemaze/models/camera/LookAtCamera.hpp"
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 LookAtCamera::LookAtCamera(std::string name, float x_up, float y_up, float z_up, float camera_distance)
-    : Camera(name, x_up, y_up, z_up, 0.0f, 0.0f, 0.0f)
+        : Camera(name, x_up, y_up, z_up, 0.0f, 0.0f, 0.0f)
 {
     this->camera_distance = camera_distance;
 }
 
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void LookAtCamera::look_to(float phi, float theta)
 {
     look_to(phi, theta, {0.0f, 0.0f, 0.0f, 0.0f});

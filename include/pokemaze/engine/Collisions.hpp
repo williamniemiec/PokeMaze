@@ -2,6 +2,7 @@
 
 #include <glm/vec4.hpp>
 #include "pokemaze/models/SceneObject.hpp"
+#include "pokemaze/models/Sphere.hpp"
 
 /**
  * Responsible for collision tests.
@@ -39,7 +40,7 @@ public:
      *
      * @return      True if there is a collision; false otherwise
      */
-    static bool has_collision_sphere_plane(SceneObject* sphere, SceneObject* plane);
+    static bool has_collision_sphere_plane(Sphere* sphere, SceneObject* plane);
 
     /**
      * Checks if there is a collision between two planes (AABB).

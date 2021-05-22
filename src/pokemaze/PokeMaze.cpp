@@ -20,6 +20,7 @@
 #include "pokemaze/models/scene/Floor.hpp"
 #include "pokemaze/models/scene/Sky.hpp"
 #include "pokemaze/models/scene/Garage.hpp"
+#include "pokemaze/models/Sphere.hpp"
 
 #define PI 3.14159265358979323846f
 #define PLAYER_DIRECTION_UP 0
@@ -385,7 +386,7 @@ void PokeMaze::draw_camera()
         if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], g_VirtualScene["pikachu"]))
             pikachu_catched = true;
 
-        if (Collisions::has_collision_sphere_plane(g_VirtualScene["pokeball"], g_VirtualScene["ash_ketchum"]))
+        if (Collisions::has_collision_sphere_plane((Sphere*) g_VirtualScene["pokeball"], g_VirtualScene["ash_ketchum"]))
             pokeball_catched = true;
 
         renderer->render_view(fixed_camera->get_view_matrix());

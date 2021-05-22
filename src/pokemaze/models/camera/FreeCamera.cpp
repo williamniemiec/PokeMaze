@@ -1,13 +1,22 @@
 #include "pokemaze/models/camera/FreeCamera.hpp"
+
 #include "pokemaze/util/algebra/Matrices.h"
 
+
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 FreeCamera::FreeCamera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z)
-    : Camera(name, x_up, y_up, z_up, x, y, z)
+        : Camera(name, x_up, y_up, z_up, x, y, z)
 {
     movements = new std::stack<glm::vec4>();
     movements->push(position);
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void FreeCamera::look_to(float phi, float theta)
 {
     float x = cos(phi) * sin(theta);
@@ -83,6 +92,10 @@ void FreeCamera::move_right(float offset)
     movements->push(movement);
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 glm::vec4 FreeCamera::get_last_movement()
 {
     return movements->top();
