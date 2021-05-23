@@ -5,6 +5,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <pokemaze/engine/loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
+#include "wniemiec/io/consolex/Consolex.hpp"
+
+using namespace wniemiec::io::consolex;
 
 //-------------------------------------------------------------------------
 //		Constructor
@@ -102,16 +105,12 @@ GLuint Renderer::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_sha
 
         glGetProgramInfoLog(program_id, log_length, &log_length, log);
 
-        std::string output;
-
-        output += "ERROR: OpenGL linking of program failed.\n";
-        output += "== Start of link log\n";
-        output += log;
-        output += "\n== End of link log\n";
+        Consolex::write_error("OpenGL linking of program failed.");
+        Consolex::write_error("== Start of link log");
+        Consolex::write_error(log);
+        Consolex::write_error("== End of link log");
 
         delete [] log;
-
-        fprintf(stderr, "%s", output.c_str());
     }
 
     glDeleteShader(vertex_shader_id);
@@ -158,7 +157,7 @@ void Renderer::load_shader(const char* filename, GLuint shader_id)
     }
     catch (std::exception& e)
     {
-        fprintf(stderr, "ERROR: Cannot open file \"%s\".\n", filename);
+        Consolex::write_error("Cannot open file " + std::string(filename));
         std::exit(EXIT_FAILURE);
     }
 
@@ -183,28 +182,20 @@ void Renderer::load_shader(const char* filename, GLuint shader_id)
 
     if (log_length != 0)
     {
-        std::string  output;
-
         if (!compiled_ok)
         {
-            output += "ERROR: OpenGL compilation of \"";
-            output += filename;
-            output += "\" failed.\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
+            Consolex::write_error("OpenGL compilation of " + filename + " failed.");
+            Consolex::write_error("== Start of compilation log");
+            Consolex::write_error(log);
+            Consolex::write_error("== End of compilation log");
         }
         else
         {
-            output += "WARNING: OpenGL compilation of \"";
-            output += filename;
-            output += "\".\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
+            Consolex::write_warning("OpenGL compilation of " + filename + ".");
+            Consolex::write_warning("== Start of compilation log");
+            Consolex::write_warning(log);
+            Consolex::write_warning("== End of compilation log");
         }
-
-        fprintf(stderr, "%s", output.c_str());
     }
 
     delete [] log;
@@ -308,7 +299,7 @@ bool Renderer::was_texture_loaded(std::string texture)
 
 void Renderer::load_texture(std::string filename, bool is_3D)
 {
-    printf("Loading texture \"%s\"... \n", filename.c_str());
+    Consolex::write_info("Loading texture " + filename + "...");
 
     stbi_set_flip_vertically_on_load(true);
     int width;
@@ -318,7 +309,7 @@ void Renderer::load_texture(std::string filename, bool is_3D)
 
     if ( data == NULL )
     {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename.c_str());
+        Consolex::write_error("Cannot open image file " + filename);
         std::exit(EXIT_FAILURE);
     }
 
@@ -327,13 +318,11 @@ void Renderer::load_texture(std::string filename, bool is_3D)
     glUniform1i(glGetUniformLocation(program_id, texture_label.c_str()), total_loaded_textures);
     glUseProgram(0);
 
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
     GLuint texture_id;
     GLuint sampler_id;
     glGenTextures(1, &texture_id);
     glGenSamplers(1, &sampler_id);
 
-    // Par�metros de amostragem da textura.
     if (is_3D)
     {
         glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -345,7 +334,6 @@ void Renderer::load_texture(std::string filename, bool is_3D)
         glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
-    // Agora enviamos a imagem lida do disco para a GPU
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);

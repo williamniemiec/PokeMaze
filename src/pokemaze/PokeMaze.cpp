@@ -41,7 +41,7 @@ float PokeMaze::delta_time = 0.0f;
 PokeMaze::PokeMaze(int screen_width, int screen_height)
 {
     engine = new Engine(screen_width, screen_height);
-    g_player_direction = PLAYER_DIRECTION_UP;
+    //g_player_direction = PLAYER_DIRECTION_UP;
     pikachu_catched = false;
     pokeball_catched = false;
     garage_door_touched = false;
