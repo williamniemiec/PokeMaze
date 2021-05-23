@@ -20,8 +20,12 @@
 #include "pokemaze/models/scene/Sky.hpp"
 #include "pokemaze/models/scene/Garage.hpp"
 #include "pokemaze/models/Sphere.hpp"
+#include "wniemiec/util/task/Scheduler.hpp"
+#include <thread>
 
 #define PI 3.14159265358979323846f
+#define KEYBOARD_HANDLER_INTERVAL_MS 150
+#define MOUSE_HANDLER_INTERVAL_MS 2
 #define PLAYER_DIRECTION_UP 0
 #define CAMERA_SPEED 10.0f
 #define CAMERA_DISTANCE 3.0f
@@ -40,6 +44,8 @@
 #define XCUBE 10
 #define XDOOR 11
 #define TREE 12
+
+using namespace wniemiec::util::task;
 
 //-------------------------------------------------------------------------
 //		Attributes
@@ -62,7 +68,7 @@ FixedCamera* PokeMaze::fixed_camera;
 float PokeMaze::previous_time = 0.0f;
 float PokeMaze::delta_time = 0.0f;
 
-#include <thread>
+
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
@@ -114,114 +120,7 @@ void PokeMaze::run()
     WavPlayer* player = new WavPlayer(soundtrack);
     player->play();
 
-    // TODO: use Scheduler::set_interval()
-    std::thread keyboard_thread = std::thread([&]()
-    {
-        bool key_pressed = false;
-        while (engine->is_window_open())
-        {
-            key_pressed = false;
-
-            if (engine->was_key_pressed(GLFW_KEY_C))
-            {
-                FREE_MODE = !FREE_MODE;
-                key_pressed = true;
-            }
-
-            if (engine->was_key_pressed(GLFW_KEY_ESCAPE))
-            {
-                engine->close_window();
-                key_pressed = true;
-            }
-
-            if (engine->was_key_pressed(GLFW_KEY_PAUSE))
-            {
-                pause = !pause;
-                key_pressed = true;
-            }
-
-            if (engine->was_key_pressed(GLFW_KEY_P))
-            {
-                g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
-                key_pressed = true;
-            }
-            else if (engine->was_key_pressed(GLFW_KEY_O))
-            {
-                g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
-                key_pressed = true;
-            }
-
-            if (key_pressed)
-            {
-                Sleep(150);
-                key_pressed = false;
-            }
-        }
-    });
-    keyboard_thread.detach();
-
-    // TODO: refactor
-    std::thread mouse_thread = std::thread([&]()
-    {
-        while (engine->is_window_open())
-        {
-            while (engine->has_mouse_moved())
-            {
-                if (engine->was_button_clicked(GLFW_MOUSE_BUTTON_LEFT))
-                {
-                    float dx = engine->get_offset_click_x();
-                    float dy = engine->get_offset_click_y();
-
-                    if (FREE_MODE && !pause)
-                    {
-                        g_FreeModeCameraTheta += 0.01f*dx;
-                        g_FreeModeCameraPhi   -= 0.01f*dy;
-                    }
-                    else if (pause)
-                    {
-                        g_PauseModeCameraTheta -= 0.01f*dx;
-                        g_PauseModeCameraPhi   += 0.01f*dy;
-                    }
-                    else
-                    {
-                        g_PlayerCameraTheta += 0.01f*dx;
-                        g_PlayerCameraPhi   -= 0.01f*dy;
-                    }
-                    // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-                    float phimax = PI/2;
-                    float phimin = -phimax;
-
-
-                    if(FREE_MODE && !pause)
-                    {
-                        if (g_FreeModeCameraPhi > phimax)
-                            g_FreeModeCameraPhi = phimax;
-
-                        if (g_FreeModeCameraPhi < phimin)
-                            g_FreeModeCameraPhi = phimin;
-                    }
-                    else if (pause)
-                    {
-                        if (g_PauseModeCameraPhi > phimax)
-                            g_PauseModeCameraPhi = phimax;
-
-                        if (g_PauseModeCameraPhi < phimin)
-                            g_PauseModeCameraPhi = phimin;
-                    }
-                    else
-                    {
-                        if (g_PlayerCameraPhi > phimax)
-                            g_PlayerCameraPhi = phimax;
-
-                        if (g_PlayerCameraPhi < phimin)
-                            g_PlayerCameraPhi = phimin;
-                    }
-                }
-            }
-        }
-    });
-    mouse_thread.detach();
-
+    start_event_handlers();
 
     while (engine->is_window_open() && !pokeball_catched)
     {
@@ -246,19 +145,120 @@ void PokeMaze::run()
             engine->show_pause();
 
         engine->show_controls();
-        engine->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr); // g_projection instanceof PerspectiveProjection
+        engine->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr);
         engine->show_fps();
 
         engine->commit();
     }
 
     engine->shutdown();
+    stop_event_handlers();
 
     player->stop();
 
     end_game();
 }
 
+void PokeMaze::start_event_handlers()
+{
+    keyboard_handler_id = init_keyboard_handler();
+    mouse_handler_id = init_mouse_handler();
+}
+
+unsigned long PokeMaze::init_keyboard_handler()
+{
+    unsigned long handler_id = Scheduler::set_interval([&]()
+    {
+        if (engine->was_key_pressed(GLFW_KEY_C))
+        {
+            FREE_MODE = !FREE_MODE;
+        }
+
+        if (engine->was_key_pressed(GLFW_KEY_ESCAPE))
+        {
+            pause = !pause;
+        }
+
+        if (engine->was_key_pressed(GLFW_KEY_P))
+        {
+            g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
+        }
+        else if (engine->was_key_pressed(GLFW_KEY_O))
+        {
+            g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
+        }
+    }, KEYBOARD_HANDLER_INTERVAL_MS);
+
+    return handler_id;
+}
+
+unsigned long PokeMaze::init_mouse_handler()
+{
+    unsigned long handler_id = Scheduler::set_interval([&]()
+    {
+        while (engine->has_mouse_moved())
+        {
+            if (engine->was_button_clicked(GLFW_MOUSE_BUTTON_LEFT))
+            {
+                float dx = engine->get_offset_click_x();
+                float dy = engine->get_offset_click_y();
+
+                if (FREE_MODE && !pause)
+                {
+                    g_FreeModeCameraTheta += 0.01f*dx;
+                    g_FreeModeCameraPhi   -= 0.01f*dy;
+                }
+                else if (pause)
+                {
+                    g_PauseModeCameraTheta -= 0.01f*dx;
+                    g_PauseModeCameraPhi   += 0.01f*dy;
+                }
+                else
+                {
+                    g_PlayerCameraTheta += 0.01f*dx;
+                    g_PlayerCameraPhi   -= 0.01f*dy;
+                }
+                // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+                float phimax = PI/2;
+                float phimin = -phimax;
+
+
+                if(FREE_MODE && !pause)
+                {
+                    if (g_FreeModeCameraPhi > phimax)
+                        g_FreeModeCameraPhi = phimax;
+
+                    if (g_FreeModeCameraPhi < phimin)
+                        g_FreeModeCameraPhi = phimin;
+                }
+                else if (pause)
+                {
+                    if (g_PauseModeCameraPhi > phimax)
+                        g_PauseModeCameraPhi = phimax;
+
+                    if (g_PauseModeCameraPhi < phimin)
+                        g_PauseModeCameraPhi = phimin;
+                }
+                else
+                {
+                    if (g_PlayerCameraPhi > phimax)
+                        g_PlayerCameraPhi = phimax;
+
+                    if (g_PlayerCameraPhi < phimin)
+                        g_PlayerCameraPhi = phimin;
+                }
+            }
+        }
+    }, MOUSE_HANDLER_INTERVAL_MS);
+
+    return handler_id;
+}
+
+void PokeMaze::stop_event_handlers()
+{
+    Scheduler::clear_interval(keyboard_handler_id);
+    Scheduler::clear_interval(mouse_handler_id);
+}
 
 void PokeMaze::end_game()
 {

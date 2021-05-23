@@ -18,12 +18,6 @@ bool KeyboardController::was_key_pressed(GLenum key)
 
 void KeyboardController::keyboard_handler(GLFWwindow* window, int key, int scancode, int action, int mod)
 {
-    if (key == GLFW_KEY_ESCAPE)
-        key_pressed[GLFW_KEY_ESCAPE] = true;
-
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-        key_pressed[GLFW_KEY_ESCAPE] = false;
-
     if (key == GLFW_KEY_P)
         key_pressed[GLFW_KEY_P] = true;
 
@@ -36,11 +30,11 @@ void KeyboardController::keyboard_handler(GLFWwindow* window, int key, int scanc
     if (key == GLFW_KEY_O && action == GLFW_RELEASE)
         key_pressed[GLFW_KEY_O] = false;
 
-    if (key == GLFW_KEY_PAUSE)
-        key_pressed[GLFW_KEY_PAUSE] = true;
+    if (key == GLFW_KEY_ESCAPE)
+        key_pressed[GLFW_KEY_ESCAPE] = true;
 
-    if (key == GLFW_KEY_PAUSE && action == GLFW_RELEASE)
-        key_pressed[GLFW_KEY_PAUSE] = false;
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+        key_pressed[GLFW_KEY_ESCAPE] = false;
 
     if (key == GLFW_KEY_C)
         key_pressed[GLFW_KEY_C] = true;

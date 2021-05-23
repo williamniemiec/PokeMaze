@@ -57,6 +57,8 @@ private:
     bool pikachu_door_touched;
     bool pikachu_door_opened;
     float door_y;
+    unsigned long keyboard_handler_id;
+    unsigned long mouse_handler_id;
 
 
 //-------------------------------------------------------------------------
@@ -72,7 +74,10 @@ public:
 public:
     void run();
 private:
-    static void window_resize_handler(GLFWwindow* window, int width, int height);
+    void start_event_handlers();
+    unsigned long init_keyboard_handler();
+    unsigned long init_mouse_handler();
+    void stop_event_handlers();
     void build_cameras();
     void build_floor();
     void build_tree();

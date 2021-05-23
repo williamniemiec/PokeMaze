@@ -29,7 +29,7 @@ void Display::show_controls()
     float pad = text_renderer->TextRendering_LineHeight(window);
 
     char buffer[80];
-    snprintf(buffer, 80, "Controls: W,A,S,D: Move | C: Free camera / Fixed camera | Pause Break: Pause");
+    snprintf(buffer, 80, "Controls: W,A,S,D: Move | C: Free camera / Fixed camera | ESC: Pause / Resume");
 
     text_renderer->TextRendering_PrintString(
             window,
