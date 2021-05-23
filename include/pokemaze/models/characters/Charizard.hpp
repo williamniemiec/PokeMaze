@@ -11,6 +11,18 @@
 class Charizard : public SceneObject
 {
 //-------------------------------------------------------------------------
+//		Attributes
+//-------------------------------------------------------------------------
+private:
+    glm::vec4 original_position;
+    double last_time;
+    double bezier_param_t;
+    bool bezier_forward;
+    float offset_x;
+    float offset_z;
+
+
+//-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
 private:
@@ -31,6 +43,13 @@ public:
      * @param       z Z-coordinate of character position
      */
     static Charizard* create(std::string name, float x, float y, float z);
+
+    /**
+     * Performs the movement of the object based on the current time.
+     *
+     * @param       current_time Current time
+     */
+    void animate(double current_time);
 
 
 //-------------------------------------------------------------------------

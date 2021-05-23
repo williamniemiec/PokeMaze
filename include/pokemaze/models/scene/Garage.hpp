@@ -11,6 +11,15 @@
 class Garage : public SceneObject
 {
 //-------------------------------------------------------------------------
+//		Attributes
+//-------------------------------------------------------------------------
+private:
+    double last_time;
+    bool door_opened;
+    float door_y;
+
+
+//-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
 private:
@@ -31,6 +40,22 @@ public:
      * @param       z Z-coordinate of garage position
      */
     static Garage* create(std::string name, float x, float y, float z);
+
+    /**
+     * Opens the garage door if open_door is true.
+     *
+     * @param       current_time Current time
+     * @param       open_door True if garage door should be opened; false
+     * otherwise
+     */
+    void animate(double current_time, bool open_door);
+
+    /**
+     * Checks whether the garage door is open or closed.
+     *
+     * @return      True if door is opened; false otherwise
+     */
+    bool is_garage_opened();
 
 
 //-------------------------------------------------------------------------

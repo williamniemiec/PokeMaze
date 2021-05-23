@@ -53,7 +53,7 @@ using namespace wniemiec::util::task;
 bool PokeMaze::free_mode = true;
 bool PokeMaze::pause = false;
 
-Projection* PokeMaze::g_projection;
+Projection* PokeMaze::projection;
 
 FreeCamera* PokeMaze::free_camera;
 LookAtCamera* PokeMaze::lookat_camera;
@@ -70,16 +70,11 @@ PokeMaze::PokeMaze(int screen_width, int screen_height)
 {
     engine = new Engine(screen_width, screen_height);
     g_player_direction = PLAYER_DIRECTION_UP;
-    g_offset_x_charizard = 0.0f;
-    g_offset_z_charizard = 0.0f;
-    charizard_previous_time = 0;
-    param_t = 2.0;
-    bezier_forward = true;
+
     pikachu_catched = false;
     pokeball_catched = false;
+
     pikachu_door_touched = false;
-    pikachu_door_opened = false;
-    door_y = 3.5f;
 }
 
 
@@ -91,7 +86,7 @@ void PokeMaze::run()
     engine->start();
     engine->show_gpu();
 
-    g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
+    projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
 
     renderer = new Renderer();
 
@@ -139,7 +134,7 @@ void PokeMaze::run()
             engine->show_pause();
 
         engine->show_controls();
-        engine->show_projection(dynamic_cast<PerspectiveProjection*>(g_projection) != nullptr);
+        engine->show_projection(dynamic_cast<PerspectiveProjection*>(projection) != nullptr);
         engine->show_fps();
 
         engine->commit();
@@ -175,11 +170,11 @@ unsigned long PokeMaze::init_keyboard_handler()
 
         if (engine->was_key_pressed(GLFW_KEY_P))
         {
-            g_projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
+            projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
         }
         else if (engine->was_key_pressed(GLFW_KEY_O))
         {
-            g_projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
+            projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
         }
     }, KEYBOARD_HANDLER_INTERVAL_MS);
 
@@ -305,7 +300,7 @@ void PokeMaze::build_garage()
 
 void PokeMaze::build_charizard()
 {
-    Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+    Charizard* charizard = Charizard::create("Charizard", 7.0f, 2.0f, 3.50f);
 
     renderer->load_object(charizard);
     virtual_scene["charizard"] = charizard;
@@ -431,7 +426,7 @@ void PokeMaze::draw_camera()
 
         if (Collisions::has_collision_plane_plane(virtual_scene["ash_ketchum"], virtual_scene["garage_door"]))
         {
-            if (!pikachu_door_opened)
+            if (!((Garage*) virtual_scene["garage_door"])->is_garage_opened())
             {
                 pikachu_door_touched = true;
 
@@ -449,8 +444,8 @@ void PokeMaze::draw_camera()
         renderer->render_view(fixed_camera->get_view_matrix());
     }
 
-    g_projection->set_screen_dimensions(engine->get_screen_width(), engine->get_screen_height());
-    renderer->render_projection(g_projection->get_projection_matrix());
+    projection->set_screen_dimensions(engine->get_screen_width(), engine->get_screen_height());
+    renderer->render_projection(projection->get_projection_matrix());
 }
 
 
@@ -527,19 +522,7 @@ void PokeMaze::draw_tree()
 
 void PokeMaze::draw_garage()
 {
-    if(pikachu_door_touched)
-    {
-        if (door_y > 0.5f)
-            door_y -= delta_time + 0.0025f;
-        else
-            pikachu_door_opened = true;
-    }
-
-    virtual_scene["garage_door"]->movement()
-            ->begin()
-            ->translate(8.75f, 1.60f, -3.5f)
-            ->scale(3.5f, door_y, 0.5f)
-            ->end();
+    ((Garage*) virtual_scene["garage_door"])->animate(glfwGetTime(), pikachu_door_touched);
     renderer->render_object(virtual_scene["garage_door"], XDOOR);
 
     virtual_scene["garage_ceiling"]->movement()
@@ -562,39 +545,8 @@ void PokeMaze::draw_ash()
 
 void PokeMaze::draw_charizard()
 {
-    float charizard_current_time = (float)glfwGetTime();
+    ((Charizard*) virtual_scene["charizard"])->animate(glfwGetTime());
 
-    if (charizard_current_time - charizard_previous_time>= 0.04)
-    {
-        if (param_t <= 0.1)
-            bezier_forward = true;
-        else if (param_t >= 0.9)
-            bezier_forward = false;
-
-        if (bezier_forward)
-            param_t += 0.01;
-        else
-            param_t -= 0.01;
-
-        Point P0 = Point("p0", 0.0f, 0.0f, 0.0f);
-        Point P1 = Point("p1", 0.5f, 0.1f, 0.0f);
-        Point P2 = Point("p2", 1.0f, 0.2f, 0.0f);
-        Point P3 = Point("p3", 1.0f, 1.0f, 0.0f);
-        Point p = Bezier::calculate_cubic_bezier(P0, P1, P2, P3, param_t);
-
-        g_offset_x_charizard = p.get_x();
-        g_offset_z_charizard = p.get_y();
-        charizard_previous_time = charizard_current_time;
-    }
-
-    /// Desenha charizard
-    virtual_scene["charizard"]->movement()
-            ->begin()
-            ->translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
-            ->scale(0.1, 0.1, 0.1)
-            ->rotate_y(PI)
-            ->rotate_x(PI / 4)
-            ->end();
     renderer->render_object(virtual_scene["charizard"], CHARIZARD);
 }
 
