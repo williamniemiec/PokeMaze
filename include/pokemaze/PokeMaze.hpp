@@ -12,6 +12,7 @@
 #include "pokemaze/engine/projection/Projection.hpp"
 #include "pokemaze/engine/Renderer.hpp"
 #include "pokemaze/engine/Engine.hpp"
+#include "pokemaze/levels/Level.hpp"
 
 /**
  * Maze game with Pokémon theme.
@@ -28,28 +29,16 @@ private:
     static Projection* projection;
     static bool free_mode;
     static bool pause;
-
-
     static float previous_time;
     static float delta_time;
-
-    std::map<std::string, SceneObject*> virtual_scene;
-    std::vector<SceneObject*> obstacles;
-    std::vector<SceneObject*> skies;
-    std::vector<SceneObject*> walls;
-
     Engine* engine;
     Renderer* renderer;
-
-    float g_player_direction;
-
     bool pikachu_catched;
     bool pokeball_catched;
-
-    bool pikachu_door_touched;
-
+    bool garage_door_touched;
     unsigned long keyboard_handler_id;
     unsigned long mouse_handler_id;
+    Level* level;
 
 
 //-------------------------------------------------------------------------
@@ -65,30 +54,22 @@ public:
 public:
     void run();
 private:
+    void build_game();
+    void start_game();
+    void end_game();
+    void build_level();
+    void animation();
+    void set_perspective_projection();
+    bool is_perspective_projection();
     void start_event_handlers();
     unsigned long init_keyboard_handler();
     unsigned long init_mouse_handler();
     void stop_event_handlers();
     void build_cameras();
-    void build_floor();
-    void build_tree();
-    void build_sky();
-    void build_ash();
-    void build_garage();
-    void build_charizard();
-    void build_pikachu();
-    void build_pokeball();
-    void build_walls();
-    void animation();
     void draw_camera();
-    void draw_floor();
-    void draw_tree();
-    void draw_sky();
-    void draw_ash();
-    void draw_garage();
-    void draw_charizard();
-    void draw_pikachu();
-    void draw_pokeball();
-    void draw_walls();
-    void end_game();
+    void draw_free_camera();
+    void draw_lookat_camera();
+    void draw_fixed_camera();
+    void update_screen();
+    void display_endgame_message();
 };
