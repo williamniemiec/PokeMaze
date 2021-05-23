@@ -7,6 +7,7 @@ LookAtCamera::LookAtCamera(std::string name, float x_up, float y_up, float z_up,
         : Camera(name, x_up, y_up, z_up, 0.0f, 0.0f, 0.0f)
 {
     this->camera_distance = camera_distance;
+    offset = {0.0f, 0.0f, 0.0f, 0.0f};
 }
 
 //-------------------------------------------------------------------------
@@ -14,7 +15,7 @@ LookAtCamera::LookAtCamera(std::string name, float x_up, float y_up, float z_up,
 //-------------------------------------------------------------------------
 void LookAtCamera::look_to(float phi, float theta)
 {
-    look_to(phi, theta, {0.0f, 0.0f, 0.0f, 0.0f});
+    look_to(phi, theta, offset);
 }
 
 void LookAtCamera::look_to(float phi, float theta, glm::vec4 offset)
@@ -28,4 +29,13 @@ void LookAtCamera::look_to(float phi, float theta, glm::vec4 offset)
     position = glm::vec4(x, y, z, 1.0f) + offset;
 
     view = direction - position;
+
+    phi_angle = phi;
+    theta_angle = theta;
+    offset = offset;
+}
+
+void LookAtCamera::move(glm::vec4 offset)
+{
+    look_to(phi_angle, theta_angle, offset);
 }

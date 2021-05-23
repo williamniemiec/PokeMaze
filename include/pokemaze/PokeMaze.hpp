@@ -23,40 +23,39 @@ class PokeMaze
 //-------------------------------------------------------------------------
 private:
     Engine* engine;
-    // Angulos que controlam a pokebola
-    static float g_AngleX;
-    static float g_AngleY;
-    static float g_AngleZ;
-    static float g_FreeModeCameraTheta;
-    static float g_FreeModeCameraPhi;
-    static float g_PlayerCameraTheta;
-    static float g_PlayerCameraPhi;
-    static float g_PauseModeCameraTheta;
-    static float g_PauseModeCameraPhi;
-    static bool FREE_MODE;
-    static bool pause;
-    static Projection* g_projection;
+
     static FreeCamera* free_camera;
     static LookAtCamera* lookat_camera;
     static FixedCamera* fixed_camera;
+
+    static bool free_mode;
+    static bool pause;
+
+    static Projection* g_projection;
+
     static float previous_time;
     static float delta_time;
-    std::map<std::string, SceneObject*> g_VirtualScene;
-    float g_player_direction;
-    float g_offset_x_charizard;
-    float g_offset_z_charizard;
+    std::map<std::string, SceneObject*> virtual_scene;
     std::vector<SceneObject*> obstacles;
     std::vector<SceneObject*> skies;
     std::vector<SceneObject*> walls;
     Renderer* renderer;
+
+    float g_player_direction;
+
+    float g_offset_x_charizard;
+    float g_offset_z_charizard;
     float charizard_previous_time;
     double param_t;
     bool bezier_forward;
+
     bool pikachu_catched;
     bool pokeball_catched;
+
     bool pikachu_door_touched;
     bool pikachu_door_opened;
     float door_y;
+
     unsigned long keyboard_handler_id;
     unsigned long mouse_handler_id;
 

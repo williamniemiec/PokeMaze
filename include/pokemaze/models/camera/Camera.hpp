@@ -14,6 +14,8 @@ class Camera : public Point
 protected:
     glm::vec4 up;
     glm::vec4 view;
+    double phi_angle;
+    double theta_angle;
 
 
 //-------------------------------------------------------------------------
@@ -46,6 +48,20 @@ public:
      */
     virtual void look_to(float phi, float theta) = 0;
 
+    /**
+     * Shifts the camera's phi angle.
+     *
+     * @param       angle Rotation angle
+     */
+    void rotate_phi(float angle);
+
+    /**
+     * Shifts the camera's theta angle.
+     *
+     * @param       angle Rotation angle
+     */
+    void rotate_theta(float angle);
+
 
 //-------------------------------------------------------------------------
 //		Getters
@@ -57,4 +73,7 @@ public:
      * @return      View matrix
      */
     glm::mat4 get_view_matrix();
+
+    double get_phi_angle();
+    double get_theta_angle();
 };

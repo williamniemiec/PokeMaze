@@ -24,6 +24,9 @@ void FreeCamera::look_to(float phi, float theta)
     float z = cos(phi) * cos(theta);
 
     view = glm::vec4(x, y, -z, 0.0f);
+
+    phi_angle = phi;
+    theta_angle = theta;
 }
 
 void FreeCamera::undo()

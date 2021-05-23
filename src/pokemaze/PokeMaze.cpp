@@ -50,21 +50,15 @@ using namespace wniemiec::util::task;
 //-------------------------------------------------------------------------
 //		Attributes
 //-------------------------------------------------------------------------
-float PokeMaze::g_AngleX = 0.0f;
-float PokeMaze::g_AngleY = 0.0f;
-float PokeMaze::g_AngleZ = 0.0f;
-float PokeMaze::g_FreeModeCameraTheta = 1.25f*PI;
-float PokeMaze::g_FreeModeCameraPhi = -0.4f;
-float PokeMaze::g_PlayerCameraTheta = 0.0f;
-float PokeMaze::g_PlayerCameraPhi = -0.4f;
-float PokeMaze::g_PauseModeCameraTheta = 0.0f;
-float PokeMaze::g_PauseModeCameraPhi = 0.0f;
-bool PokeMaze::FREE_MODE = true;
+bool PokeMaze::free_mode = true;
 bool PokeMaze::pause = false;
+
 Projection* PokeMaze::g_projection;
+
 FreeCamera* PokeMaze::free_camera;
 LookAtCamera* PokeMaze::lookat_camera;
 FixedCamera* PokeMaze::fixed_camera;
+
 float PokeMaze::previous_time = 0.0f;
 float PokeMaze::delta_time = 0.0f;
 
@@ -171,7 +165,7 @@ unsigned long PokeMaze::init_keyboard_handler()
     {
         if (engine->was_key_pressed(GLFW_KEY_C))
         {
-            FREE_MODE = !FREE_MODE;
+            free_mode = !free_mode;
         }
 
         if (engine->was_key_pressed(GLFW_KEY_ESCAPE))
@@ -198,55 +192,26 @@ unsigned long PokeMaze::init_mouse_handler()
     {
         while (engine->has_mouse_moved())
         {
-            if (engine->was_button_clicked(GLFW_MOUSE_BUTTON_LEFT))
+            if (!engine->was_button_clicked(GLFW_MOUSE_BUTTON_LEFT))
+                continue;
+
+            float dx = engine->get_offset_click_x();
+            float dy = engine->get_offset_click_y();
+
+            if (free_mode && !pause)
             {
-                float dx = engine->get_offset_click_x();
-                float dy = engine->get_offset_click_y();
-
-                if (FREE_MODE && !pause)
-                {
-                    g_FreeModeCameraTheta += 0.01f*dx;
-                    g_FreeModeCameraPhi   -= 0.01f*dy;
-                }
-                else if (pause)
-                {
-                    g_PauseModeCameraTheta -= 0.01f*dx;
-                    g_PauseModeCameraPhi   += 0.01f*dy;
-                }
-                else
-                {
-                    g_PlayerCameraTheta += 0.01f*dx;
-                    g_PlayerCameraPhi   -= 0.01f*dy;
-                }
-                // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-                float phimax = PI/2;
-                float phimin = -phimax;
-
-
-                if(FREE_MODE && !pause)
-                {
-                    if (g_FreeModeCameraPhi > phimax)
-                        g_FreeModeCameraPhi = phimax;
-
-                    if (g_FreeModeCameraPhi < phimin)
-                        g_FreeModeCameraPhi = phimin;
-                }
-                else if (pause)
-                {
-                    if (g_PauseModeCameraPhi > phimax)
-                        g_PauseModeCameraPhi = phimax;
-
-                    if (g_PauseModeCameraPhi < phimin)
-                        g_PauseModeCameraPhi = phimin;
-                }
-                else
-                {
-                    if (g_PlayerCameraPhi > phimax)
-                        g_PlayerCameraPhi = phimax;
-
-                    if (g_PlayerCameraPhi < phimin)
-                        g_PlayerCameraPhi = phimin;
-                }
+                free_camera->rotate_theta(0.01f * dx);
+                free_camera->rotate_phi(-0.01f * dy);
+            }
+            else if (pause)
+            {
+                lookat_camera->rotate_theta(-0.01f * dx);
+                lookat_camera->rotate_phi(0.01f * dy);
+            }
+            else
+            {
+                fixed_camera->rotate_theta(0.01f * dx);
+                fixed_camera->rotate_phi(-0.01f * dy);
             }
         }
     }, MOUSE_HANDLER_INTERVAL_MS);
@@ -275,34 +240,42 @@ void PokeMaze::end_game()
 void PokeMaze::build_cameras()
 {
     free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
+    free_camera->look_to(-0.4f, PI + 0.6f);
+
     lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, CAMERA_DISTANCE);
+    lookat_camera->look_to(0.0f, 0.0f);
+
     fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
+    fixed_camera->look_to(-0.4f, 0.0f);
 }
 
 void PokeMaze::build_floor()
 {
     Floor* floor = Floor::create("Floor", 0.0f, -1.4f, 0.0f);
+
     renderer->load_object(floor);
-    g_VirtualScene["floor"] = floor;
+    virtual_scene["floor"] = floor;
     obstacles.push_back(floor);
 }
 
 void PokeMaze::build_tree()
 {
     Tree* tree = Tree::create("Tree", 8.6f, -1.4f, 8.8f);
+
     renderer->load_object(tree);
-    g_VirtualScene["tree"] = tree;
+    virtual_scene["tree"] = tree;
 }
 
 void PokeMaze::build_sky()
 {
     SceneObject* sky = Sky::create("Sky", 0.0f, 0.0f, 0.0f);
+
     for (int i = 0; i <= 4; i++)
     {
-        sky = sky->create_copy(); // Avoids parsing obj info again
+        sky = sky->create_copy();
         renderer->load_object(sky);
 
-        g_VirtualScene["sky_" + std::to_string(i)] = sky;
+        virtual_scene["sky_" + std::to_string(i)] = sky;
 
         skies.push_back(sky);
         obstacles.push_back(sky);
@@ -313,60 +286,66 @@ void PokeMaze::build_ash()
 {
     AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -1.75f, -1.4f, 8.75f);
     renderer->load_object(ash);
-    g_VirtualScene["ash_ketchum"] = ash;
+    virtual_scene["ash_ketchum"] = ash;
 }
 
 void PokeMaze::build_garage()
 {
     SceneObject* garage_door = Garage::create("Garage", 8.75f, 1.60f, -3.5f);
+
     renderer->load_object(garage_door);
-    g_VirtualScene["garage_door"] = garage_door;
-    //obstacles.push_back(garage_door);
+    virtual_scene["garage_door"] = garage_door;
 
     SceneObject* garage_ceiling = garage_door->create_copy();
+
     renderer->load_object(garage_ceiling);
-    g_VirtualScene["garage_ceiling"] = garage_ceiling;
+    virtual_scene["garage_ceiling"] = garage_ceiling;
     obstacles.push_back(garage_ceiling);
 }
 
 void PokeMaze::build_charizard()
 {
     Charizard* charizard = Charizard::create("Charizard", 7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard);
+
     renderer->load_object(charizard);
-    g_VirtualScene["charizard"] = charizard;
+    virtual_scene["charizard"] = charizard;
 }
 
 void PokeMaze::build_pikachu()
 {
     Pikachu* pikachu = Pikachu::create("Pikachu", 8.75f, -1.4f, -1.75f);
+
     renderer->load_object(pikachu);
-    g_VirtualScene["pikachu"] = pikachu;
+    virtual_scene["pikachu"] = pikachu;
 }
 
 void PokeMaze::build_pokeball()
 {
     Pokeball* pokeball = Pokeball::create("Pokeball", 8.75f, 0.0f, 5.25f);
+
     renderer->load_object(pokeball);
-    g_VirtualScene["pokeball"] = pokeball;
+    virtual_scene["pokeball"] = pokeball;
 }
 
 void PokeMaze::build_walls()
 {
     SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
+
     for (int i = 0; i <= 26; i++)
     {
         wall = wall->create_copy(); // Avoids parsing obj info again
         renderer->load_object(wall);
 
-        g_VirtualScene["wall_" + std::to_string(i)] = wall;
+        virtual_scene["wall_" + std::to_string(i)] = wall;
         walls.push_back(wall);
         obstacles.push_back(wall);
     }
 
     SceneObject* secret_wall = wall->create_copy();
+
     secret_wall->set_name("secret_wall");
     renderer->load_object(secret_wall);
-    g_VirtualScene["secret_wall"] = secret_wall;
+    virtual_scene["secret_wall"] = secret_wall;
     obstacles.push_back(secret_wall);
 }
 
@@ -381,10 +360,8 @@ void PokeMaze::animation()
 void PokeMaze::draw_camera()
 {
     /// CAMERA E TESTE DE COLISOES
-    if (FREE_MODE && !pause)
+    if (free_mode && !pause)
     {
-        free_camera->look_to(g_FreeModeCameraPhi, g_FreeModeCameraTheta);
-
         if (engine->was_key_pressed(GLFW_KEY_W))
             free_camera->move_up(CAMERA_SPEED * delta_time);
 
@@ -412,21 +389,19 @@ void PokeMaze::draw_camera()
     else if (pause)
     {
         glm::vec4 offset = glm::vec4(
-                g_VirtualScene["ash_ketchum"]->get_position_x(),
+                virtual_scene["ash_ketchum"]->get_position_x(),
                 0.0f,
-                g_VirtualScene["ash_ketchum"]->get_position_z(),
+                virtual_scene["ash_ketchum"]->get_position_z(),
                 0.0f
         );
 
-        lookat_camera->look_to(g_PauseModeCameraPhi, g_PauseModeCameraTheta, offset);
+        lookat_camera->move(offset);
 
         renderer->render_view(lookat_camera->get_view_matrix());
     }
     else
     {
-        g_player_direction = -1*g_PlayerCameraTheta;
-
-        fixed_camera->look_to(g_PlayerCameraPhi, g_PlayerCameraTheta);
+        g_player_direction = -1* fixed_camera->get_theta_angle();
 
         if (engine->was_key_pressed(GLFW_KEY_W))
             fixed_camera->move_up(CAMERA_SPEED * delta_time);
@@ -445,30 +420,30 @@ void PokeMaze::draw_camera()
             if (pikachu_catched && obj->get_name() == "secret_wall")
                 continue;
 
-            if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], obj))
+            if (Collisions::has_collision_plane_plane(virtual_scene["ash_ketchum"], obj))
             {
                 fixed_camera->undo();
-                g_VirtualScene["ash_ketchum"]->undo();
+                virtual_scene["ash_ketchum"]->undo();
 
                 break;
             }
         }
 
-        if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], g_VirtualScene["garage_door"]))
+        if (Collisions::has_collision_plane_plane(virtual_scene["ash_ketchum"], virtual_scene["garage_door"]))
         {
             if (!pikachu_door_opened)
             {
                 pikachu_door_touched = true;
 
                 fixed_camera->undo();
-                g_VirtualScene["ash_ketchum"]->undo();
+                virtual_scene["ash_ketchum"]->undo();
             }
         }
 
-        if (Collisions::has_collision_plane_plane(g_VirtualScene["ash_ketchum"], g_VirtualScene["pikachu"]))
+        if (Collisions::has_collision_plane_plane(virtual_scene["ash_ketchum"], virtual_scene["pikachu"]))
             pikachu_catched = true;
 
-        if (Collisions::has_collision_sphere_plane((Sphere*) g_VirtualScene["pokeball"], g_VirtualScene["ash_ketchum"]))
+        if (Collisions::has_collision_sphere_plane((Sphere*) virtual_scene["pokeball"], virtual_scene["ash_ketchum"]))
             pokeball_catched = true;
 
         renderer->render_view(fixed_camera->get_view_matrix());
@@ -481,12 +456,12 @@ void PokeMaze::draw_camera()
 
 void PokeMaze::draw_floor()
 {
-    g_VirtualScene["floor"]->movement()
+    virtual_scene["floor"]->movement()
             ->begin()
             ->translate(0.0f,-1.4f,0.0f)
             ->scale(20.5f, 10.5f, 20.5f)
             ->end();
-    renderer->render_object(g_VirtualScene["floor"], PLANE);
+    renderer->render_object(virtual_scene["floor"], PLANE);
 }
 
 void PokeMaze::draw_sky()
@@ -542,17 +517,16 @@ void PokeMaze::draw_sky()
 
 void PokeMaze::draw_tree()
 {
-    g_VirtualScene["tree"]->movement()
+    virtual_scene["tree"]->movement()
             ->begin()
             ->translate(8.6f, -1.4f, 8.8f)
             ->scale(0.5f, 0.5f, 0.5f)
             ->end();
-    renderer->render_object(g_VirtualScene["tree"], TREE);
+    renderer->render_object(virtual_scene["tree"], TREE);
 }
 
 void PokeMaze::draw_garage()
 {
-    //PIKACHU DOOR from X 7 Z -3.5 to X 10.5
     if(pikachu_door_touched)
     {
         if (door_y > 0.5f)
@@ -561,35 +535,35 @@ void PokeMaze::draw_garage()
             pikachu_door_opened = true;
     }
 
-    g_VirtualScene["garage_door"]->movement()
+    virtual_scene["garage_door"]->movement()
             ->begin()
             ->translate(8.75f, 1.60f, -3.5f)
             ->scale(3.5f, door_y, 0.5f)
             ->end();
-    renderer->render_object(g_VirtualScene["garage_door"], XDOOR);
+    renderer->render_object(virtual_scene["garage_door"], XDOOR);
 
-    //PIKACHU CEILING from X 7 Z 0 to X 10.5 Z -3.5
-    g_VirtualScene["garage_ceiling"]->movement()
+    virtual_scene["garage_ceiling"]->movement()
             ->begin()
             ->translate(8.625f, 1.5f, -1.5f)
             ->scale(3.75f, 0.5f, 3.5f)
             ->end();
-    renderer->render_object(g_VirtualScene["garage_ceiling"], XDOOR);
+    renderer->render_object(virtual_scene["garage_ceiling"], XDOOR);
 }
 
 void PokeMaze::draw_ash()
 {
-    g_VirtualScene["ash_ketchum"]->movement()
+    virtual_scene["ash_ketchum"]->movement()
             ->begin()
             ->translate(fixed_camera->get_x(), -1.4f, fixed_camera->get_z())
             ->rotate_y(g_player_direction)
             ->end();
-    renderer->render_object(g_VirtualScene["ash_ketchum"], PLAYER);
+    renderer->render_object(virtual_scene["ash_ketchum"], PLAYER);
 }
 
 void PokeMaze::draw_charizard()
 {
     float charizard_current_time = (float)glfwGetTime();
+
     if (charizard_current_time - charizard_previous_time>= 0.04)
     {
         if (param_t <= 0.1)
@@ -614,38 +588,38 @@ void PokeMaze::draw_charizard()
     }
 
     /// Desenha charizard
-    g_VirtualScene["charizard"]->movement()
+    virtual_scene["charizard"]->movement()
             ->begin()
             ->translate(7.0f + g_offset_x_charizard, 2.0f, 3.50f + g_offset_z_charizard)
             ->scale(0.1, 0.1, 0.1)
             ->rotate_y(PI)
             ->rotate_x(PI / 4)
             ->end();
-    renderer->render_object(g_VirtualScene["charizard"], CHARIZARD);
+    renderer->render_object(virtual_scene["charizard"], CHARIZARD);
 }
 
 void PokeMaze::draw_pikachu()
 {
-    g_VirtualScene["pikachu"]->movement()
+    virtual_scene["pikachu"]->movement()
             ->begin()
             ->translate(8.75f, -1.4f, -1.75f)
             ->scale(0.1, 0.1, 0.1)
             ->rotate_y(PI)
             ->end();
-    renderer->render_object(g_VirtualScene["pikachu"], PIKACHU);
+    renderer->render_object(virtual_scene["pikachu"], PIKACHU);
 }
 
 void PokeMaze::draw_pokeball()
 {
-    g_VirtualScene["pokeball"]->movement()
+    virtual_scene["pokeball"]->movement()
             ->begin()
             ->translate(8.75f,0.0f,5.25f)
-            ->rotate_y(g_AngleY + (float) glfwGetTime() * 1.0f)
-            ->rotate_z(g_AngleZ + (float) glfwGetTime() * 0.5f)
-            ->rotate_x(g_AngleX + (float) glfwGetTime() * 1.5f)
+            ->rotate_y((float) glfwGetTime() * 1.0f)
+            ->rotate_z((float) glfwGetTime() * 0.5f)
+            ->rotate_x((float) glfwGetTime() * 1.5f)
             ->scale(0.2, 0.2, 0.2)
             ->end();
-    renderer->render_object(g_VirtualScene["pokeball"], POKEBALL);
+    renderer->render_object(virtual_scene["pokeball"], POKEBALL);
 }
 
 void PokeMaze::draw_walls()
@@ -741,12 +715,12 @@ void PokeMaze::draw_walls()
     //Wall from X 3.5 z 3.5 to X 7 --- SECRET WALL ---
     if (!pikachu_catched)
     {
-        g_VirtualScene["secret_wall"]->movement()
+        virtual_scene["secret_wall"]->movement()
                 ->begin()
                 ->translate(5.25f, 1.0f, 3.5f)
                 ->scale(3.5f, 2.5f, 0.5f)
                 ->end();
-        renderer->render_object(g_VirtualScene["secret_wall"], XCUBE);
+        renderer->render_object(virtual_scene["secret_wall"], XCUBE);
     }
 
     //Wall from X 0 Z -7 to X -7

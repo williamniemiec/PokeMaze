@@ -12,6 +12,7 @@ class LookAtCamera : public Camera
 //-------------------------------------------------------------------------
 private:
     float camera_distance;
+    glm::vec4 offset;
 
 
 //-------------------------------------------------------------------------
@@ -46,5 +47,12 @@ public:
      * @param       offset Camera position (default: zero)
      */
     void look_to(float phi, float theta, glm::vec4 offset);
+
+    /**
+     * Moves the camera to a position, maintaining its phi and theta angles.
+     *
+     * @param       offset Camera position (default: zero)
+     */
+    void move(glm::vec4 offset);
 };
 
