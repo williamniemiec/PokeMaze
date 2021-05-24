@@ -11,6 +11,10 @@ namespace wniemiec {namespace io {namespace consolex
 {
     /**
      * Facilitator of reading and writing on the console.
+	 *
+	 * @author     William Niemiec &lt; williamniemiec@hotmail.com &gt;
+     *
+     * @see        https://github.com/williamniemiec/consolex
      */
     class Consolex
     {

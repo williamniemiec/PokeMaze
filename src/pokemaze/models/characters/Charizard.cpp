@@ -6,6 +6,11 @@
 
 #define PI 3.14159265358979323846f
 
+using namespace pokemaze::models;
+using namespace pokemaze::models::characters;
+using namespace pokemaze::util::io;
+using namespace pokemaze::util::algebra;
+
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------

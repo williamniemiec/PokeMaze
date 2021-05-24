@@ -1,7 +1,9 @@
 #include "pokemaze/models/camera/FreeCamera.hpp"
 
-#include "pokemaze/util/algebra/Matrices.h"
+#include "pokemaze/util/algebra/Matrices.hpp"
 
+using namespace pokemaze::models::camera;
+using namespace pokemaze::util::algebra;
 
 //-------------------------------------------------------------------------
 //		Constructor
@@ -46,9 +48,9 @@ void FreeCamera::undo()
 void FreeCamera::move_up(float offset)
 {
     glm::vec4 w = -1.0f * view;
-    glm::vec4 u = crossproduct(up, w);
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u = Matrices::cross_product(up, w);
+    w = w / Matrices::norm(w);
+    u = u / Matrices::norm(u);
 
     glm::vec4 movement = position - w * offset;
 
@@ -59,9 +61,9 @@ void FreeCamera::move_up(float offset)
 void FreeCamera::move_down(float offset)
 {
     glm::vec4 w = -1.0f * view;
-    glm::vec4 u = crossproduct(up, w);
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u = Matrices::cross_product(up, w);
+    w = w / Matrices::norm(w);
+    u = u / Matrices::norm(u);
 
     glm::vec4 movement = position + w * offset;
 
@@ -72,9 +74,9 @@ void FreeCamera::move_down(float offset)
 void FreeCamera::move_left(float offset)
 {
     glm::vec4 w = -1.0f * view;
-    glm::vec4 u = crossproduct(up, w);
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u = Matrices::cross_product(up, w);
+    w = w / Matrices::norm(w);
+    u = u / Matrices::norm(u);
 
     glm::vec4 movement = position - u * offset;
 
@@ -85,9 +87,9 @@ void FreeCamera::move_left(float offset)
 void FreeCamera::move_right(float offset)
 {
     glm::vec4 w = -1.0f * view;
-    glm::vec4 u = crossproduct(up, w);
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u = Matrices::cross_product(up, w);
+    w = w / Matrices::norm(w);
+    u = u / Matrices::norm(u);
 
     glm::vec4 movement = position + u * offset;
 

@@ -2,6 +2,10 @@
 
 #include "pokemaze/util/io/IOUtils.hpp"
 
+using namespace pokemaze::models;
+using namespace pokemaze::models::scene;
+using namespace pokemaze::util::io;
+
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------

@@ -5,38 +5,39 @@
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/SceneObject.hpp"
 
-/**
- * Responsible for creating floor.
- */
-class Floor : public SceneObject
-{
-//-------------------------------------------------------------------------
-//		Constructor
-//-------------------------------------------------------------------------
-private:
-    Floor(std::string name, glm::vec4 position, std::string filename,
-          GLenum rendering_mode);
-
-
-//-------------------------------------------------------------------------
-//		Methods
-//-------------------------------------------------------------------------
-public:
+namespace pokemaze {namespace models {namespace scene {
     /**
-     * Creates a floor.
-     *
-     * @param       name Floor label
-     * @param       x X-coordinate of floor position
-     * @param       y Y-coordinate of floor position
-     * @param       z Z-coordinate of floor position
+     * Responsible for creating floor.
      */
-    static Floor* create(std::string name, float x, float y, float z);
+    class Floor : public SceneObject
+    {
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    private:
+        Floor(std::string name, glm::vec4 position, std::string filename,
+              GLenum rendering_mode);
 
 
-//-------------------------------------------------------------------------
-//		Getters
-//-------------------------------------------------------------------------
-private:
-    std::vector<std::string> get_textures();
-};
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
+        /**
+         * Creates a floor.
+         *
+         * @param       name Floor label
+         * @param       x X-coordinate of floor position
+         * @param       y Y-coordinate of floor position
+         * @param       z Z-coordinate of floor position
+         */
+        static Floor* create(std::string name, float x, float y, float z);
 
+
+    //-------------------------------------------------------------------------
+    //		Getters
+    //-------------------------------------------------------------------------
+    private:
+        std::vector<std::string> get_textures();
+    };
+}}}

@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Release (CBlocks 20.03)">
-				<Option output="dist/1.x/1.0/pokemaze-1.0.0" prefix_auto="1" extension_auto="1" />
+				<Option output="dist/1.x/1.0/pokemaze-1.0.0.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="bin/Release/" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -30,7 +30,7 @@
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-std=c++11" />
+					<Add option="-std=c++17" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
@@ -319,7 +319,6 @@
 		<Unit filename="include/pokemaze/engine/loader/glad.h" />
 		<Unit filename="include/pokemaze/engine/loader/stb_image.h" />
 		<Unit filename="include/pokemaze/engine/loader/tiny_obj_loader.h" />
-		<Unit filename="include/pokemaze/engine/moviment/Movimentation.hpp" />
 		<Unit filename="include/pokemaze/engine/player/WavPlayer.hpp" />
 		<Unit filename="include/pokemaze/engine/projection/OrthographicProjection.hpp" />
 		<Unit filename="include/pokemaze/engine/projection/PerspectiveProjection.hpp" />
@@ -347,15 +346,15 @@
 		<Unit filename="include/pokemaze/models/scene/Garage.hpp" />
 		<Unit filename="include/pokemaze/models/scene/Sky.hpp" />
 		<Unit filename="include/pokemaze/util/algebra/Bezier.hpp" />
-		<Unit filename="include/pokemaze/util/algebra/Matrices.h" />
+		<Unit filename="include/pokemaze/util/algebra/Matrices.hpp" />
 		<Unit filename="include/pokemaze/util/io/IOUtils.hpp" />
 		<Unit filename="include/pokemaze/util/utils.h" />
 		<Unit filename="include/wniemiec/io/consolex/Consolex.hpp" />
 		<Unit filename="include/wniemiec/io/consolex/HistoryConsolex.hpp" />
 		<Unit filename="include/wniemiec/io/consolex/InputConsolex.hpp" />
-		<Unit filename="include/wniemiec/io/consolex/LoggerConsolex.hpp" />
 		<Unit filename="include/wniemiec/io/consolex/LogLevel.hpp" />
 		<Unit filename="include/wniemiec/io/consolex/LogMessage.hpp" />
+		<Unit filename="include/wniemiec/io/consolex/LoggerConsolex.hpp" />
 		<Unit filename="include/wniemiec/io/consolex/OutputConsolex.hpp" />
 		<Unit filename="include/wniemiec/util/data/StringUtils.hpp" />
 		<Unit filename="include/wniemiec/util/task/Scheduler.hpp" />
@@ -373,7 +372,6 @@
 		</Unit>
 		<Unit filename="src/pokemaze/engine/loader/stb_image.cpp" />
 		<Unit filename="src/pokemaze/engine/loader/tiny_obj_loader.cpp" />
-		<Unit filename="src/pokemaze/engine/movement/Movimentation.cpp" />
 		<Unit filename="src/pokemaze/engine/player/WavPlayer.cpp" />
 		<Unit filename="src/pokemaze/engine/projection/OrthographicProjection.cpp" />
 		<Unit filename="src/pokemaze/engine/projection/PerspectiveProjection.cpp" />
@@ -404,17 +402,20 @@
 		<Unit filename="src/pokemaze/util/algebra/Bezier.cpp" />
 		<Unit filename="src/pokemaze/util/algebra/Matrices.cpp" />
 		<Unit filename="src/pokemaze/util/io/IOUtils.cpp" />
-		<Unit filename="src/wniemiec/util/task/Scheduler.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/Consolex.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/HistoryConsolex.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/InputConsolex.cpp" />
-		<Unit filename="src/wniemiec/io/consolex/LoggerConsolex.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/LogLevel.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/LogMessage.cpp" />
+		<Unit filename="src/wniemiec/io/consolex/LoggerConsolex.cpp" />
 		<Unit filename="src/wniemiec/io/consolex/OutputConsolex.cpp" />
 		<Unit filename="src/wniemiec/util/data/StringUtils.cpp" />
+		<Unit filename="src/wniemiec/util/task/Scheduler.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
+			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

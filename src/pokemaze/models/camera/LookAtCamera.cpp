@@ -1,5 +1,8 @@
 #include "pokemaze/models/camera/LookAtCamera.hpp"
 
+using namespace pokemaze::models::camera;
+//using namespace pokemaze::util::algebra;
+
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------

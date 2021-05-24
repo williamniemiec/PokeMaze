@@ -1,12 +1,13 @@
 #include "pokemaze/controllers/MouseController.hpp"
 
+using namespace pokemaze::controllers;
+
 std::map<GLenum, bool> MouseController::button_clicked;
 double MouseController::last_cursor_position_x;
 double MouseController::last_cursor_position_y;
 double MouseController::offset_click_x;
 double MouseController::offset_click_y;
 bool MouseController::mouse_moved;
-
 
 MouseController::MouseController(GLFWwindow* window)
 {

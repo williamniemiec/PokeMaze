@@ -14,62 +14,65 @@
 #include "pokemaze/engine/Engine.hpp"
 #include "pokemaze/levels/Level.hpp"
 
-/**
- * Maze game with Pokémon theme.
- */
-class PokeMaze
+namespace pokemaze
 {
-//-------------------------------------------------------------------------
-//		Attributes
-//-------------------------------------------------------------------------
-private:
-    static FreeCamera* free_camera;
-    static LookAtCamera* lookat_camera;
-    static FixedCamera* fixed_camera;
-    static Projection* projection;
-    static bool free_mode;
-    static bool pause;
-    static float previous_time;
-    static float delta_time;
-    Engine* engine;
-    Renderer* renderer;
-    bool pikachu_catched;
-    bool pokeball_catched;
-    bool garage_door_touched;
-    unsigned long keyboard_handler_id;
-    unsigned long mouse_handler_id;
-    Level* level;
+    /**
+     * Maze game with Pokémon theme.
+     */
+    class PokeMaze
+    {
+    //-------------------------------------------------------------------------
+    //		Attributes
+    //-------------------------------------------------------------------------
+    private:
+        static pokemaze::models::camera::FreeCamera* free_camera;
+        static pokemaze::models::camera::LookAtCamera* lookat_camera;
+        static pokemaze::models::camera::FixedCamera* fixed_camera;
+        static pokemaze::engine::projection::Projection* projection;
+        static bool free_mode;
+        static bool pause;
+        static float previous_time;
+        static float delta_time;
+        pokemaze::engine::Engine* engine;
+        pokemaze::engine::Renderer* renderer;
+        bool pikachu_catched;
+        bool pokeball_catched;
+        bool garage_door_touched;
+        unsigned long keyboard_handler_id;
+        unsigned long mouse_handler_id;
+        pokemaze::levels::Level* level;
 
 
-//-------------------------------------------------------------------------
-//		Constructor
-//-------------------------------------------------------------------------
-public:
-    PokeMaze(int screen_width, int screen_height);
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    public:
+        PokeMaze(int screen_width, int screen_height);
 
 
-//-------------------------------------------------------------------------
-//		Methods
-//-------------------------------------------------------------------------
-public:
-    void run();
-private:
-    void build_game();
-    void start_game();
-    void end_game();
-    void build_level();
-    void animation();
-    void set_perspective_projection();
-    bool is_perspective_projection();
-    void start_event_handlers();
-    unsigned long init_keyboard_handler();
-    unsigned long init_mouse_handler();
-    void stop_event_handlers();
-    void build_cameras();
-    void draw_camera();
-    void draw_free_camera();
-    void draw_lookat_camera();
-    void draw_fixed_camera();
-    void update_screen();
-    void display_endgame_message();
-};
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
+        void run();
+    private:
+        void build_game();
+        void start_game();
+        void end_game();
+        void build_level();
+        void animation();
+        void set_perspective_projection();
+        bool is_perspective_projection();
+        void start_event_handlers();
+        unsigned long init_keyboard_handler();
+        unsigned long init_mouse_handler();
+        void stop_event_handlers();
+        void build_cameras();
+        void draw_camera();
+        void draw_free_camera();
+        void draw_lookat_camera();
+        void draw_fixed_camera();
+        void update_screen();
+        void display_endgame_message();
+    };
+}

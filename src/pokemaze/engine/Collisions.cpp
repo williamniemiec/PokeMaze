@@ -2,6 +2,9 @@
 #include "pokemaze/engine/Collisions.hpp"
 #include "pokemaze/models/BoundingBox.hpp"
 
+using namespace pokemaze::engine;
+using namespace pokemaze::models;
+
 //-------------------------------------------------------------------------
 //		Methods
 //-------------------------------------------------------------------------

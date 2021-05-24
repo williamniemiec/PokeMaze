@@ -1,5 +1,7 @@
 #include "pokemaze/engine/projection/Projection.hpp"
 
+using namespace pokemaze::engine::projection;
+
 Projection::Projection(float near_plane, float far_plane, float screen_width, float screen_height)
 {
     this->near_plane = near_plane;

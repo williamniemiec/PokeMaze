@@ -1,8 +1,11 @@
 #include "pokemaze/models/camera/Camera.hpp"
 
-#include "pokemaze/util/algebra/Matrices.h"
+#include "pokemaze/util/algebra/Matrices.hpp"
 
 #define PI 3.14159265358979323846f
+
+using namespace pokemaze::models::camera;
+using namespace pokemaze::util::algebra;
 
 //-------------------------------------------------------------------------
 //		Constructor
@@ -43,7 +46,7 @@ void Camera::rotate_theta(float angle)
 //-------------------------------------------------------------------------
 glm::mat4 Camera::get_view_matrix()
 {
-    return Matrix_Camera_View(position, view, up);
+    return Matrices::camera_view(position, view, up);
 }
 
 double Camera::get_phi_angle()

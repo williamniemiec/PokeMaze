@@ -4,73 +4,74 @@
 #include <glm/vec4.hpp>
 #include "pokemaze/models/camera/Camera.hpp"
 
-/**
- * Responsible for representing a fixed point camera.
- */
-class FixedCamera : public Camera
-{
-//-------------------------------------------------------------------------
-//		Attributes
-//-------------------------------------------------------------------------
-private:
-    std::stack<glm::vec4>* movements;
-
-
-//-------------------------------------------------------------------------
-//		Constructor
-//-------------------------------------------------------------------------
-public:
+namespace pokemaze {namespace models {namespace camera {
     /**
-     * Represents a fixed camera in 3 dimensions.
-     *
-     * @param       name Camera label
-     * @param       x_up X-coordinate of camera up vector
-     * @param       y_up Y-coordinate of camera up vector
-     * @param       z_up Z-coordinate of camera up vector
-     * @param       x X-coordinate of camera position
-     * @param       y Y-coordinate of camera position
-     * @param       z Z-coordinate of camera position
+     * Responsible for representing a fixed point camera.
      */
-    FixedCamera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z);
+    class FixedCamera : public Camera
+    {
+    //-------------------------------------------------------------------------
+    //		Attributes
+    //-------------------------------------------------------------------------
+    private:
+        std::stack<glm::vec4>* movements;
 
 
-//-------------------------------------------------------------------------
-//		Methods
-//-------------------------------------------------------------------------
-public:
-    virtual void look_to(float phi, float theta);
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    public:
+        /**
+         * Represents a fixed camera in 3 dimensions.
+         *
+         * @param       name Camera label
+         * @param       x_up X-coordinate of camera up vector
+         * @param       y_up Y-coordinate of camera up vector
+         * @param       z_up Z-coordinate of camera up vector
+         * @param       x X-coordinate of camera position
+         * @param       y Y-coordinate of camera position
+         * @param       z Z-coordinate of camera position
+         */
+        FixedCamera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z);
 
-    /**
-     * Undoes last move.
-     */
-    void undo();
 
-    /**
-     * Moves the camera forward.
-     *
-     * @param       offset Camera shift
-     */
-    void move_up(float offset);
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
+        virtual void look_to(float phi, float theta);
 
-    /**
-     * Moves the camera back.
-     *
-     * @param       offset Camera shift
-     */
-    void move_down(float offset);
+        /**
+         * Undoes last move.
+         */
+        void undo();
 
-    /**
-     * Moves the camera left.
-     *
-     * @param       offset Camera shift
-     */
-    void move_left(float offset);
+        /**
+         * Moves the camera forward.
+         *
+         * @param       offset Camera shift
+         */
+        void move_up(float offset);
 
-    /**
-     * Moves the camera right.
-     *
-     * @param       offset Camera shift
-     */
-    void move_right(float offset);
-};
+        /**
+         * Moves the camera back.
+         *
+         * @param       offset Camera shift
+         */
+        void move_down(float offset);
 
+        /**
+         * Moves the camera left.
+         *
+         * @param       offset Camera shift
+         */
+        void move_left(float offset);
+
+        /**
+         * Moves the camera right.
+         *
+         * @param       offset Camera shift
+         */
+        void move_right(float offset);
+    };
+}}}

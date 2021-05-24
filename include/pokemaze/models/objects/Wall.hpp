@@ -5,38 +5,39 @@
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/SceneObject.hpp"
 
-/**
- * Responsible for creating walls.
- */
-class Wall : public SceneObject
-{
-//-------------------------------------------------------------------------
-//		Constructor
-//-------------------------------------------------------------------------
-private:
-    Wall(std::string name, glm::vec4 position, std::string filename,
-         GLenum rendering_mode);
-
-
-//-------------------------------------------------------------------------
-//		Methods
-//-------------------------------------------------------------------------
-public:
+namespace pokemaze {namespace models {namespace objects {
     /**
-     * Creates a wall.
-     *
-     * @param       name Wall label
-     * @param       x X-coordinate of wall position
-     * @param       y Y-coordinate of wall position
-     * @param       z Z-coordinate of wall position
+     * Responsible for creating walls.
      */
-    static Wall* create(std::string name, float x, float y, float z);
+    class Wall : public SceneObject
+    {
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    private:
+        Wall(std::string name, glm::vec4 position, std::string filename,
+             GLenum rendering_mode);
 
 
-//-------------------------------------------------------------------------
-//		Getters
-//-------------------------------------------------------------------------
-private:
-    std::vector<std::string> get_textures();
-};
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
+        /**
+         * Creates a wall.
+         *
+         * @param       name Wall label
+         * @param       x X-coordinate of wall position
+         * @param       y Y-coordinate of wall position
+         * @param       z Z-coordinate of wall position
+         */
+        static Wall* create(std::string name, float x, float y, float z);
 
+
+    //-------------------------------------------------------------------------
+    //		Getters
+    //-------------------------------------------------------------------------
+    private:
+        std::vector<std::string> get_textures();
+    };
+}}}

@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace pokemaze::engine;
+using namespace pokemaze::controllers;
 
 //-------------------------------------------------------------------------
 //		Constructor

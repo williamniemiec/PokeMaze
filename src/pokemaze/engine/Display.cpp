@@ -1,6 +1,9 @@
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/engine/text/TextRender.hpp"
 
+using namespace pokemaze::engine;
+using namespace pokemaze::engine::text;
+
 //-------------------------------------------------------------------------
 //		Attributes
 //-------------------------------------------------------------------------

@@ -5,6 +5,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
+using namespace pokemaze;
 using namespace wniemiec::io::consolex;
 
 int main(int argc, char* argv[])

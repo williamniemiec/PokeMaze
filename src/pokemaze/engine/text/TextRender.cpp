@@ -3,6 +3,8 @@
 #include "pokemaze/engine/Renderer.hpp"
 #include "pokemaze/engine/text/dejavufont.h"
 
+using namespace pokemaze::engine::text;
+
 const GLchar* const TextRender::textvertexshader_source = ""
 "#version 330\n"
 "layout (location = 0) in vec4 position;\n"

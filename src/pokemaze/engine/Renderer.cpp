@@ -7,6 +7,9 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 #include "wniemiec/io/consolex/Consolex.hpp"
 
+using namespace pokemaze::engine;
+using namespace pokemaze::models;
+using namespace pokemaze::util::io;
 using namespace wniemiec::io::consolex;
 
 //-------------------------------------------------------------------------
@@ -184,14 +187,14 @@ void Renderer::load_shader(const char* filename, GLuint shader_id)
     {
         if (!compiled_ok)
         {
-            Consolex::write_error("OpenGL compilation of " + filename + " failed.");
+            Consolex::write_error("OpenGL compilation of " + std::string(filename) + " failed.");
             Consolex::write_error("== Start of compilation log");
             Consolex::write_error(log);
             Consolex::write_error("== End of compilation log");
         }
         else
         {
-            Consolex::write_warning("OpenGL compilation of " + filename + ".");
+            Consolex::write_warning("OpenGL compilation of " + std::string(filename) + ".");
             Consolex::write_warning("== Start of compilation log");
             Consolex::write_warning(log);
             Consolex::write_warning("== End of compilation log");

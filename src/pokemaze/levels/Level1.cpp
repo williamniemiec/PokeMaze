@@ -31,6 +31,15 @@
 #define XDOOR 11
 #define TREE 12
 
+using namespace pokemaze::levels;
+using namespace pokemaze::engine;
+using namespace pokemaze::models;
+using namespace pokemaze::models::camera;
+using namespace pokemaze::models::characters;
+using namespace pokemaze::models::objects;
+using namespace pokemaze::models::scene;
+using namespace pokemaze::util::io;
+
 Level1::Level1(Renderer* renderer, FixedCamera* fixed_camera)
         : Level(renderer, fixed_camera, get_soundtrack())
 {

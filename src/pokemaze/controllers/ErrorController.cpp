@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace pokemaze::controllers;
+
 ErrorController::ErrorController(GLFWwindow* window)
 {
     glfwSetErrorCallback(error_handler);

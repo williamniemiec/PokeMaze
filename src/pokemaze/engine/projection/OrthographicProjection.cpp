@@ -1,6 +1,9 @@
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 
-#include "pokemaze/util/algebra/Matrices.h"
+#include "pokemaze/util/algebra/Matrices.hpp"
+
+using namespace pokemaze::engine::projection;
+using namespace pokemaze::util::algebra;
 
 OrthographicProjection::OrthographicProjection(float near_plane, float far_plane, float screen_width, float screen_height, float camera_distance)
     : Projection(near_plane, far_plane, screen_width, screen_height)
@@ -15,5 +18,5 @@ glm::mat4 OrthographicProjection::get_projection_matrix()
     float r = t * screen_ratio;
     float l = -r;
 
-    return Matrix_Orthographic(l, r, b, t, near_plane, far_plane);
+    return Matrices::orthographic_view(l, r, b, t, near_plane, far_plane);
 }

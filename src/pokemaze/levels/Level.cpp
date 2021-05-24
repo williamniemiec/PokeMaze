@@ -1,5 +1,11 @@
 #include "pokemaze/levels/Level.hpp"
 
+using namespace pokemaze::levels;
+using namespace pokemaze::engine;
+using namespace pokemaze::engine::player;
+using namespace pokemaze::models;
+using namespace pokemaze::models::camera;
+
 Level::Level(Renderer* renderer, FixedCamera* fixed_camera, std::string musicpath)
 {
     this->renderer = renderer;

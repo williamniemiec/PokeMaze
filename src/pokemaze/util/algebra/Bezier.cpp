@@ -2,6 +2,9 @@
 
 #include <cmath>
 
+using namespace pokemaze::util::algebra;
+using namespace pokemaze::models;
+
 int Bezier::factorial(int n)
 {
     if (n<=1)

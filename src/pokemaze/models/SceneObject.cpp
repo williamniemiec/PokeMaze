@@ -1,7 +1,10 @@
 #include "pokemaze/models/SceneObject.hpp"
 
 #include <regex>
-#include "pokemaze/util/algebra/Matrices.h"
+#include "pokemaze/util/algebra/Matrices.hpp"
+
+using namespace pokemaze::models;
+using namespace pokemaze::util::algebra;
 
 SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::string filename, std::string mtl_path,
@@ -154,7 +157,7 @@ void SceneObject::undo()
 
     transformations.pop();
 
-    apply(Matrix_Inverse_4x4(last_transformation));
+    apply(Matrices::inverse_4x4(last_transformation));
 }
 
 void SceneObject::apply(glm::mat4 matrix)
@@ -369,7 +372,7 @@ void SceneObject::compute_normals()
             const glm::vec4  b = vertices[1];
             const glm::vec4  c = vertices[2];
 
-            const glm::vec4  n = crossproduct(b-a,c-a);
+            const glm::vec4  n = Matrices::cross_product(b-a,c-a);
 
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
@@ -386,7 +389,7 @@ void SceneObject::compute_normals()
     for (size_t i = 0; i < vertex_normals.size(); ++i)
     {
         glm::vec4 n = vertex_normals[i] / (float)num_triangles_per_vertex[i];
-        n /= norm(n);
+        n /= Matrices::norm(n);
         attrib.normals[3*i + 0] = n.x;
         attrib.normals[3*i + 1] = n.y;
         attrib.normals[3*i + 2] = n.z;
@@ -471,35 +474,35 @@ SceneObject::Movement::Movement(SceneObject* sceneObject)
 
 SceneObject::Movement* SceneObject::Movement::begin()
 {
-    model_matrix = Matrix_Identity();
+    model_matrix = Matrices::identity();
 
     return this;
 }
 
 SceneObject::Movement* SceneObject::Movement::rotate_x(float angle)
 {
-    model_matrix *= Matrix_Rotate_X(angle);
+    model_matrix *= Matrices::rotate_x(angle);
 
     return this;
 }
 
 SceneObject::Movement* SceneObject::Movement::rotate_y(float angle)
 {
-    model_matrix *= Matrix_Rotate_Y(angle);
+    model_matrix *= Matrices::rotate_y(angle);
 
     return this;
 }
 
 SceneObject::Movement* SceneObject::Movement::rotate_z(float angle)
 {
-    model_matrix *= Matrix_Rotate_Z(angle);
+    model_matrix *= Matrices::rotate_z(angle);
 
     return this;
 }
 
 SceneObject::Movement* SceneObject::Movement::translate(float x, float y, float z)
 {
-    model_matrix *= Matrix_Translate(x, y, z);
+    model_matrix *= Matrices::translate(x, y, z);
 
     sceneObject->set_position(x, y, z);
 
@@ -508,7 +511,7 @@ SceneObject::Movement* SceneObject::Movement::translate(float x, float y, float 
 
 SceneObject::Movement* SceneObject::Movement::scale(float sx, float sy, float sz)
 {
-    model_matrix *= Matrix_Scale(sx, sy, sz);
+    model_matrix *= Matrices::scale(sx, sy, sz);
 
     return this;
 }

@@ -2,11 +2,13 @@
 
 #include "pokemaze/levels/Level.hpp"
 
-class LevelFactory
-{
-private:
-    LevelFactory();
+namespace pokemaze {namespace levels {
+    class LevelFactory
+    {
+    private:
+        LevelFactory();
 
-public:
-    static Level* create_level_1(Renderer* renderer, FixedCamera* fixed_camera);
-};
+    public:
+        static Level* create_level_1(pokemaze::engine::Renderer* renderer, pokemaze::models::camera::FixedCamera* fixed_camera);
+    };
+}}

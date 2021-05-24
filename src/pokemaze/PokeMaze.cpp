@@ -20,6 +20,12 @@
 #define NEAR_PLANE -0.1f
 #define FAR_PLANE -150.0f
 
+using namespace pokemaze;
+using namespace pokemaze::engine;
+using namespace pokemaze::engine::projection;
+using namespace pokemaze::levels;
+using namespace pokemaze::models;
+using namespace pokemaze::models::camera;
 using namespace wniemiec::util::task;
 
 //-------------------------------------------------------------------------

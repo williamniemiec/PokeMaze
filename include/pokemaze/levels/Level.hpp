@@ -9,28 +9,30 @@
 #include "pokemaze/models/scene/Garage.hpp"
 #include "pokemaze/models/camera/FixedCamera.hpp"
 
-class Level
-{
-protected:
-    FixedCamera* fixed_camera;
-    Renderer* renderer;
-    WavPlayer* player;
-    std::vector<SceneObject*> obstacles;
+namespace pokemaze {namespace levels {
+    class Level
+    {
+    protected:
+        pokemaze::models::camera::FixedCamera* fixed_camera;
+        pokemaze::engine::Renderer* renderer;
+        pokemaze::engine::player::WavPlayer* player;
+        std::vector<pokemaze::models::SceneObject*> obstacles;
 
-public:
-    Level(Renderer* renderer, FixedCamera* fixed_camera, std::string musicpath);
+    public:
+        Level(pokemaze::engine::Renderer* renderer, pokemaze::models::camera::FixedCamera* fixed_camera, std::string musicpath);
 
-public:
-    virtual void build() = 0;
-    virtual void render(bool pikachu_catched, bool garage_door_touched) = 0;
-    virtual void close() = 0;
-    void play_soundtrack();
-    void stop_soundtrack();
+    public:
+        virtual void build() = 0;
+        virtual void render(bool pikachu_catched, bool garage_door_touched) = 0;
+        virtual void close() = 0;
+        void play_soundtrack();
+        void stop_soundtrack();
 
-public:
-    virtual AshKetchum* get_ash() = 0;
-    virtual Pokeball* get_pokeball() = 0;
-    virtual Pikachu* get_pikachu() = 0;
-    virtual Garage* get_garage_door() = 0;
-    std::vector<SceneObject*> get_obstacles();
-};
+    public:
+        virtual pokemaze::models::characters::AshKetchum* get_ash() = 0;
+        virtual pokemaze::models::objects::Pokeball* get_pokeball() = 0;
+        virtual pokemaze::models::characters::Pikachu* get_pikachu() = 0;
+        virtual pokemaze::models::scene::Garage* get_garage_door() = 0;
+        std::vector<pokemaze::models::SceneObject*> get_obstacles();
+    };
+}}

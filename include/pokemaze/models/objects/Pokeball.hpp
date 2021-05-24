@@ -5,39 +5,41 @@
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/Sphere.hpp"
 
-/**
- * Responsible for creating Pokéballs.
- */
-class Pokeball : public Sphere
-{
-//-------------------------------------------------------------------------
-//		Constructor
-//-------------------------------------------------------------------------
-private:
-    Pokeball(std::string name, glm::vec4 position, std::string filename,
-             GLenum rendering_mode);
-
-
-//-------------------------------------------------------------------------
-//		Methods
-//-------------------------------------------------------------------------
-public:
+namespace pokemaze {namespace models {namespace objects {
     /**
-     * Creates a Pokéball.
-     *
-     * @param       name Pokéball label
-     * @param       x X-coordinate of Pokéball position
-     * @param       y Y-coordinate of Pokéball position
-     * @param       z Z-coordinate of Pokéball position
+     * Responsible for creating Pokéballs.
      */
-    static Pokeball* create(std::string name, float x, float y, float z);
+    class Pokeball : public Sphere
+    {
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    private:
+        Pokeball(std::string name, glm::vec4 position, std::string filename,
+                 GLenum rendering_mode);
 
 
-//-------------------------------------------------------------------------
-//		Getters
-//-------------------------------------------------------------------------
-public:
-    virtual double get_radius();
-private:
-    std::vector<std::string> get_textures();
-};
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
+        /**
+         * Creates a Pokéball.
+         *
+         * @param       name Pokéball label
+         * @param       x X-coordinate of Pokéball position
+         * @param       y Y-coordinate of Pokéball position
+         * @param       z Z-coordinate of Pokéball position
+         */
+        static Pokeball* create(std::string name, float x, float y, float z);
+
+
+    //-------------------------------------------------------------------------
+    //		Getters
+    //-------------------------------------------------------------------------
+    public:
+        virtual double get_radius();
+    private:
+        std::vector<std::string> get_textures();
+    };
+}}}

@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
+using namespace pokemaze::engine::player;
 
 WavPlayer::WavPlayer(std::string music_file)
 {

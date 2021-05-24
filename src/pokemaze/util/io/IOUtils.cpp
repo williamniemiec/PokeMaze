@@ -1,5 +1,7 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
+using namespace pokemaze::util::io;
+
 std::string IOUtils::get_project_absolute_path()
 {
     std::string working_directory = get_working_directory();

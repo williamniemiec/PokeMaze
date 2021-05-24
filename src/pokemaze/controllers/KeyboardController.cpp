@@ -1,5 +1,7 @@
 #include "pokemaze/controllers/KeyboardController.hpp"
 
+using namespace pokemaze::controllers;
+
 std::map<GLenum, bool> KeyboardController::key_pressed;
 
 KeyboardController::KeyboardController(GLFWwindow* window)
