@@ -152,8 +152,6 @@ void SceneObject::build()
         }
 
         size_t last_index = indexes.size() - 1;
-
-        //this->name = shapes[shape].name;
         this->first_index = first_index;
         this->total_indexes = last_index - first_index + 1;
         this->vertex_array_object_id = -1;
@@ -169,7 +167,6 @@ std::map<std::string, int> SceneObject::generate_texture_mapping()
     for (int i = 0; i < (int) textures.size(); i++)
     {
         std::string filename = std::regex_replace(textures[i], filename_regex, "");
-
         texture_mapping[filename] = i;
     }
 
