@@ -27,7 +27,7 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 | `p`| Perspective projection |
 | `o`| Parallel projection |
 | `c` | Free camera mode |
-| `Pause Break` | Pause / Continue game |
+| `ESC` | Pause / Continue game |
 | `Left mouse button` pressed + `direction`  | Moves player camera to `direction` |
 
 ## 🖼 Gallery
