@@ -28,7 +28,7 @@ unsigned long Scheduler::set_timeout(const std::function<void(void)>& routine, l
     current_routine = routine;
 
     pthread_t thread;
-    pthread_create(&thread, nullptr, delay_control_routine, (void*) delay);
+    pthread_create(&thread, nullptr, delay_control_routine, (long*) delay);
 
     return current_routine_id;
 }
@@ -69,7 +69,7 @@ unsigned long Scheduler::set_interval(const std::function<void(void)>& routine, 
     current_routine = routine;
 
     pthread_t thread;
-    pthread_create(&thread, nullptr, interval_control_routine, (void*) interval);
+    pthread_create(&thread, nullptr, interval_control_routine, (long*) interval);
 
     return current_routine_id;
 }
