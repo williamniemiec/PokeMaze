@@ -199,6 +199,8 @@ namespace pokemaze { namespace util { namespace algebra {
          * @param       v Another vector
          * 
          * @return      Dot product between u and v
+         * 
+         * @throw       std::invalid_argument If u or v is a point
          */
         static float dot_product(glm::vec4 u, glm::vec4 v);
 
@@ -250,18 +252,18 @@ namespace pokemaze { namespace util { namespace algebra {
         /**
          * Prints a vector product between a matrix and a vector on the console.
          * 
-         * @param       matrix Matrix
-         * @param       vector Vector
+         * @param       M Matrix
+         * @param       v Vector
          */
-        static void print_matrix_vector_product(glm::mat4 matrix, glm::vec4 vector);
+        static void print_matrix_vector_product(glm::mat4 M, glm::vec4 v);
 
         /**
          * Prints a vector product between a matrix and a vector on the console
          * along with division by W on the console.
          * 
-         * @param       matrix Matrix
-         * @param       vector Vector
+         * @param       M Matrix
+         * @param       v Vector
          */
-        static void print_matrix_vector_product_div_w(glm::mat4 matrix, glm::vec4 vector);
+        static void print_matrix_vector_product_div_w(glm::mat4 M, glm::vec4 v);
     };
 }}}

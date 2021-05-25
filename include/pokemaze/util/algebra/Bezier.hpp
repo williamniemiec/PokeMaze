@@ -36,8 +36,5 @@ namespace pokemaze { namespace util { namespace algebra {
                                                               pokemaze::models::Point P2, 
                                                               pokemaze::models::Point P3, 
                                                               double t);
-    private:
-        static int factorial(int n);
-        static float binomial_coff(float n, float k);
     };
 }}}

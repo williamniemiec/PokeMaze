@@ -71,6 +71,7 @@ namespace pokemaze
         void build_level();
         void animation();
         void set_perspective_projection();
+        void set_orthographic_projection();
         bool is_perspective_projection();
         void start_event_handlers();
         unsigned long init_keyboard_handler();

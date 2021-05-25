@@ -7,11 +7,19 @@
 using namespace pokemaze::engine::projection;
 using namespace pokemaze::util::algebra;
 
-PerspectiveProjection::PerspectiveProjection(float near_plane, float far_plane, float screen_width, float screen_height)
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
+PerspectiveProjection::PerspectiveProjection(float near_plane, float far_plane, 
+                                             float screen_width, float screen_height)
     : Projection(near_plane, far_plane, screen_width, screen_height)
 {
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 glm::mat4 PerspectiveProjection::get_projection_matrix()
 {
     float field_of_view = PI / 3.0f;

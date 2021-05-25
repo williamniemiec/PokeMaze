@@ -8,7 +8,8 @@ using namespace pokemaze::util::algebra;
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
-FixedCamera::FixedCamera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z)
+FixedCamera::FixedCamera(std::string name, float x_up, float y_up, 
+                         float z_up, float x, float y, float z)
         : Camera(name, x_up, y_up, z_up, x, y, z)
 {
     movements = new std::stack<glm::vec4>();

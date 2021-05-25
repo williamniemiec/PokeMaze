@@ -47,7 +47,6 @@ float PokeMaze::delta_time = 0.0f;
 PokeMaze::PokeMaze(int screen_width, int screen_height)
 {
     engine = new Engine(screen_width, screen_height);
-    //g_player_direction = PLAYER_DIRECTION_UP;
     pikachu_catched = false;
     pokeball_catched = false;
     garage_door_touched = false;
@@ -89,6 +88,18 @@ void PokeMaze::set_perspective_projection()
     );
 }
 
+void PokeMaze::build_cameras()
+{
+    free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
+    free_camera->look_to(-0.4f, PI + 0.6f);
+
+    lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, CAMERA_DISTANCE);
+    lookat_camera->look_to(0.0f, 0.0f);
+
+    fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
+    fixed_camera->look_to(-0.4f, 0.0f);
+}
+
 void PokeMaze::build_level()
 {
     level = LevelFactory::create_level_1(renderer, fixed_camera);
@@ -96,27 +107,6 @@ void PokeMaze::build_level()
     level->play_soundtrack();
 
     engine->flush();
-}
-
-void PokeMaze::start_game()
-{
-    while (engine->is_window_open() && !pokeball_catched)
-    {
-        renderer->pre_render();
-
-        animation();
-        draw_camera();
-        level->render(pikachu_catched, garage_door_touched);
-
-        if (pause)
-            engine->show_pause();
-
-        engine->show_controls();
-        engine->show_projection(is_perspective_projection());
-        engine->show_fps();
-
-        engine->commit();
-    }
 }
 
 void PokeMaze::start_event_handlers()
@@ -130,26 +120,29 @@ unsigned long PokeMaze::init_keyboard_handler()
     unsigned long handler_id = Scheduler::set_interval([&]()
     {
         if (engine->was_key_pressed(GLFW_KEY_C))
-        {
             free_mode = !free_mode;
-        }
 
         if (engine->was_key_pressed(GLFW_KEY_ESCAPE))
-        {
             pause = !pause;
-        }
 
         if (engine->was_key_pressed(GLFW_KEY_P))
-        {
-            projection = new PerspectiveProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height());
-        }
+            set_perspective_projection()
         else if (engine->was_key_pressed(GLFW_KEY_O))
-        {
-            projection = new OrthographicProjection(NEAR_PLANE, FAR_PLANE, engine->get_screen_width(), engine->get_screen_height(), CAMERA_DISTANCE);
-        }
+            set_orthographic_projection();
     }, KEYBOARD_HANDLER_INTERVAL_MS);
 
     return handler_id;
+}
+
+void PokeMaze::set_orthographic_projection()
+{
+    projection = new OrthographicProjection(
+            NEAR_PLANE, 
+            FAR_PLANE, 
+            engine->get_screen_width(), 
+            engine->get_screen_height(), 
+            CAMERA_DISTANCE
+    );
 }
 
 unsigned long PokeMaze::init_mouse_handler()
@@ -185,48 +178,25 @@ unsigned long PokeMaze::init_mouse_handler()
     return handler_id;
 }
 
-void PokeMaze::stop_event_handlers()
+void PokeMaze::start_game()
 {
-    Scheduler::clear_interval(keyboard_handler_id);
-    Scheduler::clear_interval(mouse_handler_id);
-}
+    while (engine->is_window_open() && !pokeball_catched)
+    {
+        renderer->pre_render();
 
-bool PokeMaze::is_perspective_projection()
-{
-    return (dynamic_cast<PerspectiveProjection*>(projection) != nullptr);
-}
+        animation();
+        draw_camera();
+        level->render(pikachu_catched, garage_door_touched);
 
-void PokeMaze::end_game()
-{
-    engine->shutdown();
-    stop_event_handlers();
-    level->close();
+        if (pause)
+            engine->show_pause();
 
-    display_endgame_message();
-}
+        engine->show_controls();
+        engine->show_projection(is_perspective_projection());
+        engine->show_fps();
 
-void PokeMaze::display_endgame_message()
-{
-    system("cls");
-
-    if (pokeball_catched)
-        std::cout << "CONGRATULATIONS! YOU WIN :D !!!" << std::endl;
-    else
-        std::cout << "SEE YOU LATER ;D !!!" << std::endl;
-
-    system("PAUSE");
-}
-
-void PokeMaze::build_cameras()
-{
-    free_camera = new FreeCamera("free_camera", 0.0f, 1.0f, 0.0f, 10.0f, 5.60f, -10.25f);
-    free_camera->look_to(-0.4f, PI + 0.6f);
-
-    lookat_camera = new LookAtCamera("lookat_camera", 0.0f, 1.0f, 0.0f, CAMERA_DISTANCE);
-    lookat_camera->look_to(0.0f, 0.0f);
-
-    fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -1.75f, 0.8f, 8.75f);
-    fixed_camera->look_to(-0.4f, 0.0f);
+        engine->commit();
+    }
 }
 
 void PokeMaze::animation()
@@ -286,7 +256,6 @@ void PokeMaze::draw_lookat_camera()
     );
 
     lookat_camera->move(offset);
-
     renderer->render_view(lookat_camera->get_view_matrix());
 }
 
@@ -346,4 +315,36 @@ void PokeMaze::update_screen()
     );
 
     renderer->render_projection(projection->get_projection_matrix());
+}
+
+void PokeMaze::stop_event_handlers()
+{
+    Scheduler::clear_interval(keyboard_handler_id);
+    Scheduler::clear_interval(mouse_handler_id);
+}
+
+bool PokeMaze::is_perspective_projection()
+{
+    return (dynamic_cast<PerspectiveProjection*>(projection) != nullptr);
+}
+
+void PokeMaze::end_game()
+{
+    engine->shutdown();
+    stop_event_handlers();
+    level->close();
+
+    display_endgame_message();
+}
+
+void PokeMaze::display_endgame_message()
+{
+    system("cls");
+
+    if (pokeball_catched)
+        std::cout << "CONGRATULATIONS! YOU WIN :D !!!" << std::endl;
+    else
+        std::cout << "SEE YOU LATER ;D !!!" << std::endl;
+
+    system("PAUSE");
 }

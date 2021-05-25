@@ -2,6 +2,9 @@
 
 using namespace pokemaze::controllers;
 
+//-------------------------------------------------------------------------
+//		Attributes
+//-------------------------------------------------------------------------
 std::map<GLenum, bool> MouseController::button_clicked;
 double MouseController::last_cursor_position_x;
 double MouseController::last_cursor_position_y;
@@ -9,6 +12,10 @@ double MouseController::offset_click_x;
 double MouseController::offset_click_y;
 bool MouseController::mouse_moved;
 
+
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 MouseController::MouseController(GLFWwindow* window)
 {
     button_clicked = std::map<GLenum, bool>();
@@ -18,6 +25,10 @@ MouseController::MouseController(GLFWwindow* window)
     glfwSetCursorPosCallback(window, mouse_move_handler);
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 bool MouseController::was_button_clicked(GLenum button)
 {
     if (button_clicked.find(button) == button_clicked.end())
@@ -36,16 +47,10 @@ bool MouseController::has_mouse_moved()
     return true;
 }
 
-double MouseController::get_offset_click_x()
-{
-    return offset_click_x;
-}
 
-double MouseController::get_offset_click_y()
-{
-    return offset_click_y;
-}
-
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void MouseController::mouse_click_handler(GLFWwindow* window, int button, int action, int mods)
 {
     parse_left_mouse_button(window, button, action);
@@ -120,4 +125,18 @@ bool MouseController::was_some_button_clicked()
     return  button_clicked[GLFW_MOUSE_BUTTON_LEFT]
             || button_clicked[GLFW_MOUSE_BUTTON_MIDDLE]
             || button_clicked[GLFW_MOUSE_BUTTON_RIGHT];
+}
+
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
+double MouseController::get_offset_click_x()
+{
+    return offset_click_x;
+}
+
+double MouseController::get_offset_click_y()
+{
+    return offset_click_y;
 }

@@ -6,6 +6,9 @@ using namespace pokemaze::engine::player;
 using namespace pokemaze::models;
 using namespace pokemaze::models::camera;
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 Level::Level(Renderer* renderer, FixedCamera* fixed_camera, std::string musicpath)
 {
     this->renderer = renderer;
@@ -14,6 +17,10 @@ Level::Level(Renderer* renderer, FixedCamera* fixed_camera, std::string musicpat
     obstacles = std::vector<SceneObject*>();
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 void Level::play_soundtrack()
 {
     player->stop();
@@ -24,6 +31,10 @@ void Level::stop_soundtrack()
     player->play();
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 std::vector<SceneObject*> Level::get_obstacles()
 {
     return obstacles;

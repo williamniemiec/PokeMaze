@@ -40,11 +40,18 @@ using namespace pokemaze::models::objects;
 using namespace pokemaze::models::scene;
 using namespace pokemaze::util::io;
 
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 Level1::Level1(Renderer* renderer, FixedCamera* fixed_camera)
         : Level(renderer, fixed_camera, get_soundtrack())
 {
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 std::string Level1::get_soundtrack()
 {
     return IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
@@ -533,6 +540,10 @@ void Level1::close()
     stop_soundtrack();
 }
 
+
+//-------------------------------------------------------------------------
+//		Getters
+//-------------------------------------------------------------------------
 AshKetchum* Level1::get_ash()
 {
     return (AshKetchum *) virtual_scene["ash_ketchum"];

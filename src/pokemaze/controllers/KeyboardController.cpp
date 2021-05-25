@@ -2,14 +2,25 @@
 
 using namespace pokemaze::controllers;
 
+//-------------------------------------------------------------------------
+//		Attributes
+//-------------------------------------------------------------------------
 std::map<GLenum, bool> KeyboardController::key_pressed;
 
+
+//-------------------------------------------------------------------------
+//		Constructor
+//-------------------------------------------------------------------------
 KeyboardController::KeyboardController(GLFWwindow* window)
 {
     key_pressed = std::map<GLenum, bool>();
     glfwSetKeyCallback(window, keyboard_handler);
 }
 
+
+//-------------------------------------------------------------------------
+//		Methods
+//-------------------------------------------------------------------------
 bool KeyboardController::was_key_pressed(GLenum key)
 {
     if (key_pressed.find(key) == key_pressed.end())

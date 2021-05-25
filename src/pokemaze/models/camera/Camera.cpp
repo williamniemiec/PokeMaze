@@ -10,7 +10,8 @@ using namespace pokemaze::util::algebra;
 //-------------------------------------------------------------------------
 //		Constructor
 //-------------------------------------------------------------------------
-Camera::Camera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z)
+Camera::Camera(std::string name, float x_up, float y_up, float z_up, 
+               float x, float y, float z)
         : Point(name, x, y, z)
 {
     up = {x_up, y_up, z_up, 0.0f};
