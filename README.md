@@ -3,6 +3,7 @@
 <h1 align='center'>PokeMaze</h1>
 <p align='center'>Maze game with Pokémon theme.</p>
 <p align="center">
+	<a href="https://github.com/williamniemiec/PokeMaze/actions/workflows/windows.yml"><img src="https://github.com/williamniemiec/PokeMaze/actions/workflows/windows.yml/badge.svg" alt="Windows build"></a>
 	<a href="https://docs.microsoft.com/en-us/cpp/"><img src="https://img.shields.io/badge/C++-17+-D0008F.svg" alt="Cpp compatibility"></a>
 	<a href="https://github.com/williamniemiec/PokeMaze/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-BSD0-919191.svg" alt="License"></a>
 	<a href="https://github.com/williamniemiec/PokeMaze/releases"><img src="https://img.shields.io/github/v/release/williamniemiec/PokeMaze" alt="Release"></a>
