@@ -3,7 +3,8 @@
 #include <glm/mat4x4.hpp>
 #include "pokemaze/models/Point.hpp"
 
-namespace pokemaze {namespace models {namespace camera {
+namespace pokemaze { namespace models { namespace camera {
+
     /**
      * Responsible for representing a camera.
      */
@@ -34,7 +35,8 @@ namespace pokemaze {namespace models {namespace camera {
          * @param       y Y-coordinate of camera position
          * @param       z Z-coordinate of camera position
          */
-        Camera(std::string name, float x_up, float y_up, float z_up, float x, float y, float z);
+        Camera(std::string name, float x_up, float y_up, float z_up, float x, 
+               float y, float z);
 
 
     //-------------------------------------------------------------------------

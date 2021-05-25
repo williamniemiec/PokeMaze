@@ -8,8 +8,8 @@
 #include "LoggerConsolex.hpp"
 #include "LogLevel.hpp"
 
-namespace wniemiec {namespace io {namespace consolex
-{
+namespace wniemiec { namespace io { namespace consolex {
+
 	/**
 	 * Responsible for console output.
 	 */

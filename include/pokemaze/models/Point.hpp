@@ -3,7 +3,8 @@
 #include <iostream>
 #include <glm/vec4.hpp>
 
-namespace pokemaze {namespace models {
+namespace pokemaze { namespace models {
+
     /**
      * Responsible for representing a point in Cartesian coordinates in 3
      * dimensions.

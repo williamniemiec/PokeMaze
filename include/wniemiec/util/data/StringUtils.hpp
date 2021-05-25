@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
-namespace wniemiec {namespace util {namespace data
-{
+namespace wniemiec { namespace util { namespace data {
+
     /**
      * Contains methods that perform string manipulation.
      */

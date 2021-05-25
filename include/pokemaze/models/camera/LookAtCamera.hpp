@@ -2,7 +2,8 @@
 
 #include "pokemaze/models/camera/Camera.hpp"
 
-namespace pokemaze {namespace models {namespace camera {
+namespace pokemaze { namespace models { namespace camera {
+
     /**
      * Responsible for representing a look at camera.
      */
@@ -31,7 +32,8 @@ namespace pokemaze {namespace models {namespace camera {
          * @param       y Y-coordinate of camera position
          * @param       z Z-coordinate of camera position
          */
-        LookAtCamera(std::string name, float x_up, float y_up, float z_up, float camera_distance);
+        LookAtCamera(std::string name, float x_up, float y_up, float z_up, 
+                     float camera_distance);
 
 
     //-------------------------------------------------------------------------

@@ -5,8 +5,8 @@
 #include "LogLevel.hpp"
 #include "LogMessage.hpp"
 
-namespace wniemiec {namespace io {namespace consolex
-{
+namespace wniemiec { namespace io { namespace consolex {
+
     /**
      * Responsible for displaying log messages on the console.
      */

@@ -4,8 +4,8 @@
 #include <pthread.h>
 #include <map>
 
-namespace wniemiec {namespace util {namespace task
-{
+namespace wniemiec { namespace util { namespace task {
+
     /**
      * Responsible for executing routines within time intervals.
 	 *

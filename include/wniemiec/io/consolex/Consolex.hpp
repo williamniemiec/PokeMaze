@@ -7,8 +7,8 @@
 #include "InputConsolex.hpp"
 #include "LogLevel.hpp"
 
-namespace wniemiec {namespace io {namespace consolex
-{
+namespace wniemiec { namespace io { namespace consolex {
+
     /**
      * Facilitator of reading and writing on the console.
 	 *

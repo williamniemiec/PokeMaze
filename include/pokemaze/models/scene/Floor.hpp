@@ -5,7 +5,8 @@
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/SceneObject.hpp"
 
-namespace pokemaze {namespace models {namespace scene {
+namespace pokemaze { namespace models { namespace scene {
+    
     /**
      * Responsible for creating floor.
      */

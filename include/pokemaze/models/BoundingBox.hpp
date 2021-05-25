@@ -3,7 +3,8 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-namespace pokemaze {namespace models {
+namespace pokemaze { namespace models {
+
     /**
      * Responsible for representing an axis-aligned minimum bounding box (or AABB).
      * AABB is, for a given point set, the minimum bounding box subject to the

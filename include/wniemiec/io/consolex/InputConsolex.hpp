@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-namespace wniemiec {namespace io {namespace consolex
-{
+namespace wniemiec { namespace io { namespace consolex {
+
 	/**
 	 * Responsible for console input.
 	 */

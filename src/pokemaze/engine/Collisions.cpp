@@ -1,5 +1,6 @@
-#include <cmath>
 #include "pokemaze/engine/Collisions.hpp"
+
+#include <cmath>
 #include "pokemaze/models/BoundingBox.hpp"
 
 using namespace pokemaze::engine;

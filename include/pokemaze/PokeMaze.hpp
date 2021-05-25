@@ -35,18 +35,24 @@ namespace pokemaze
         static float delta_time;
         pokemaze::engine::Engine* engine;
         pokemaze::engine::Renderer* renderer;
+        pokemaze::levels::Level* level;
         bool pikachu_catched;
         bool pokeball_catched;
         bool garage_door_touched;
         unsigned long keyboard_handler_id;
         unsigned long mouse_handler_id;
-        pokemaze::levels::Level* level;
 
 
     //-------------------------------------------------------------------------
     //		Constructor
     //-------------------------------------------------------------------------
     public:
+        /**
+         * Maze game with Pokémon theme.
+         * 
+         * @param       screen_width Application window width
+         * @param       screen_height Application window height
+         */
         PokeMaze(int screen_width, int screen_height);
 
 
@@ -54,6 +60,9 @@ namespace pokemaze
     //		Methods
     //-------------------------------------------------------------------------
     public:
+        /**
+         * Runs the game.
+         */
         void run();
     private:
         void build_game();

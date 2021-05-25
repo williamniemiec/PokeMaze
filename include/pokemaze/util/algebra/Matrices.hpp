@@ -6,128 +6,262 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace pokemaze {namespace util {namespace algebra {
+namespace pokemaze { namespace util { namespace algebra {
+
+    /**
+     * Responsible for performing matrix operations.
+     */
     class Matrices
     {
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
     private:
         Matrices();
 
+
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
     public:
-        // Esta função Matrix() auxilia na criação de matrizes usando a biblioteca GLM.
-        // Note que em OpenGL (e GLM) as matrizes são definidas como "column-major",
-        // onde os elementos da matriz são armazenadas percorrendo as COLUNAS da mesma.
-        // Por exemplo, seja
-        //
-        //       [a b c]
-        //   M = [d e f]
-        //       [g h i]
-        //
-        // uma matriz 3x3. Em memória, na representação "column-major" de OpenGL, essa
-        // matriz é representada pelo seguinte array:
-        //
-        //   M[] = {  a,d,g,    b,e,h,    c,f,i  };
-        //              ^         ^         ^
-        //              |         |         |
-        //           coluna 1  coluna 2  coluna 3
-        //
-        // Para conseguirmos definir matrizes através de suas LINHAS, a função Matrix()
-        // computa a transposta usando os elementos passados por parâmetros.
+        /**
+         * Creates matrix by defining its lines.
+         * 
+         * @param       m00 Line 0 Column 0
+         * @param       m01 Line 0 Column 1
+         * @param       m02 Line 0 Column 2
+         * @param       m03 Line 0 Column 3
+         * @param       m10 Line 1 Column 0
+         * @param       m11 Line 1 Column 1
+         * @param       m12 Line 1 Column 2
+         * @param       m13 Line 1 Column 3
+         * @param       m20 Line 2 Column 0
+         * @param       m21 Line 2 Column 1
+         * @param       m22 Line 2 Column 2
+         * @param       m23 Line 2 Column 3
+         * @param       m30 Line 3 Column 0
+         * @param       m31 Line 3 Column 1
+         * @param       m32 Line 3 Column 2
+         * @param       m33 Line 3 Column 3
+         * 
+         * @return      Matrix
+         */
         static glm::mat4 matrix(
-            float m00, float m01, float m02, float m03, // LINHA 1
-            float m10, float m11, float m12, float m13, // LINHA 2
-            float m20, float m21, float m22, float m23, // LINHA 3
-            float m30, float m31, float m32, float m33  // LINHA 4
+            float m00, float m01, float m02, float m03, 
+            float m10, float m11, float m12, float m13, 
+            float m20, float m21, float m22, float m23, 
+            float m30, float m31, float m32, float m33  
         );
 
-        // FONTE: https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix/1148405
-        static glm::mat4 inverse_4x4(glm::mat4 m);
+        /**
+         * Computes the inverse of a 4x4 matrix.
+         * 
+         * @param       matrix Matrix to be inverted
+         * 
+         * @return      Inverse of the matrix
+         * 
+         * @see         https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix/1148405
+         */
+        static glm::mat4 inverse_4x4(glm::mat4 matrix);
 
-        // Matriz identidade.
+        /**
+         * Generates identity matrix.
+         * 
+         * @return      Identity matrix
+         */
         static glm::mat4 identity();
 
-        // Matriz de translação T. Seja p=[px,py,pz,pw] um ponto e t=[tx,ty,tz,0] um
-        // vetor em coordenadas homogêneas, definidos em um sistema de coordenadas
-        // Cartesiano. Então, a matriz T é definida pela seguinte igualdade:
-        //
-        //     T*p = p+t.
-        //
+        /**
+         * Translates a matrix.
+         * 
+         * Example:
+         * Let p = [px, py, pz, pw] be a point and t = [tx, ty, tz, 0] a vector
+         * in homogeneous coordinates, defined in a Cartesian coordinate system.
+         * Then, the matrix T is defined by the following equality:
+         *      T*p = p+t
+         * 
+         * @param       tx X-axis translation
+         * @param       ty Y-axis translation
+         * @param       tz Z-axis translation
+         * 
+         * @return      Translated matrix
+         */
         static glm::mat4 translate(float tx, float ty, float tz);
 
-        // Matriz S de "escalamento de um ponto" em relação à origem do sistema de
-        // coordenadas. Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
-        // Então, a matriz S é definida pela seguinte igualdade:
-        //
-        //     S*p = [sx*px, sy*py, sz*pz, pw].
-        //
+        /**
+         * Performs the "scaling of a point" in relation to the origin of the 
+         * coordinate system.
+         * 
+         * Example:
+         * Let p = [px, py, pz, pw] be a point in homogeneous coordinates. Then,
+         * the matrix S is defined by the following equality:
+         *      S*p = [sx*px, sy*py, sz*pz, pw]
+         * 
+         * @param       sx X-axis scale
+         * @param       sy Y-axis scale
+         * @param       sz Z-axis scale
+         * 
+         * @return      Scaled matrix
+         */
         static glm::mat4 scale(float sx, float sy, float sz);
 
-        // Matriz R de "rotação de um ponto" em relação à origem do sistema de
-        // coordenadas e em torno do eixo X (primeiro vetor da base do sistema de
-        // coordenadas). Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
-        // Então, a matriz R é definida pela seguinte igualdade:
-        //
-        //   R*p = [ px, c*py-s*pz, s*py+c*pz, pw ];
-        //
-        // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+        /**
+         * Performs "rotation of a point" in relation to the origin of the 
+         * coordinate system and around the X axis (first vector of the base of
+         * the coordinate system).
+         * 
+         * Example:
+         * Let p = [px, py, pz, pw] be a point in homogeneous coordinates. Then,
+         * the matrix R is defined by the following equality:
+         *      R*p = [ px, c*py-s*pz, s*py+c*pz, pw ]
+         * where 'c' and 's' are the cosine and the sine of the rotation angle,
+         * respectively. 
+         * 
+         * @param       angle Rotation angle
+         * 
+         * @return      Transformed matrix
+         */
         static glm::mat4 rotate_x(float angle);
 
-        // Matriz R de "rotação de um ponto" em relação à origem do sistema de
-        // coordenadas e em torno do eixo Y (segundo vetor da base do sistema de
-        // coordenadas). Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
-        // Então, a matriz R é definida pela seguinte igualdade:
-        //
-        //   R*p = [ c*px+s*pz, py, -s*px+c*pz, pw ];
-        //
-        // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+        /**
+         * Performs "rotation of a point" in relation to the origin of the 
+         * coordinate system and around the Y axis (second vector of the base of
+         * the coordinate system).
+         * 
+         * Example:
+         * Let p = [px, py, pz, pw] be a point in homogeneous coordinates. Then,
+         * the matrix R is defined by the following equality:
+         *      R*p = [ c*px+s*pz, py, -s*px+c*pz, pw ]
+         * where 'c' and 's' are the cosine and the sine of the rotation angle,
+         * respectively. 
+         * 
+         * @param       angle Rotation angle
+         * 
+         * @return      Transformed matrix
+         */
         static glm::mat4 rotate_y(float angle);
 
-        // Matriz R de "rotação de um ponto" em relação à origem do sistema de
-        // coordenadas e em torno do eixo Z (terceiro vetor da base do sistema de
-        // coordenadas). Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
-        // Então, a matriz R é definida pela seguinte igualdade:
-        //
-        //   R*p = [ c*px-s*py, s*px+c*py, pz, pw ];
-        //
-        // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+        /**
+         * Performs "rotation of a point" in relation to the origin of the 
+         * coordinate system and around the Z axis (third vector of the base of
+         * the coordinate system).
+         * 
+         * Example:
+         * Let p = [px, py, pz, pw] be a point in homogeneous coordinates. Then,
+         * the matrix R is defined by the following equality:
+         *      R*p = [ c*px-s*py, s*px+c*py, pz, pw ]
+         * where 'c' and 's' are the cosine and the sine of the rotation angle,
+         * respectively. 
+         * 
+         * @param       angle Rotation angle
+         * 
+         * @return      Transformed matrix
+         */
         static glm::mat4 rotate_z(float angle);
 
-        // Função que calcula a norma Euclidiana de um vetor cujos coeficientes são
-        // definidos em uma base ortonormal qualquer.
+        /**
+         * Calculates the Euclidean norm of a vector whose coefficients are 
+         * defined on any orthonormal basis. 
+         * 
+         * @param       v Vector
+         * 
+         * @return      Norm
+         */
         static float norm(glm::vec4 v);
 
-        // Matriz R de "rotação de um ponto" em relação à origem do sistema de
-        // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
-        // ser definida pela fórmula de Rodrigues. Lembre-se que o vetor que define o
-        // eixo de rotação deve ser normalizado!
+        /**
+         * Performs "rotation of a point" in relation to the origin of the 
+         * coordinate system and around an axis.
+         * 
+         * @param       angle Rotation angle
+         * @param       axis Reference axis (must be normalized)
+         * 
+         * @return      Transformed matrix
+         */
         static glm::mat4 rotate(float angle, glm::vec4 axis);
 
-        // Produto vetorial entre dois vetores u e v definidos em um sistema de
-        // coordenadas ortonormal.
+        /**
+         * Vector product between two vectors u and v defined in an orthonormal
+         * coordinate system. 
+         * 
+         * @param       u A vector
+         * @param       v Another vector
+         * 
+         * @return      Vector product between u and v
+         */
         static glm::vec4 cross_product(glm::vec4 u, glm::vec4 v);
 
-        // Produto escalar entre dois vetores u e v definidos em um sistema de
-        // coordenadas ortonormal.
+        /**
+         * Dot product between two vectors u and v defined in an orthonormal
+         * coordinate system. 
+         * 
+         * @param       u A vector
+         * @param       v Another vector
+         * 
+         * @return      Dot product between u and v
+         */
         static float dot_product(glm::vec4 u, glm::vec4 v);
 
-        // Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.
+        /**
+         * Coordinate change matrix for the Camera coordinate system.
+         * 
+         * @param       position_c Camera position
+         * @param       view_vector Camera direction
+         * @param       up_vector Camera up vector
+         */
         static glm::mat4 camera_view(glm::vec4 position_c, glm::vec4 view_vector, glm::vec4 up_vector);
 
-        // Matriz de projeção paralela ortográfica
+        /**
+         * Orthographic parallel projection matrix.
+         * 
+         * @param       l X-axis of the lower left rear point of the frustum
+         * @param       r X-axis of the upper right frontal point of the frustum 
+         * @param       b Y-axis of the lower left rear point of the frustum
+         * @param       t Y-axis of the upper right frontal point of the frustum 
+         * @param       n Z-axis of the lower left rear point of the frustum
+         * @param       f Z-axis of the upper right frontal point of the frustum 
+         */
         static glm::mat4 orthographic_view(float l, float r, float b, float t, float n, float f);
-        // Matriz de projeção perspectiva
+        
+        /**
+         * Perspective projection matrix.
+         * 
+         * @param       field_of_view Field of view angle
+         * @param       aspect Screen ratio
+         * @param       n Near plane width
+         * @param       f Far plane width
+         */
         static glm::mat4 perspective_view(float field_of_view, float aspect, float n, float f);
 
-        // Função que imprime uma matriz M no terminal
-        static void print_matrix(glm::mat4 M);
+        /**
+         * Prints a matrix on the console.
+         * 
+         * @param       matrix Matrix to be printed
+         */
+        static void print_matrix(glm::mat4 matrix);
 
-        // Função que imprime um vetor v no terminal
-        static void print_vector(glm::vec4 v);
+        /**
+         * Prints a vector on the console.
+         * 
+         * @param       vector Vector to be printed
+         */
+        static void print_vector(glm::vec4 vector);
 
-        // Função que imprime o produto de uma matriz por um vetor no terminal
-        static void print_matrix_vector_product(glm::mat4 M, glm::vec4 v);
+        /**
+         * Prints a vector product between a matrix and a vector on the console.
+         * 
+         * @param       matrix Matrix
+         * @param       vector Vector
+         */
+        static void print_matrix_vector_product(glm::mat4 matrix, glm::vec4 vector);
 
-        // Função que imprime o produto de uma matriz por um vetor, junto com divisão
-        // por w, no terminal.
-        static void print_matrix_vector_product_div_w(glm::mat4 M, glm::vec4 v);
+        /**
+         * Prints a vector product between a matrix and a vector on the console
+         * along with division by W on the console.
+         * 
+         * @param       matrix Matrix
+         * @param       vector Vector
+         */
+        static void print_matrix_vector_product_div_w(glm::mat4 matrix, glm::vec4 vector);
     };
 }}}

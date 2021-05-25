@@ -58,98 +58,8 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
     obj_movement = new Movement(this);
-
-
-    //build();
-}
-/*
-SceneObject::SceneObject(std::string name, glm::vec4 position, std::string filename,
-                std::string mtl_path, bool triangulate, GLenum rendering_mode,
-                size_t first_index, size_t total_indexes, GLuint vertex_array_object_id,
-                BoundingBox* bounding_box, std::vector<GLuint> indexes,
-                std::vector<float> model_coefficients, std::vector<float> normal_coefficients,
-                std::vector<float> texture_coefficients, std::vector<int> texture_id,
-                tinyobj::attrib_t attrib, std::vector<tinyobj::shape_t> shapes,
-                std::vector<tinyobj::material_t> materials)
-{
-    this->name = name;
-    this->position = position;
-    this->filename = filename;
-    this->mtl_path = mtl_path;
-    this->triangulate = triangulate;
-    this->rendering_mode = rendering_mode;
-    this->first_index = first_index;
-    this->total_indexes = total_indexes;
-    this->vertex_array_object_id = vertex_array_object_id;
-    this->bounding_box = bounding_box;
-    this->indexes = indexes;
-    this->model_coefficients = model_coefficients;
-    this->normal_coefficients = normal_coefficients;
-    this->texture_coefficients = texture_coefficients;
-    this->texture_id = texture_id;
-    this->attrib = attrib;
-    this->shapes = shapes;
-    this->materials = materials;
-}*/
-
-/*
-SceneObject::Builder::Builder()
-{
-    _position.x = 1.0f;
-    _position.y = 1.0f;
-    _position.z = 1.0f;
-    _position.w = 1.0f;
-    _triangulate = true;
 }
 
-SceneObject::Builder* SceneObject::Builder::name(std::string name)
-{
-    _name = name;
-
-    return this;
-}
-
-SceneObject::Builder* SceneObject::Builder::position(int x, int y, int z)
-{
-    _position = {x, y, z, 1.0f};
-
-    return this;
-}
-
-SceneObject::Builder* SceneObject::Builder::filename(std::string path)
-{
-    _filename = path;
-
-    return this;
-}
-
-SceneObject::Builder* SceneObject::Builder::mtl_path(std::string mtl_path)
-{
-    _mtl_path = mtl_path;
-
-    return this;
-}
-
-SceneObject::Builder* SceneObject::Builder::triangulate(bool triangulate)
-{
-    _triangulate = triangulate;
-
-    return this;
-}
-
-SceneObject::Builder* SceneObject::Builder::rendering_mode(GLenum rendering_mode)
-{
-    _rendering_mode = rendering_mode;
-
-    return this;
-}
-
-SceneObject* SceneObject::Builder::build()
-{
-    return new SceneObject(_name, _position, _filename, _mtl_path,
-                           _triangulate, _rendering_mode);
-}
-*/
 
 void SceneObject::undo()
 {
@@ -340,10 +250,10 @@ void SceneObject::load(std::string filename, std::string mtl_path, bool triangul
 
 void SceneObject::compute_normals()
 {
-    // Primeiro computamos as normais para todos os TRIÂNGULOS.
-    // Segundo, computamos as normais dos VÉRTICES através do método proposto
-    // por Gouraud, onde a normal de cada vértice vai ser a média das normais de
-    // todas as faces que compartilham este vértice.
+    // Primeiro computamos as normais para todos os TRIï¿½NGULOS.
+    // Segundo, computamos as normais dos Vï¿½RTICES atravï¿½s do mï¿½todo proposto
+    // por Gouraud, onde a normal de cada vï¿½rtice vai ser a mï¿½dia das normais de
+    // todas as faces que compartilham este vï¿½rtice.
 
     size_t num_vertices = attrib.vertices.size() / 3;
 
@@ -462,14 +372,9 @@ bool SceneObject::is_3D()
 
 
 
-
-
-
-
-
-SceneObject::Movement::Movement(SceneObject* sceneObject)
+SceneObject::Movement::Movement(SceneObject* object)
 {
-    this->sceneObject = sceneObject;
+    this->object = object;
 }
 
 SceneObject::Movement* SceneObject::Movement::begin()
@@ -504,7 +409,7 @@ SceneObject::Movement* SceneObject::Movement::translate(float x, float y, float 
 {
     model_matrix *= Matrices::translate(x, y, z);
 
-    sceneObject->set_position(x, y, z);
+    object->set_position(x, y, z);
 
     return this;
 }
@@ -518,7 +423,7 @@ SceneObject::Movement* SceneObject::Movement::scale(float sx, float sy, float sz
 
 void SceneObject::Movement::end()
 {
-    sceneObject->apply(model_matrix);
+    object->apply(model_matrix);
 }
 
 glm::mat4 SceneObject::Movement::get_model_matrix()

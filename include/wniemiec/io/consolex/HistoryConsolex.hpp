@@ -3,8 +3,7 @@
 #include <iostream>
 #include <list>
 
-namespace wniemiec {namespace io {namespace consolex
-{
+namespace wniemiec { namespace io { namespace consolex {
 	/**
 	 * Responsible for managing console history.
 	 */

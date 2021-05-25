@@ -2,7 +2,8 @@
 
 #include "pokemaze/models/SceneObject.hpp"
 
-namespace pokemaze {namespace models {
+namespace pokemaze { namespace models {
+
     /**
      * Responsible for representing a sphere.
      */

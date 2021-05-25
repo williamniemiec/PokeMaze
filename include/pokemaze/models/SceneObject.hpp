@@ -10,21 +10,46 @@
 #include <stack>
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/BoundingBox.hpp"
-//#include "pokemaze/engine/moviment/Movimentation.hpp"
 
-namespace pokemaze {namespace models {
+namespace pokemaze { namespace models {
+
+    /**
+     * Represents a renderable object.
+     */
     class SceneObject
     {
+    //-------------------------------------------------------------------------
+    //		Inner classes
+    //-------------------------------------------------------------------------
     public:
+        /**
+         * Responsible for transformation operations of the renderable object.
+         */
         class Movement
         {
+        //---------------------------------------------------------------------
+        //		Attributes
+        //---------------------------------------------------------------------
         private:
             glm::mat4 model_matrix;
-            SceneObject* sceneObject;
+            SceneObject* object;
 
+
+        //---------------------------------------------------------------------
+        //		Constructor
+        //---------------------------------------------------------------------
         public:
-            Movement(SceneObject* sceneObject);
+            /**
+             * Transformation handler.
+             *
+             * @param       object Object to be transformed
+             */
+            Movement(SceneObject* object);
 
+
+        //---------------------------------------------------------------------
+        //		Methods
+        //---------------------------------------------------------------------
         public:
             Movement* begin();
             Movement* rotate_x(float angle);
@@ -33,111 +58,131 @@ namespace pokemaze {namespace models {
             Movement* translate(float x, float y, float z);
             Movement* scale(float sx, float sy, float sz);
             void end();
+
+
+        //---------------------------------------------------------------------
+        //		Getters
+        //---------------------------------------------------------------------
+        public:
             glm::mat4 get_model_matrix();
         };
 
+
+    //-------------------------------------------------------------------------
+    //		Attributes
+    //-------------------------------------------------------------------------
     public:
-        std::vector<GLuint> indexes;
+        std::vector<int> texture_id;
         std::vector<float> model_coefficients;
         std::vector<float> normal_coefficients;
         std::vector<float> texture_coefficients;
-        std::vector<int> texture_id;
-        tinyobj::attrib_t attrib;
+        std::vector<GLuint> indexes;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
+        std::vector<std::string> textures;
+        std::stack<glm::mat4x4> transformations;
+        tinyobj::attrib_t attrib;
         std::string name;
         glm::vec4 position;
-        std::vector<std::string> textures;
         Movement* obj_movement;
-        //std::string filename;
-        //std::string mtl_path;
-        //bool triangulate;
-
         BoundingBox* bounding_box;
-        std::stack<glm::mat4x4> transformations;
         GLuint vertex_array_object_id;
         GLenum rendering_mode;
+        size_t first_index;
+        size_t total_indexes;
         bool has_only_2_dimensions;
 
 
-
-        /// Índice do primeiro vértice dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
-        size_t first_index;
-
-        /// Número de índices do objeto dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
-        size_t total_indexes;
-    /*
-
-        /// Modo de rasterização (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc.)
-        GLenum rendering_mode;
-
-        /// ID do VAO onde estão armazenados os atributos do modelo
-        GLuint vertex_array_object_id;
-    */
-
+    //-------------------------------------------------------------------------
+    //		Constructors
+    //-------------------------------------------------------------------------
     protected:
         SceneObject(std::string name, glm::vec4 position, std::string filename,
                     std::string mtl_path, bool triangulate, GLenum rendering_mode,
                     std::vector<std::string> textures, bool is_2D);
-
     private:
         SceneObject(std::string name, glm::vec4 position,
                     GLenum rendering_mode,
                     size_t first_index, size_t total_indexes,
-                    BoundingBox* bounding_box,
+                    pokemaze::models::BoundingBox* bounding_box,
                     std::vector<GLuint> indexes,
-                    std::vector<float> model_coefficients, std::vector<float> normal_coefficients,
+                    std::vector<float> model_coefficients,
+                    std::vector<float> normal_coefficients,
                     std::vector<float> texture_coefficients,
                     std::vector<int> texture_id,
                     std::vector<std::string> textures,
                     bool is_2D);
-        /*SceneObject(std::string name, glm::vec4 position, std::string filename,
-                    std::string mtl_path, bool triangulate, GLenum rendering_mode,
-                    size_t first_index, size_t total_indexes, GLuint vertex_array_object_id,
-                    BoundingBox* bounding_box, std::vector<GLuint> indexes,
-                    std::vector<float> model_coefficients, std::vector<float> normal_coefficients,
-                    std::vector<float> texture_coefficients,
-                    std::vector<int> texture_id, tinyobj::attrib_t attrib,
-                    std::vector<tinyobj::shape_t> shapes, std::vector<tinyobj::material_t> materials);
-    */
-    /*
+
+
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
     public:
-        class Builder
-        {
-        private:
-            std::string _name;
-            glm::vec4 _position;
-            std::string _filename;
-            std::string _mtl_path;
-            bool _triangulate;
-            GLenum _rendering_mode;
-
-        public:
-            Builder();
-
-        public:
-            SceneObject::Builder* name(std::string name);
-            SceneObject::Builder* position(int x, int y, int z);
-            SceneObject::Builder* filename(std::string path);
-            SceneObject::Builder* mtl_path(std::string path);
-            SceneObject::Builder* triangulate(bool triangulate);
-            SceneObject::Builder* rendering_mode(GLenum index);
-            SceneObject* build();
-        };*/
-
-    public:
+        /**
+         * Applies the inverse of the last transformation matrix applied to the
+         * object.
+         */
         void undo();
+
+        /**
+         * Applies a transformation matrix to the object.
+         *
+         * @param       matrix Transformation matrix
+         */
         void apply(glm::mat4 matrix);
+
+        /**
+         * Createsa a copy of the object (useful for using multiple instances
+         * of the same object).
+         *
+         * @return      Object copy
+         */
         SceneObject* create_copy();
+
+        /**
+         * Performs transformations on the object.
+         *
+         * @return      Transformation handler
+         */
         Movement* movement();
 
+        /**
+         * Checks if the object has 3 non-zero dimensions.
+         *
+         * @return      True if it is a 3D object; false otherwise
+         */
+        bool is_3D();
+    private:
+        void load(std::string filename, std::string mtl_path, bool triangulate);
+
+        /**
+         * Computes the normals of a rasterizable object if they have not been
+         * specified within the ".obj" file.
+         */
+        void compute_normals();
+
+        /**
+         * Build triangles for future rasterization from the rasterizable object.
+         */
+        void build();
+
+        /**
+         * Generates identifiers for each object's texture file.
+         */
+        std::map<std::string, int> generate_texture_mapping();
+
+
+    //-------------------------------------------------------------------------
+    //		Getters and Setters
+    //-------------------------------------------------------------------------
+    public:
         std::string get_name();
         void set_name(std::string name);
         size_t get_first_index();
         size_t get_total_indexes();
         GLenum get_rendering_mode();
-        void set_vertex_array_object(GLuint vertex_array_object_id);
         GLuint get_vertex_array_object();
+        void set_vertex_array_object(GLuint vertex_array_object_id);
         float get_position_x();
         float get_position_y();
         float get_position_z();
@@ -148,19 +193,6 @@ namespace pokemaze {namespace models {
         std::vector<float> get_normal_coefficients();
         std::vector<float> get_texture_coefficients();
         std::vector<int> get_textures_id();
-
         std::vector<std::string> get_textures();
-        bool is_3D();
-
-    private:
-        void load(std::string filename, std::string mtl_path, bool triangulate);
-
-        // Função que computa as normais de um ObjModel, caso elas não tenham sido
-        // especificadas dentro do arquivo ".obj"
-        void compute_normals();
-
-        // Constrói triângulos para futura renderização a partir de um ObjModel.
-        void build();
-        std::map<std::string, int> generate_texture_mapping();
     };
 }}

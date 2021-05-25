@@ -5,9 +5,10 @@
 #include <pokemaze/engine/loader/tiny_obj_loader.h>
 #include "pokemaze/models/Sphere.hpp"
 
-namespace pokemaze {namespace models {namespace objects {
+namespace pokemaze { namespace models { namespace objects {
+
     /**
-     * Responsible for creating Pokéballs.
+     * Responsible for creating PokÃ©balls.
      */
     class Pokeball : public Sphere
     {
@@ -24,12 +25,12 @@ namespace pokemaze {namespace models {namespace objects {
     //-------------------------------------------------------------------------
     public:
         /**
-         * Creates a Pokéball.
+         * Creates a PokÃ©ball.
          *
-         * @param       name Pokéball label
-         * @param       x X-coordinate of Pokéball position
-         * @param       y Y-coordinate of Pokéball position
-         * @param       z Z-coordinate of Pokéball position
+         * @param       name PokÃ©ball label
+         * @param       x X-coordinate of PokÃ©ball position
+         * @param       y Y-coordinate of PokÃ©ball position
+         * @param       z Z-coordinate of PokÃ©ball position
          */
         static Pokeball* create(std::string name, float x, float y, float z);
 

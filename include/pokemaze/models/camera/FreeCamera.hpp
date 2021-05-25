@@ -4,7 +4,8 @@
 #include <glm/vec4.hpp>
 #include "pokemaze/models/camera/Camera.hpp"
 
-namespace pokemaze {namespace models {namespace camera {
+namespace pokemaze { namespace models { namespace camera {
+
     /**
      * Responsible for representing a free camera.
      */
@@ -32,7 +33,8 @@ namespace pokemaze {namespace models {namespace camera {
          * @param       y Y-coordinate of camera position
          * @param       z Z-coordinate of camera position
          */
-        FreeCamera(std::string name, float x_up, float y_up, float z_up,  float x, float y, float z);
+        FreeCamera(std::string name, float x_up, float y_up, float z_up,  float x,
+                   float y, float z);
 
 
     //-------------------------------------------------------------------------
