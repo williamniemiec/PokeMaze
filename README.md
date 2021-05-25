@@ -40,6 +40,12 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 
 ![gif4](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif4.gif?raw=true)
 
+## 🚩 Changelog
+Details about each version are documented in the [releases section](https://github.com/williamniemiec/PokeMaze/releases).
+
+## 🤝 Contribute!
+See the documentation on how you can contribute to the project [here](https://github.com/williamniemiec/PokeMaze/blob/master/CONTRIBUTING.md).
+
 ## 📁 Files
 
 ### /
