@@ -78,7 +78,7 @@ after_release:
 	cp src/pokemaze/engine/shader/shader_vertex.glsl dist/$(MAJOR_VERSION).x/$(VERSION)/src/pokemaze/engine/shader/shader_vertex.glsl
 	cp src/pokemaze/engine/shader/shader_fragment.glsl dist/$(MAJOR_VERSION).x/$(VERSION)/src/pokemaze/engine/shader/shader_fragment.glsl
 	cp -R media dist/$(MAJOR_VERSION).x/$(VERSION)
-	powershell Compress-Archive dist/$(MAJOR_VERSION).x/$(VERSION) dist/$(MAJOR_VERSION).x/$(VERSION)/pokemaze-$(VERSION).zip
+	powershell Compress-Archive -Force dist/$(MAJOR_VERSION).x/$(VERSION) dist/$(MAJOR_VERSION).x/$(VERSION)/pokemaze-$(VERSION).zip
 
 release: before_release out_release after_release
 

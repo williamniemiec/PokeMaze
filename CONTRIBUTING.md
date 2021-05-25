@@ -53,6 +53,7 @@ After making changes to the project, create a pull request with the project you 
 
 #### Requirements
 - Operating system: Windows
+- Powershell
 - MinGW version: [17.1+](https://nuwen.net/mingw.html)
 - [Choco](https://chocolatey.org/install)
 
