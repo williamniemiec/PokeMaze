@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Release (CBlocks 20.03)">
+			<Target title="release">
 				<Option output="dist/1.x/1.0/pokemaze-1.0.0.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="bin/Release/" />
 				<Option object_output="obj/Release/" />
@@ -21,7 +21,7 @@
 					<Add option="lib-mingw-32\libglfw3.a -lgdi32 -lopengl32 -lwinmm" />
 				</Linker>
 			</Target>
-			<Target title="Debug (CBlocks 20.03)">
+			<Target title="debug">
 				<Option output="bin/Debug/main" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/Debug/" />
 				<Option object_output="obj/Debug/" />

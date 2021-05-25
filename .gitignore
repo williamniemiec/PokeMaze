@@ -9,3 +9,6 @@
 # Binaries
 bin/*
 obj/*
+dist/*/data
+dist/*/src
+dist/*/*.exe
