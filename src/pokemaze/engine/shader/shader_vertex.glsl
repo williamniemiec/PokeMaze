@@ -45,7 +45,7 @@ void main()
 
     position_world = model * model_coefficients;
     position_model = model_coefficients;
-    
+
     normal = inverse(transpose(model)) * normal_coefficients;
     normal.w = 0.0;
 
@@ -68,7 +68,7 @@ void main()
     {
         float U = texcoords.x;
         float V = texcoords.y;
-        
+
         vec3 Kd0 = texture(texture_0, vec2(U,V)).rgb;
         float lambert = max(0,dot(n,l));
 

@@ -21,6 +21,9 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
     obj_movement = new Movement(this);
+
+    load(filename, mtl_path, triangulate);
+    build();
 }
 
 SceneObject::SceneObject(std::string name, glm::vec4 position,
@@ -181,12 +184,12 @@ void SceneObject::load(std::string filename, std::string mtl_path, bool triangul
     std::vector<tinyobj::material_t> materials;
 
     bool success = tinyobj::LoadObj(
-            &attrib, 
-            &shapes, 
-            &materials, 
-            &err, 
-            filename.c_str(), 
-            mtl_path.c_str(), 
+            &attrib,
+            &shapes,
+            &materials,
+            &err,
+            filename.c_str(),
+            mtl_path.c_str(),
             triangulate
     );
 

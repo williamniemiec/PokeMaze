@@ -68,16 +68,16 @@ void main()
 
     vec4 h = normalize(v+l);
 
-    // Direction of ideal specular reflection. 
+    // Direction of ideal specular reflection.
     vec4 r = -l + 2*n*dot(n,l);
 
-    // Light source spectrum 
+    // Light source spectrum
     vec3 I = vec3(1.0f,1.0f,1.0f);
 
-    // Light source environment 
+    // Light source environment
     vec3 Ia = vec3(0.2f,0.2f,0.2f);
 
-    // Texture coordinates 
+    // Texture coordinates
     float U = 0.0;
     float V = 0.0;
 
@@ -99,153 +99,152 @@ void main()
         V = texcoords.y;
     }
 
-    switch (object_id)
+    if (object_id == SKY)
     {
-        case SKY:
-            color = texture(texture_1, vec2(U,V)).rgb;
+        color = texture(texture_1, vec2(U,V)).rgb;
+    }
+    else if (object_id == WALL)
+    {
+        vec3 Kd0 = texture(texture_13, vec2(U*5.5f,V*3)).rgb;
+        float lambert = max(0,dot(n,l));
 
-            break;
-        case WALL:
-            vec3 Kd0 = texture(texture_13, vec2(U*5.5f,V*3)).rgb;
-            float lambert = max(0,dot(n,l));
-            
-            color = Kd0 * (lambert + 0.5);
+        color = Kd0 * (lambert + 0.5);
+    }
+    else if (object_id == ZCUBE)
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
 
-            break;
-        case ZCUBE:
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
+        V = (position_model.y-miny)/(maxy-miny);
+        U = (position_model.z-minz)/(maxz-minz);
 
-            V = (position_model.y-miny)/(maxy-miny);
-            U = (position_model.z-minz)/(maxz-minz);
+        vec3 Kd0 = texture(texture_13, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
 
-            vec3 Kd0 = texture(texture_13, vec2(U,V)).rgb;
-            float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.04);
+    }
+    else if (object_id == XCUBE)
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
 
-            color = Kd0 * (lambert + 0.04);
+        U = (position_model.x-minx)/(maxx-minx);
+        V = (position_model.y-miny)/(maxy-miny);
 
-            break;
-        case XCUBE:
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
+        vec3 Kd0 = texture(texture_13, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
 
-            U = (position_model.x-minx)/(maxx-minx);
-            V = (position_model.y-miny)/(maxy-miny);
+        color = Kd0 * (lambert + 0.04);
+    }
+    else if (object_id == XDOOR)
+    {
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
 
-            vec3 Kd0 = texture(texture_13, vec2(U,V)).rgb;
-            float lambert = max(0,dot(n,l));
-            
-            color = Kd0 * (lambert + 0.04);
+        U = (position_model.x-minx)/(maxx-minx);
+        V = (position_model.y-miny)/(maxy-miny);
 
-            break;
-        case XDOOR:
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
+        vec3 Kd0 = texture(texture_14, vec2(U,V)).rgb;
+        float lambert = max(0,dot(n,l));
 
-            U = (position_model.x-minx)/(maxx-minx);
-            V = (position_model.y-miny)/(maxy-miny);
+        color = Kd0 * (lambert + 0.04);
+    }
+    else if (object_id == CHARIZARD)
+    {
+        vec3 Kd0;
 
-            vec3 Kd0 = texture(texture_14, vec2(U,V)).rgb;
-            float lambert = max(0,dot(n,l));
-            
-            color = Kd0 * (lambert + 0.04);
+        if (texids.x == 0)
+            Kd0 = texture(texture_11, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(texture_12, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
 
-            break;
-        case CHARIZARD:
-            vec3 Kd0;
+        float q = 60;
+        vec3 Ks = vec3(0.3f,0.3f,0.3f); // Specular reflectance
+        vec3 Ka = Ks/6;
+        float lambert = max(0,dot(n,l));
 
-            if (texids.x == 0)
-                Kd0 = texture(texture_11, vec2(U,V)).rgb;
-            else if (texids.x == 1)
-                Kd0 = texture(texture_12, vec2(U,V)).rgb;
-            else
-                Kd0 = vec3(0.5,0.5,0.5);
+        color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
+    }
+    else if (object_id == POKEBALL)
+    {
+        vec3 Kd0 = texture(texture_6, vec2(U,V)).rgb;
+        float q = 70;
+        vec3 Ks = vec3(0.3f,0.3f,0.3f);
+        vec3 Ka = Ks/10;
+        float lambert = max(0,dot(n,l));
 
-            float q = 60;
-            vec3 Ks = vec3(0.3f,0.3f,0.3f); // Specular reflectance 
-            vec3 Ka = Ks/6;
-            float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
+    }
+    else if (object_id == PLAYER)
+    {
+        vec3 Kd0;
 
-            color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
+        if (texids.x == 0)
+            Kd0 = texture(texture_2, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(texture_3, vec2(U,V)).rgb;
+        else if (texids.x == 2)
+            Kd0 = texture(texture_4, vec2(U,V)).rgb;
+        else if (texids.x == 3)
+            Kd0 = texture(texture_5, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
 
-            break;
-        case POKEBALL:
-            vec3 Kd0 = texture(texture_6, vec2(U,V)).rgb;
-            float q = 70;
-            vec3 Ks = vec3(0.3f,0.3f,0.3f);
-            vec3 Ka = Ks/10;
-            float lambert = max(0,dot(n,l));
+        float lambert = max(0,dot(n,l));
 
-            color = Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q);
+        color = Kd0 * (lambert + 0.01);
+    }
+    else if (object_id == PIKACHU)
+    {
+        vec3 Kd0;
 
-            break;
-        case PLAYER:
-            vec3 Kd0;
+        if (texids.x == 0)
+            Kd0 = texture(texture_7, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(texture_8, vec2(U,V)).rgb;
+        else if (texids.x == 2)
+            Kd0 = texture(texture_9, vec2(U,V)).rgb;
+        else if (texids.x == 3)
+            Kd0 = texture(texture_10, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
 
-            if (texids.x == 0)
-                Kd0 = texture(texture_2, vec2(U,V)).rgb;
-            else if (texids.x == 1)
-                Kd0 = texture(texture_3, vec2(U,V)).rgb;
-            else if (texids.x == 2)
-                Kd0 = texture(texture_4, vec2(U,V)).rgb;
-            else if (texids.x == 3)
-                Kd0 = texture(texture_5, vec2(U,V)).rgb;
-            else
-                Kd0 = vec3(0.5,0.5,0.5);
+        float lambert = max(0,dot(n,l));
 
-            float lambert = max(0,dot(n,l));
+        color = Kd0 * (lambert + 0.01);
+    }
+    else if (object_id == TREE)
+    {
+        vec3 Kd0;
 
-            color = Kd0 * (lambert + 0.01);
+        if (texids.x == 0)
+            Kd0 = texture(texture_15, vec2(U,V)).rgb;
+        else if (texids.x == 1)
+            Kd0 = texture(texture_16, vec2(U,V)).rgb;
+        else
+            Kd0 = vec3(0.5,0.5,0.5);
 
-            break;
-        case PIKACHU:
-            vec3 Kd0;
+        float lambert = max(0,dot(n,l));
 
-            if (texids.x == 0)
-                Kd0 = texture(texture_7, vec2(U,V)).rgb;
-            else if (texids.x == 1)
-                Kd0 = texture(texture_8, vec2(U,V)).rgb;
-            else if (texids.x == 2)
-                Kd0 = texture(texture_9, vec2(U,V)).rgb;
-            else if (texids.x == 3)
-                Kd0 = texture(texture_10, vec2(U,V)).rgb;
-            else
-                Kd0 = vec3(0.5,0.5,0.5);
-
-            float lambert = max(0,dot(n,l));
-
-            color = Kd0 * (lambert + 0.01);
-
-            break;
-        case TREE:
-            vec3 Kd0;
-
-            if (texids.x == 0)
-                Kd0 = texture(texture_15, vec2(U,V)).rgb;
-            else if (texids.x == 1)
-                Kd0 = texture(texture_16, vec2(U,V)).rgb;
-            else
-                Kd0 = vec3(0.5,0.5,0.5);
-
-            float lambert = max(0,dot(n,l));
-
-            color = Kd0 * (lambert + 0.01);
-
-            break;
-        default:
-            color = vec3(0.5,0.5,0.5);
+        color = Kd0 * (lambert + 0.01);
+    }
+    else
+    {
+        color = vec3(0.5,0.5,0.5);
     }
 
     // Gouraud shading
@@ -255,4 +254,3 @@ void main()
     // Final color with gamma correction, considering sRGB monitor
     color = pow(color, vec3(1.0,1.0,1.0)/2.2);
 }
-

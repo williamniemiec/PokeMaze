@@ -23,12 +23,12 @@ Level::Level(Renderer* renderer, FixedCamera* fixed_camera, std::string musicpat
 //-------------------------------------------------------------------------
 void Level::play_soundtrack()
 {
-    player->stop();
+    player->play();
 }
 
 void Level::stop_soundtrack()
 {
-    player->play();
+    player->stop();
 }
 
 

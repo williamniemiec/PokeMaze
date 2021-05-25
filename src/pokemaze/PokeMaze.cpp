@@ -126,7 +126,7 @@ unsigned long PokeMaze::init_keyboard_handler()
             pause = !pause;
 
         if (engine->was_key_pressed(GLFW_KEY_P))
-            set_perspective_projection()
+            set_perspective_projection();
         else if (engine->was_key_pressed(GLFW_KEY_O))
             set_orthographic_projection();
     }, KEYBOARD_HANDLER_INTERVAL_MS);
@@ -137,10 +137,10 @@ unsigned long PokeMaze::init_keyboard_handler()
 void PokeMaze::set_orthographic_projection()
 {
     projection = new OrthographicProjection(
-            NEAR_PLANE, 
-            FAR_PLANE, 
-            engine->get_screen_width(), 
-            engine->get_screen_height(), 
+            NEAR_PLANE,
+            FAR_PLANE,
+            engine->get_screen_width(),
+            engine->get_screen_height(),
             CAMERA_DISTANCE
     );
 }

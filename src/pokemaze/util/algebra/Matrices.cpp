@@ -7,16 +7,16 @@ using namespace pokemaze::util::algebra;
 //-------------------------------------------------------------------------
 //		Methods
 //-------------------------------------------------------------------------
-glm::mat4 Matrices::matrix(float m00, float m01, float m02, float m03, 
-                           float m10, float m11, float m12, float m13, 
-                           float m20, float m21, float m22, float m23, 
+glm::mat4 Matrices::matrix(float m00, float m01, float m02, float m03,
+                           float m10, float m11, float m12, float m13,
+                           float m20, float m21, float m22, float m23,
                            float m30, float m31, float m32, float m33)
 {
     return glm::mat4(
-        m00, m10, m20, m30, 
-        m01, m11, m21, m31, 
-        m02, m12, m22, m32, 
-        m03, m13, m23, m33  
+        m00, m10, m20, m30,
+        m01, m11, m21, m31,
+        m02, m12, m22, m32,
+        m03, m13, m23, m33
     );
 }
 
@@ -78,7 +78,7 @@ glm::mat4 Matrices::identity()
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f 
+        0.0f, 0.0f, 0.0f, 1.0f
     );
 }
 
@@ -134,7 +134,7 @@ glm::mat4 Matrices::rotate_z(float angle)
     float s = sin(angle);
 
     return matrix(
-        c   , s   , 0.0f, 0.0f,
+        c   , -s   , 0.0f, 0.0f,
         s   , c   , 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
@@ -178,7 +178,7 @@ glm::vec4 Matrices::cross_product(glm::vec4 u, glm::vec4 v)
     float v3 = v.z;
 
     return glm::vec4(
-        u2*v3 - u3*v2, 
+        u2*v3 - u3*v2,
         u3*v1 - u1*v3,
         u1*v2 - u2*v1,
         0.0f
