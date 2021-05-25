@@ -29,17 +29,6 @@ OBJDIR_RELEASE__CBLOCKS_20_03_ = obj\\Release
 DEP_RELEASE__CBLOCKS_20_03_ = 
 OUT_RELEASE__CBLOCKS_20_03_ = dist\\1.x\\1.0\\pokemaze-1.0.0.exe
 
-INC_LINUX = $(INC)
-CFLAGS_LINUX = $(CFLAGS) -Wall -std=c++17 -g
-RESINC_LINUX = $(RESINC)
-RCFLAGS_LINUX = $(RCFLAGS)
-LIBDIR_LINUX = $(LIBDIR)
-LIB_LINUX = $(LIB)
-LDFLAGS_LINUX =  lib-linux\libglfw3.a -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor
-OBJDIR_LINUX = obj\\Linux
-DEP_LINUX = 
-OUT_LINUX = bin\\Linux\\main.exe
-
 INC_DEBUG__CBLOCKS_20_03_ = $(INC)
 CFLAGS_DEBUG__CBLOCKS_20_03_ = $(CFLAGS) -Wall -g
 RESINC_DEBUG__CBLOCKS_20_03_ = $(RESINC)
@@ -53,13 +42,11 @@ OUT_DEBUG__CBLOCKS_20_03_ = bin\\Debug\\main.exe
 
 OBJ_RELEASE__CBLOCKS_20_03_ = $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\FreeCamera.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\FixedCamera.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\Camera.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\Sphere.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\SceneObject.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\Point.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\BoundingBox.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\LevelFactory.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\Level1.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\Level.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\text\\TextRender.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\Projection.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\PerspectiveProjection.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\OrthographicProjection.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\player\\WavPlayer.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\tiny_obj_loader.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\stb_image.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\glad.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Renderer.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\util\\task\\Scheduler.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\util\\data\\StringUtils.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\OutputConsolex.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LoggerConsolex.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LogMessage.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LogLevel.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\InputConsolex.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\HistoryConsolex.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\Consolex.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\util\\io\\IOUtils.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\util\\algebra\\Matrices.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\util\\algebra\\Bezier.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Sky.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Garage.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Floor.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Wall.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Tree.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Pokeball.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\Pikachu.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\Charizard.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\AshKetchum.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\LookAtCamera.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Engine.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Display.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Collisions.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\MouseController.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\KeyboardController.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\ErrorController.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\PokeMaze.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze\\App.o $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\include\\glm\\detail\\glm.o
 
-OBJ_LINUX = $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FreeCamera.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FixedCamera.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\Camera.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\Sphere.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\SceneObject.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\Point.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\BoundingBox.o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\LevelFactory.o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level1.o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text\\TextRender.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\Projection.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\PerspectiveProjection.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\OrthographicProjection.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player\\WavPlayer.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\tiny_obj_loader.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\stb_image.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\glad.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Renderer.o $(OBJDIR_LINUX)\\src\\wniemiec\\util\\task\\Scheduler.o $(OBJDIR_LINUX)\\src\\wniemiec\\util\\data\\StringUtils.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\OutputConsolex.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LoggerConsolex.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogMessage.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogLevel.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\InputConsolex.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\HistoryConsolex.o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\Consolex.o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\io\\IOUtils.o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Matrices.o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Bezier.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Sky.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Garage.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Floor.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Wall.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Tree.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Pokeball.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Pikachu.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Charizard.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\AshKetchum.o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\LookAtCamera.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Engine.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Display.o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Collisions.o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\MouseController.o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\KeyboardController.o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\ErrorController.o $(OBJDIR_LINUX)\\src\\pokemaze\\PokeMaze.o $(OBJDIR_LINUX)\\src\\pokemaze\\App.o $(OBJDIR_LINUX)\\include\\glm\\detail\\glm.o
-
 OBJ_DEBUG__CBLOCKS_20_03_ = $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\FreeCamera.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\FixedCamera.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\Camera.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\Sphere.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\SceneObject.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\Point.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\BoundingBox.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\LevelFactory.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\Level1.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\levels\\Level.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\text\\TextRender.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\Projection.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\PerspectiveProjection.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\projection\\OrthographicProjection.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\player\\WavPlayer.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\tiny_obj_loader.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\stb_image.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\loader\\glad.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Renderer.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\util\\task\\Scheduler.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\util\\data\\StringUtils.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\OutputConsolex.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LoggerConsolex.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LogMessage.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\LogLevel.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\InputConsolex.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\HistoryConsolex.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\wniemiec\\io\\consolex\\Consolex.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\util\\io\\IOUtils.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\util\\algebra\\Matrices.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\util\\algebra\\Bezier.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Sky.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Garage.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\scene\\Floor.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Wall.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Tree.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\objects\\Pokeball.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\Pikachu.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\Charizard.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\characters\\AshKetchum.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera\\LookAtCamera.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Engine.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Display.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\engine\\Collisions.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\MouseController.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\KeyboardController.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\controllers\\ErrorController.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\PokeMaze.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\App.o $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\include\\glm\\detail\\glm.o
 
-all: release__cblocks_20_03_ linux debug__cblocks_20_03_
+all: release__cblocks_20_03_ debug__cblocks_20_03_
 
-clean: clean_release__cblocks_20_03_ clean_linux clean_debug__cblocks_20_03_
+clean: clean_release__cblocks_20_03_ clean_debug__cblocks_20_03_
 
 before_release__cblocks_20_03_: 
 	cmd /c if not exist dist\\1.x\\1.0 md dist\\1.x\\1.0
@@ -263,208 +250,6 @@ clean_release__cblocks_20_03_:
 	cmd /c rd $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\src\\pokemaze
 	cmd /c rd $(OBJDIR_RELEASE__CBLOCKS_20_03_)\\include\\glm\\detail
 
-before_linux: 
-	cmd /c if not exist bin\\Linux md bin\\Linux
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera md $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\models md $(OBJDIR_LINUX)\\src\\pokemaze\\models
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\levels md $(OBJDIR_LINUX)\\src\\pokemaze\\levels
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text md $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection md $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player md $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader md $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\engine md $(OBJDIR_LINUX)\\src\\pokemaze\\engine
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\wniemiec\\util\\task md $(OBJDIR_LINUX)\\src\\wniemiec\\util\\task
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\wniemiec\\util\\data md $(OBJDIR_LINUX)\\src\\wniemiec\\util\\data
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex md $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\util\\io md $(OBJDIR_LINUX)\\src\\pokemaze\\util\\io
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra md $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene md $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects md $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters md $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze\\controllers md $(OBJDIR_LINUX)\\src\\pokemaze\\controllers
-	cmd /c if not exist $(OBJDIR_LINUX)\\src\\pokemaze md $(OBJDIR_LINUX)\\src\\pokemaze
-	cmd /c if not exist $(OBJDIR_LINUX)\\include\\glm\\detail md $(OBJDIR_LINUX)\\include\\glm\\detail
-
-after_linux: 
-
-linux: before_linux out_linux after_linux
-
-out_linux: before_linux $(OBJ_LINUX) $(DEP_LINUX)
-	$(LD) $(LIBDIR_LINUX) -o $(OUT_LINUX) $(OBJ_LINUX)  $(LDFLAGS_LINUX) $(LIB_LINUX)
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FreeCamera.o: src\\pokemaze\\models\\camera\\FreeCamera.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\camera\\FreeCamera.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FreeCamera.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FixedCamera.o: src\\pokemaze\\models\\camera\\FixedCamera.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\camera\\FixedCamera.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\FixedCamera.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\Camera.o: src\\pokemaze\\models\\camera\\Camera.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\camera\\Camera.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\Camera.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\Sphere.o: src\\pokemaze\\models\\Sphere.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\Sphere.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\Sphere.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\SceneObject.o: src\\pokemaze\\models\\SceneObject.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\SceneObject.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\SceneObject.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\Point.o: src\\pokemaze\\models\\Point.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\Point.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\Point.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\BoundingBox.o: src\\pokemaze\\models\\BoundingBox.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\BoundingBox.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\BoundingBox.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\levels\\LevelFactory.o: src\\pokemaze\\levels\\LevelFactory.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\levels\\LevelFactory.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\LevelFactory.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level1.o: src\\pokemaze\\levels\\Level1.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\levels\\Level1.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level1.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level.o: src\\pokemaze\\levels\\Level.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\levels\\Level.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\levels\\Level.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text\\TextRender.o: src\\pokemaze\\engine\\text\\TextRender.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\text\\TextRender.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text\\TextRender.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\Projection.o: src\\pokemaze\\engine\\projection\\Projection.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\projection\\Projection.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\Projection.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\PerspectiveProjection.o: src\\pokemaze\\engine\\projection\\PerspectiveProjection.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\projection\\PerspectiveProjection.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\PerspectiveProjection.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\OrthographicProjection.o: src\\pokemaze\\engine\\projection\\OrthographicProjection.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\projection\\OrthographicProjection.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection\\OrthographicProjection.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player\\WavPlayer.o: src\\pokemaze\\engine\\player\\WavPlayer.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\player\\WavPlayer.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player\\WavPlayer.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\tiny_obj_loader.o: src\\pokemaze\\engine\\loader\\tiny_obj_loader.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\loader\\tiny_obj_loader.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\tiny_obj_loader.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\stb_image.o: src\\pokemaze\\engine\\loader\\stb_image.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\loader\\stb_image.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\stb_image.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\glad.o: src\\pokemaze\\engine\\loader\\glad.c
-	$(CC) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\loader\\glad.c -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader\\glad.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Renderer.o: src\\pokemaze\\engine\\Renderer.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\Renderer.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Renderer.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\util\\task\\Scheduler.o: src\\wniemiec\\util\\task\\Scheduler.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\util\\task\\Scheduler.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\util\\task\\Scheduler.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\util\\data\\StringUtils.o: src\\wniemiec\\util\\data\\StringUtils.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\util\\data\\StringUtils.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\util\\data\\StringUtils.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\OutputConsolex.o: src\\wniemiec\\io\\consolex\\OutputConsolex.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\OutputConsolex.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\OutputConsolex.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LoggerConsolex.o: src\\wniemiec\\io\\consolex\\LoggerConsolex.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\LoggerConsolex.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LoggerConsolex.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogMessage.o: src\\wniemiec\\io\\consolex\\LogMessage.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\LogMessage.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogMessage.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogLevel.o: src\\wniemiec\\io\\consolex\\LogLevel.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\LogLevel.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\LogLevel.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\InputConsolex.o: src\\wniemiec\\io\\consolex\\InputConsolex.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\InputConsolex.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\InputConsolex.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\HistoryConsolex.o: src\\wniemiec\\io\\consolex\\HistoryConsolex.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\HistoryConsolex.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\HistoryConsolex.o
-
-$(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\Consolex.o: src\\wniemiec\\io\\consolex\\Consolex.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\wniemiec\\io\\consolex\\Consolex.cpp -o $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex\\Consolex.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\util\\io\\IOUtils.o: src\\pokemaze\\util\\io\\IOUtils.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\util\\io\\IOUtils.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\io\\IOUtils.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Matrices.o: src\\pokemaze\\util\\algebra\\Matrices.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\util\\algebra\\Matrices.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Matrices.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Bezier.o: src\\pokemaze\\util\\algebra\\Bezier.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\util\\algebra\\Bezier.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra\\Bezier.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Sky.o: src\\pokemaze\\models\\scene\\Sky.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\scene\\Sky.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Sky.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Garage.o: src\\pokemaze\\models\\scene\\Garage.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\scene\\Garage.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Garage.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Floor.o: src\\pokemaze\\models\\scene\\Floor.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\scene\\Floor.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene\\Floor.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Wall.o: src\\pokemaze\\models\\objects\\Wall.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\objects\\Wall.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Wall.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Tree.o: src\\pokemaze\\models\\objects\\Tree.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\objects\\Tree.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Tree.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Pokeball.o: src\\pokemaze\\models\\objects\\Pokeball.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\objects\\Pokeball.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects\\Pokeball.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Pikachu.o: src\\pokemaze\\models\\characters\\Pikachu.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\characters\\Pikachu.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Pikachu.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Charizard.o: src\\pokemaze\\models\\characters\\Charizard.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\characters\\Charizard.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\Charizard.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\AshKetchum.o: src\\pokemaze\\models\\characters\\AshKetchum.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\characters\\AshKetchum.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters\\AshKetchum.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\LookAtCamera.o: src\\pokemaze\\models\\camera\\LookAtCamera.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\models\\camera\\LookAtCamera.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera\\LookAtCamera.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Engine.o: src\\pokemaze\\engine\\Engine.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\Engine.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Engine.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Display.o: src\\pokemaze\\engine\\Display.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\Display.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Display.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Collisions.o: src\\pokemaze\\engine\\Collisions.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\engine\\Collisions.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\Collisions.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\MouseController.o: src\\pokemaze\\controllers\\MouseController.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\controllers\\MouseController.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\MouseController.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\KeyboardController.o: src\\pokemaze\\controllers\\KeyboardController.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\controllers\\KeyboardController.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\KeyboardController.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\ErrorController.o: src\\pokemaze\\controllers\\ErrorController.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\controllers\\ErrorController.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\controllers\\ErrorController.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\PokeMaze.o: src\\pokemaze\\PokeMaze.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\PokeMaze.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\PokeMaze.o
-
-$(OBJDIR_LINUX)\\src\\pokemaze\\App.o: src\\pokemaze\\App.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c src\\pokemaze\\App.cpp -o $(OBJDIR_LINUX)\\src\\pokemaze\\App.o
-
-$(OBJDIR_LINUX)\\include\\glm\\detail\\glm.o: include\\glm\\detail\\glm.cpp
-	$(CXX) $(CFLAGS_LINUX) $(INC_LINUX) -c include\\glm\\detail\\glm.cpp -o $(OBJDIR_LINUX)\\include\\glm\\detail\\glm.o
-
-clean_linux: 
-	cmd /c del /f $(OBJ_LINUX) $(OUT_LINUX)
-	cmd /c rd bin\\Linux
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\models\\camera
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\models
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\levels
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\text
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\projection
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\player
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\engine\\loader
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\engine
-	cmd /c rd $(OBJDIR_LINUX)\\src\\wniemiec\\util\\task
-	cmd /c rd $(OBJDIR_LINUX)\\src\\wniemiec\\util\\data
-	cmd /c rd $(OBJDIR_LINUX)\\src\\wniemiec\\io\\consolex
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\util\\io
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\util\\algebra
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\models\\scene
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\models\\objects
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\models\\characters
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze\\controllers
-	cmd /c rd $(OBJDIR_LINUX)\\src\\pokemaze
-	cmd /c rd $(OBJDIR_LINUX)\\include\\glm\\detail
-
 before_debug__cblocks_20_03_: 
 	cmd /c if not exist bin\\Debug md bin\\Debug
 	cmd /c if not exist $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera md $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze\\models\\camera
@@ -667,5 +452,5 @@ clean_debug__cblocks_20_03_:
 	cmd /c rd $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\src\\pokemaze
 	cmd /c rd $(OBJDIR_DEBUG__CBLOCKS_20_03_)\\include\\glm\\detail
 
-.PHONY: before_release__cblocks_20_03_ after_release__cblocks_20_03_ clean_release__cblocks_20_03_ before_linux after_linux clean_linux before_debug__cblocks_20_03_ after_debug__cblocks_20_03_ clean_debug__cblocks_20_03_
+.PHONY: before_release__cblocks_20_03_ after_release__cblocks_20_03_ clean_release__cblocks_20_03_ before_debug__cblocks_20_03_ after_debug__cblocks_20_03_ clean_debug__cblocks_20_03_
 
