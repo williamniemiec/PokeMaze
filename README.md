@@ -9,6 +9,13 @@
 </p>
 <hr />
 
+## ❇ Introduction
+Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, the player must first find the pikachu to clear the way to the Pokéball. Charizard (dragon) indicates where the Pokéball is.
+
+## ✔ Requirements
+- Operating system: Windows
+- GLFW
+
 ## 🎮 Controls
 |        Command        |Description|
 |----------------|-------------------------------|
@@ -22,6 +29,15 @@
 | `Pause Break` | Pause / Continue game |
 | `Left mouse button` pressed + `direction`  | Moves player camera to `direction` |
 
+## 🖼 Gallery
+
+![gif1](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif1.gif?raw=true)
+
+![gif2](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif2.gif?raw=true)
+
+![gif3](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif3.gif?raw=true)
+
+![gif4](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif4.gif?raw=true)
 
 ## 📁 Files
 
