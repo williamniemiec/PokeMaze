@@ -8,7 +8,8 @@
 #include "pokemaze/models/BoundingBox.hpp"
 #include "pokemaze/models/SceneObject.hpp"
 
-namespace pokemaze {namespace engine {
+namespace pokemaze { namespace engine {
+
     /**
      * Responsible for the communication between application and GPU (vertex
      * and fragment shaders).
@@ -100,7 +101,8 @@ namespace pokemaze {namespace engine {
         void parse_object_indexes(std::vector<GLuint> indexes);
         void parse_object_model(std::vector<float> model_coefficients);
         void parse_object_normal(std::vector<float> normal_coefficients);
-        void parse_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, std::vector<std::string> textures, bool is_3D);
+        void parse_object_texture(std::vector<float>texture_coefficients, std::vector<int> texture_id, 
+                                  std::vector<std::string> textures, bool is_3D);
         void draw_virtual_object(pokemaze::models::SceneObject* object);
         GLint generate_vertex_array_object();
     };

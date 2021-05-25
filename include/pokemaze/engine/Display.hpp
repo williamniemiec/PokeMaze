@@ -4,7 +4,8 @@
 #include <GLFW/glfw3.h>  // Creating operationg system windows
 #include "pokemaze/engine/text/TextRender.hpp"
 
-namespace pokemaze {namespace engine {
+namespace pokemaze { namespace engine {
+    
     /**
      * Responsible for displaying infomation on the display.
      */
@@ -63,7 +64,6 @@ namespace pokemaze {namespace engine {
          * Displays GPU information.
          */
         void show_gpu();
-
     private:
         static void window_resize_handler(GLFWwindow* window, int width, int height);
 

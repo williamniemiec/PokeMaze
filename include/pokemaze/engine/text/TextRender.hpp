@@ -8,7 +8,8 @@
 #include "pokemaze/util/utils.h"
 #include "pokemaze/engine/Renderer.hpp"
 
-namespace pokemaze {namespace engine {namespace text {
+namespace pokemaze { namespace engine { namespace text {
+    
     // Based on http://hamelot.io/visualization/opengl-text-without-any-external-libraries/
     //   and on https://github.com/rougier/freetype-gl
     class TextRender : public Renderer

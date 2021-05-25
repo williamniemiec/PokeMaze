@@ -3,9 +3,16 @@
 #include <map>
 #include <GLFW/glfw3.h>
 
-namespace pokemaze {namespace controllers {
+namespace pokemaze { namespace controllers {
+
+    /**
+     * Responsible for mouse handling.
+     */
     class MouseController
     {
+    //-------------------------------------------------------------------------
+    //		Attributes
+    //-------------------------------------------------------------------------
     private:
         static std::map<GLenum, bool> button_clicked;
         static double last_cursor_position_x;
@@ -13,9 +20,24 @@ namespace pokemaze {namespace controllers {
         static double offset_click_x;
         static double offset_click_y;
         static bool mouse_moved;
+    
+
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
     public:
+        /**
+         * Mouse handler.
+         * 
+         * @param       window Application window
+         */
         MouseController(GLFWwindow* window);
 
+
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
+    public:
         /**
          * Checks whether a mouse button has clicked.
          *
@@ -47,7 +69,6 @@ namespace pokemaze {namespace controllers {
          * @return      Displacement on the y axis
          */
         double get_offset_click_y();
-
     private:
         static void mouse_click_handler(GLFWwindow* window, int button, int action, int mods);
         static void parse_left_mouse_button(GLFWwindow* window, int button, int action);

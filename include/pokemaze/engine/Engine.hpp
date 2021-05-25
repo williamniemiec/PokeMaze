@@ -7,7 +7,8 @@
 #include "pokemaze/controllers/MouseController.hpp"
 #include "pokemaze/controllers/ErrorController.hpp"
 
-namespace pokemaze {namespace engine {
+namespace pokemaze { namespace engine {
+
     /**
      * Responsible for initializing OpenGL, defining event handlers and displaying
      * things on the screen.
@@ -130,7 +131,6 @@ namespace pokemaze {namespace engine {
          * Displays GPU information.
          */
         void show_gpu();
-
     private:
         void build_window();
         void build_event_handlers();

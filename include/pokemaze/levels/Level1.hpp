@@ -3,23 +3,39 @@
 #include "pokemaze/levels/Level.hpp"
 #include "pokemaze/models/camera/FixedCamera.hpp"
 
-namespace pokemaze {namespace levels {
+namespace pokemaze { namespace levels {
+
+    /**
+     * Responsible for creating game level 1.
+     */
     class Level1 : public Level
     {
+    //-------------------------------------------------------------------------
+    //		Attributes
+    //-------------------------------------------------------------------------
     private:
-        float previous_time;
-        float delta_time;
         std::map<std::string, pokemaze::models::SceneObject*> virtual_scene;
         std::vector<pokemaze::models::SceneObject*> skies;
         std::vector<pokemaze::models::SceneObject*> walls;
+        float previous_time;
+        float delta_time;
         float player_direction;
         bool pikachu_catched;
         bool pokeball_catched;
         bool pikachu_door_touched;
 
-    public:
-        Level1(pokemaze::engine::Renderer* renderer, pokemaze::models::camera::FixedCamera* fixed_camera);
 
+    //-------------------------------------------------------------------------
+    //		Constructor
+    //-------------------------------------------------------------------------
+    public:
+        Level1(pokemaze::engine::Renderer* renderer, 
+               pokemaze::models::camera::FixedCamera* fixed_camera);
+
+
+    //-------------------------------------------------------------------------
+    //		Methods
+    //-------------------------------------------------------------------------
     public:
         virtual void build();
         virtual void render(bool pikachu_catched, bool garage_door_touched);
@@ -48,6 +64,10 @@ namespace pokemaze {namespace levels {
         void draw_walls();
         std::string get_soundtrack();
 
+
+    //-------------------------------------------------------------------------
+    //		Getters
+    //-------------------------------------------------------------------------
     public:
         virtual pokemaze::models::characters::AshKetchum* get_ash();
         virtual pokemaze::models::objects::Pokeball* get_pokeball();

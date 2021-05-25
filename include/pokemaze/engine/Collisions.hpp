@@ -4,7 +4,8 @@
 #include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/models/Sphere.hpp"
 
-namespace pokemaze {namespace engine {
+namespace pokemaze { namespace engine {
+
     /**
      * Responsible for collision tests.
      *
@@ -52,7 +53,6 @@ namespace pokemaze {namespace engine {
          * @return      True if there is a collision; false otherwise
          */
         static bool has_collision_plane_plane(pokemaze::models::SceneObject* plane1, pokemaze::models::SceneObject* plane2);
-
     private:
         static double euclidian_distance(glm::vec3 p1, glm::vec3 p2);
     };
