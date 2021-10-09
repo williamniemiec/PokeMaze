@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/wave.dir/wave.c.o CMakeFiles/wave.dir/__/deps/glad.c.o  -o ../../../bin/wave   -L/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib  -Wl,-rpath,/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib ../../libglfw3.a -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor 

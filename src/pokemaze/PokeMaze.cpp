@@ -1,7 +1,8 @@
 #include "pokemaze/PokeMaze.hpp"
 
-#include <pokemaze/engine/loader/glad.h>
 #include <GLFW/glfw3.h>
+#include <obj_loader/glad.h>
+#include <wniemiec/task/cpp/Scheduler.hpp>
 #include "pokemaze/engine/Collisions.hpp"
 #include "pokemaze/models/scene/Garage.hpp"
 #include "pokemaze/models/Sphere.hpp"
@@ -9,7 +10,6 @@
 #include "pokemaze/engine/projection/OrthographicProjection.hpp"
 #include "pokemaze/engine/projection/PerspectiveProjection.hpp"
 #include "pokemaze/levels/LevelFactory.hpp"
-#include "wniemiec/util/task/Scheduler.hpp"
 
 #define PI 3.14159265358979323846f
 #define KEYBOARD_HANDLER_INTERVAL_MS 150
@@ -26,7 +26,7 @@ using namespace pokemaze::engine::projection;
 using namespace pokemaze::levels;
 using namespace pokemaze::models;
 using namespace pokemaze::models::camera;
-using namespace wniemiec::util::task;
+using namespace wniemiec::task::cpp;
 
 //-------------------------------------------------------------------------
 //		Attributes

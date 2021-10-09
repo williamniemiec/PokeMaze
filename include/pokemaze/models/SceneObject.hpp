@@ -8,7 +8,7 @@
 #include <glm/vec4.hpp>
 #include <algorithm>
 #include <stack>
-#include <pokemaze/engine/loader/tiny_obj_loader.h>
+#include <obj_loader/tiny_obj_loader.h>
 #include "pokemaze/models/BoundingBox.hpp"
 
 namespace pokemaze { namespace models {

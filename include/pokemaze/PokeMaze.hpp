@@ -1,9 +1,9 @@
 #pragma once
 
+#include <obj_loader/glad.h>
+#include <GLFW/glfw3.h>
 #include <map>
 #include <vector>
-#include <pokemaze/engine/loader/glad.h>
-#include <GLFW/glfw3.h>
 #include "pokemaze/models/SceneObject.hpp"
 #include "pokemaze/models/camera/LookAtCamera.hpp"
 #include "pokemaze/models/camera/FixedCamera.hpp"

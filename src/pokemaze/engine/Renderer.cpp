@@ -1,16 +1,18 @@
 #include "pokemaze/engine/Renderer.hpp"
 
+#include <GLFW/glfw3.h>
+#include <obj_loader/glad.h>
 #include <iostream>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
-#include <pokemaze/engine/loader/stb_image.h>
+#include <obj_loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
-#include "wniemiec/io/consolex/Consolex.hpp"
+#include <wniemiec/io/cpp/Consolex.hpp>
 
 using namespace pokemaze::engine;
 using namespace pokemaze::models;
 using namespace pokemaze::util::io;
-using namespace wniemiec::io::consolex;
+using namespace wniemiec::io::cpp;
 
 //-------------------------------------------------------------------------
 //		Constructor

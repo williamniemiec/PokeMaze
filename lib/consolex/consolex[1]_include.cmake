@@ -1,0 +1,5 @@
+if(EXISTS "/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/consolex/consolex[1]_tests.cmake")
+  include("/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/consolex/consolex[1]_tests.cmake")
+else()
+  add_test(consolex_NOT_BUILT consolex_NOT_BUILT)
+endif()

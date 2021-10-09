@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/simple.dir/simple.c.o CMakeFiles/simple.dir/__/deps/glad.c.o  -o ../../../bin/simple   -L/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib  -Wl,-rpath,/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib ../../libglfw3.a -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor 

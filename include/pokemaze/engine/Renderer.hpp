@@ -1,10 +1,10 @@
 #pragma once
 
+#include <obj_loader/glad.h>
+#include <GLFW/glfw3.h>
 #include <algorithm>
 #include <list>
 #include <vector>
-#include <pokemaze/engine/loader/glad.h>
-#include <GLFW/glfw3.h>
 #include "pokemaze/models/BoundingBox.hpp"
 #include "pokemaze/models/SceneObject.hpp"
 

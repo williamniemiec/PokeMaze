@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pokemaze/engine/loader/glad.h>
-#include <GLFW/glfw3.h>  // Creating operationg system windows
+#include <obj_loader/glad.h>
+#include <GLFW/glfw3.h> 
 #include "pokemaze/engine/text/TextRender.hpp"
 
 namespace pokemaze { namespace engine {

@@ -1,5 +1,12 @@
 #include "pokemaze/util/io/IOUtils.hpp"
 
+#if defined(WIN32)
+#    define PATH _getcwd( 0, 0 )
+#else
+#    include <unistd.h>
+#    define PATH getcwd( 0, 0 )
+#endif
+
 using namespace pokemaze::util::io;
 
 //-------------------------------------------------------------------------
@@ -15,7 +22,7 @@ std::string IOUtils::get_project_absolute_path()
 
 std::string IOUtils::get_working_directory()
 {
-    char* cwd = _getcwd( 0, 0 );
+    char* cwd = PATH;
     std::string working_directory(cwd);
     std::free(cwd);
 

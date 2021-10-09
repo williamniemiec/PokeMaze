@@ -1,0 +1,13 @@
+public class Foo {
+
+	public static int countTotalArguments(Object... args) {
+		int i = 2;
+		int k;
+		
+		for (k=0; k<args.length; k++) {
+			continue;
+		}
+		
+		return k;
+	}
+}

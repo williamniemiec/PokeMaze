@@ -1,6 +1,6 @@
 #pragma once
 
-#include <pokemaze/engine/loader/glad.h>
+#include <obj_loader/glad.h>
 #include <GLFW/glfw3.h>
 #include "pokemaze/engine/Display.hpp"
 #include "pokemaze/controllers/KeyboardController.hpp"

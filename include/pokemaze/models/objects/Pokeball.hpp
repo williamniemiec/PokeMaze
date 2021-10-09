@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <GLFW/glfw3.h>
-#include <pokemaze/engine/loader/tiny_obj_loader.h>
+#include <obj_loader/tiny_obj_loader.h>
 #include "pokemaze/models/Sphere.hpp"
 
 namespace pokemaze { namespace models { namespace objects {
