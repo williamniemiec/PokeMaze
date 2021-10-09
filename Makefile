@@ -793,6 +793,33 @@ src/pokemaze/App.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/App.cpp.s
 .PHONY : src/pokemaze/App.cpp.s
 
+src/pokemaze/PokeMaze.o: src/pokemaze/PokeMaze.cpp.o
+
+.PHONY : src/pokemaze/PokeMaze.o
+
+# target to build an object file
+src/pokemaze/PokeMaze.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/PokeMaze.cpp.o
+.PHONY : src/pokemaze/PokeMaze.cpp.o
+
+src/pokemaze/PokeMaze.i: src/pokemaze/PokeMaze.cpp.i
+
+.PHONY : src/pokemaze/PokeMaze.i
+
+# target to preprocess a source file
+src/pokemaze/PokeMaze.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/PokeMaze.cpp.i
+.PHONY : src/pokemaze/PokeMaze.cpp.i
+
+src/pokemaze/PokeMaze.s: src/pokemaze/PokeMaze.cpp.s
+
+.PHONY : src/pokemaze/PokeMaze.s
+
+# target to generate assembly for a file
+src/pokemaze/PokeMaze.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/PokeMaze.cpp.s
+.PHONY : src/pokemaze/PokeMaze.cpp.s
+
 src/pokemaze/controllers/ErrorController.o: src/pokemaze/controllers/ErrorController.cpp.o
 
 .PHONY : src/pokemaze/controllers/ErrorController.o
@@ -874,6 +901,33 @@ src/pokemaze/controllers/MouseController.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/controllers/MouseController.cpp.s
 .PHONY : src/pokemaze/controllers/MouseController.cpp.s
 
+src/pokemaze/engine/Collisions.o: src/pokemaze/engine/Collisions.cpp.o
+
+.PHONY : src/pokemaze/engine/Collisions.o
+
+# target to build an object file
+src/pokemaze/engine/Collisions.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o
+.PHONY : src/pokemaze/engine/Collisions.cpp.o
+
+src/pokemaze/engine/Collisions.i: src/pokemaze/engine/Collisions.cpp.i
+
+.PHONY : src/pokemaze/engine/Collisions.i
+
+# target to preprocess a source file
+src/pokemaze/engine/Collisions.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.i
+.PHONY : src/pokemaze/engine/Collisions.cpp.i
+
+src/pokemaze/engine/Collisions.s: src/pokemaze/engine/Collisions.cpp.s
+
+.PHONY : src/pokemaze/engine/Collisions.s
+
+# target to generate assembly for a file
+src/pokemaze/engine/Collisions.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.s
+.PHONY : src/pokemaze/engine/Collisions.cpp.s
+
 src/pokemaze/engine/Display.o: src/pokemaze/engine/Display.cpp.o
 
 .PHONY : src/pokemaze/engine/Display.o
@@ -954,6 +1008,33 @@ src/pokemaze/engine/Renderer.s: src/pokemaze/engine/Renderer.cpp.s
 src/pokemaze/engine/Renderer.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/Renderer.cpp.s
 .PHONY : src/pokemaze/engine/Renderer.cpp.s
+
+src/pokemaze/engine/player/WavPlayer.o: src/pokemaze/engine/player/WavPlayer.cpp.o
+
+.PHONY : src/pokemaze/engine/player/WavPlayer.o
+
+# target to build an object file
+src/pokemaze/engine/player/WavPlayer.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/player/WavPlayer.cpp.o
+.PHONY : src/pokemaze/engine/player/WavPlayer.cpp.o
+
+src/pokemaze/engine/player/WavPlayer.i: src/pokemaze/engine/player/WavPlayer.cpp.i
+
+.PHONY : src/pokemaze/engine/player/WavPlayer.i
+
+# target to preprocess a source file
+src/pokemaze/engine/player/WavPlayer.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/player/WavPlayer.cpp.i
+.PHONY : src/pokemaze/engine/player/WavPlayer.cpp.i
+
+src/pokemaze/engine/player/WavPlayer.s: src/pokemaze/engine/player/WavPlayer.cpp.s
+
+.PHONY : src/pokemaze/engine/player/WavPlayer.s
+
+# target to generate assembly for a file
+src/pokemaze/engine/player/WavPlayer.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/player/WavPlayer.cpp.s
+.PHONY : src/pokemaze/engine/player/WavPlayer.cpp.s
 
 src/pokemaze/engine/projection/OrthographicProjection.o: src/pokemaze/engine/projection/OrthographicProjection.cpp.o
 
@@ -1063,6 +1144,87 @@ src/pokemaze/engine/text/TextRender.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/engine/text/TextRender.cpp.s
 .PHONY : src/pokemaze/engine/text/TextRender.cpp.s
 
+src/pokemaze/levels/Level.o: src/pokemaze/levels/Level.cpp.o
+
+.PHONY : src/pokemaze/levels/Level.o
+
+# target to build an object file
+src/pokemaze/levels/Level.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o
+.PHONY : src/pokemaze/levels/Level.cpp.o
+
+src/pokemaze/levels/Level.i: src/pokemaze/levels/Level.cpp.i
+
+.PHONY : src/pokemaze/levels/Level.i
+
+# target to preprocess a source file
+src/pokemaze/levels/Level.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.i
+.PHONY : src/pokemaze/levels/Level.cpp.i
+
+src/pokemaze/levels/Level.s: src/pokemaze/levels/Level.cpp.s
+
+.PHONY : src/pokemaze/levels/Level.s
+
+# target to generate assembly for a file
+src/pokemaze/levels/Level.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.s
+.PHONY : src/pokemaze/levels/Level.cpp.s
+
+src/pokemaze/levels/Level1.o: src/pokemaze/levels/Level1.cpp.o
+
+.PHONY : src/pokemaze/levels/Level1.o
+
+# target to build an object file
+src/pokemaze/levels/Level1.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o
+.PHONY : src/pokemaze/levels/Level1.cpp.o
+
+src/pokemaze/levels/Level1.i: src/pokemaze/levels/Level1.cpp.i
+
+.PHONY : src/pokemaze/levels/Level1.i
+
+# target to preprocess a source file
+src/pokemaze/levels/Level1.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.i
+.PHONY : src/pokemaze/levels/Level1.cpp.i
+
+src/pokemaze/levels/Level1.s: src/pokemaze/levels/Level1.cpp.s
+
+.PHONY : src/pokemaze/levels/Level1.s
+
+# target to generate assembly for a file
+src/pokemaze/levels/Level1.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.s
+.PHONY : src/pokemaze/levels/Level1.cpp.s
+
+src/pokemaze/levels/LevelFactory.o: src/pokemaze/levels/LevelFactory.cpp.o
+
+.PHONY : src/pokemaze/levels/LevelFactory.o
+
+# target to build an object file
+src/pokemaze/levels/LevelFactory.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o
+.PHONY : src/pokemaze/levels/LevelFactory.cpp.o
+
+src/pokemaze/levels/LevelFactory.i: src/pokemaze/levels/LevelFactory.cpp.i
+
+.PHONY : src/pokemaze/levels/LevelFactory.i
+
+# target to preprocess a source file
+src/pokemaze/levels/LevelFactory.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.i
+.PHONY : src/pokemaze/levels/LevelFactory.cpp.i
+
+src/pokemaze/levels/LevelFactory.s: src/pokemaze/levels/LevelFactory.cpp.s
+
+.PHONY : src/pokemaze/levels/LevelFactory.s
+
+# target to generate assembly for a file
+src/pokemaze/levels/LevelFactory.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.s
+.PHONY : src/pokemaze/levels/LevelFactory.cpp.s
+
 src/pokemaze/models/BoundingBox.o: src/pokemaze/models/BoundingBox.cpp.o
 
 .PHONY : src/pokemaze/models/BoundingBox.o
@@ -1144,6 +1306,33 @@ src/pokemaze/models/SceneObject.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.s
 .PHONY : src/pokemaze/models/SceneObject.cpp.s
 
+src/pokemaze/models/Sphere.o: src/pokemaze/models/Sphere.cpp.o
+
+.PHONY : src/pokemaze/models/Sphere.o
+
+# target to build an object file
+src/pokemaze/models/Sphere.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o
+.PHONY : src/pokemaze/models/Sphere.cpp.o
+
+src/pokemaze/models/Sphere.i: src/pokemaze/models/Sphere.cpp.i
+
+.PHONY : src/pokemaze/models/Sphere.i
+
+# target to preprocess a source file
+src/pokemaze/models/Sphere.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.i
+.PHONY : src/pokemaze/models/Sphere.cpp.i
+
+src/pokemaze/models/Sphere.s: src/pokemaze/models/Sphere.cpp.s
+
+.PHONY : src/pokemaze/models/Sphere.s
+
+# target to generate assembly for a file
+src/pokemaze/models/Sphere.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.s
+.PHONY : src/pokemaze/models/Sphere.cpp.s
+
 src/pokemaze/models/camera/Camera.o: src/pokemaze/models/camera/Camera.cpp.o
 
 .PHONY : src/pokemaze/models/camera/Camera.o
@@ -1170,6 +1359,33 @@ src/pokemaze/models/camera/Camera.s: src/pokemaze/models/camera/Camera.cpp.s
 src/pokemaze/models/camera/Camera.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.s
 .PHONY : src/pokemaze/models/camera/Camera.cpp.s
+
+src/pokemaze/models/camera/FixedCamera.o: src/pokemaze/models/camera/FixedCamera.cpp.o
+
+.PHONY : src/pokemaze/models/camera/FixedCamera.o
+
+# target to build an object file
+src/pokemaze/models/camera/FixedCamera.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o
+.PHONY : src/pokemaze/models/camera/FixedCamera.cpp.o
+
+src/pokemaze/models/camera/FixedCamera.i: src/pokemaze/models/camera/FixedCamera.cpp.i
+
+.PHONY : src/pokemaze/models/camera/FixedCamera.i
+
+# target to preprocess a source file
+src/pokemaze/models/camera/FixedCamera.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.i
+.PHONY : src/pokemaze/models/camera/FixedCamera.cpp.i
+
+src/pokemaze/models/camera/FixedCamera.s: src/pokemaze/models/camera/FixedCamera.cpp.s
+
+.PHONY : src/pokemaze/models/camera/FixedCamera.s
+
+# target to generate assembly for a file
+src/pokemaze/models/camera/FixedCamera.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.s
+.PHONY : src/pokemaze/models/camera/FixedCamera.cpp.s
 
 src/pokemaze/models/camera/FreeCamera.o: src/pokemaze/models/camera/FreeCamera.cpp.o
 
@@ -1224,6 +1440,330 @@ src/pokemaze/models/camera/LookAtCamera.s: src/pokemaze/models/camera/LookAtCame
 src/pokemaze/models/camera/LookAtCamera.cpp.s:
 	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.s
 .PHONY : src/pokemaze/models/camera/LookAtCamera.cpp.s
+
+src/pokemaze/models/characters/AshKetchum.o: src/pokemaze/models/characters/AshKetchum.cpp.o
+
+.PHONY : src/pokemaze/models/characters/AshKetchum.o
+
+# target to build an object file
+src/pokemaze/models/characters/AshKetchum.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o
+.PHONY : src/pokemaze/models/characters/AshKetchum.cpp.o
+
+src/pokemaze/models/characters/AshKetchum.i: src/pokemaze/models/characters/AshKetchum.cpp.i
+
+.PHONY : src/pokemaze/models/characters/AshKetchum.i
+
+# target to preprocess a source file
+src/pokemaze/models/characters/AshKetchum.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.i
+.PHONY : src/pokemaze/models/characters/AshKetchum.cpp.i
+
+src/pokemaze/models/characters/AshKetchum.s: src/pokemaze/models/characters/AshKetchum.cpp.s
+
+.PHONY : src/pokemaze/models/characters/AshKetchum.s
+
+# target to generate assembly for a file
+src/pokemaze/models/characters/AshKetchum.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.s
+.PHONY : src/pokemaze/models/characters/AshKetchum.cpp.s
+
+src/pokemaze/models/characters/Charizard.o: src/pokemaze/models/characters/Charizard.cpp.o
+
+.PHONY : src/pokemaze/models/characters/Charizard.o
+
+# target to build an object file
+src/pokemaze/models/characters/Charizard.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o
+.PHONY : src/pokemaze/models/characters/Charizard.cpp.o
+
+src/pokemaze/models/characters/Charizard.i: src/pokemaze/models/characters/Charizard.cpp.i
+
+.PHONY : src/pokemaze/models/characters/Charizard.i
+
+# target to preprocess a source file
+src/pokemaze/models/characters/Charizard.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.i
+.PHONY : src/pokemaze/models/characters/Charizard.cpp.i
+
+src/pokemaze/models/characters/Charizard.s: src/pokemaze/models/characters/Charizard.cpp.s
+
+.PHONY : src/pokemaze/models/characters/Charizard.s
+
+# target to generate assembly for a file
+src/pokemaze/models/characters/Charizard.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.s
+.PHONY : src/pokemaze/models/characters/Charizard.cpp.s
+
+src/pokemaze/models/characters/Pikachu.o: src/pokemaze/models/characters/Pikachu.cpp.o
+
+.PHONY : src/pokemaze/models/characters/Pikachu.o
+
+# target to build an object file
+src/pokemaze/models/characters/Pikachu.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o
+.PHONY : src/pokemaze/models/characters/Pikachu.cpp.o
+
+src/pokemaze/models/characters/Pikachu.i: src/pokemaze/models/characters/Pikachu.cpp.i
+
+.PHONY : src/pokemaze/models/characters/Pikachu.i
+
+# target to preprocess a source file
+src/pokemaze/models/characters/Pikachu.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.i
+.PHONY : src/pokemaze/models/characters/Pikachu.cpp.i
+
+src/pokemaze/models/characters/Pikachu.s: src/pokemaze/models/characters/Pikachu.cpp.s
+
+.PHONY : src/pokemaze/models/characters/Pikachu.s
+
+# target to generate assembly for a file
+src/pokemaze/models/characters/Pikachu.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.s
+.PHONY : src/pokemaze/models/characters/Pikachu.cpp.s
+
+src/pokemaze/models/objects/Pokeball.o: src/pokemaze/models/objects/Pokeball.cpp.o
+
+.PHONY : src/pokemaze/models/objects/Pokeball.o
+
+# target to build an object file
+src/pokemaze/models/objects/Pokeball.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o
+.PHONY : src/pokemaze/models/objects/Pokeball.cpp.o
+
+src/pokemaze/models/objects/Pokeball.i: src/pokemaze/models/objects/Pokeball.cpp.i
+
+.PHONY : src/pokemaze/models/objects/Pokeball.i
+
+# target to preprocess a source file
+src/pokemaze/models/objects/Pokeball.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.i
+.PHONY : src/pokemaze/models/objects/Pokeball.cpp.i
+
+src/pokemaze/models/objects/Pokeball.s: src/pokemaze/models/objects/Pokeball.cpp.s
+
+.PHONY : src/pokemaze/models/objects/Pokeball.s
+
+# target to generate assembly for a file
+src/pokemaze/models/objects/Pokeball.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.s
+.PHONY : src/pokemaze/models/objects/Pokeball.cpp.s
+
+src/pokemaze/models/objects/Tree.o: src/pokemaze/models/objects/Tree.cpp.o
+
+.PHONY : src/pokemaze/models/objects/Tree.o
+
+# target to build an object file
+src/pokemaze/models/objects/Tree.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o
+.PHONY : src/pokemaze/models/objects/Tree.cpp.o
+
+src/pokemaze/models/objects/Tree.i: src/pokemaze/models/objects/Tree.cpp.i
+
+.PHONY : src/pokemaze/models/objects/Tree.i
+
+# target to preprocess a source file
+src/pokemaze/models/objects/Tree.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.i
+.PHONY : src/pokemaze/models/objects/Tree.cpp.i
+
+src/pokemaze/models/objects/Tree.s: src/pokemaze/models/objects/Tree.cpp.s
+
+.PHONY : src/pokemaze/models/objects/Tree.s
+
+# target to generate assembly for a file
+src/pokemaze/models/objects/Tree.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.s
+.PHONY : src/pokemaze/models/objects/Tree.cpp.s
+
+src/pokemaze/models/objects/Wall.o: src/pokemaze/models/objects/Wall.cpp.o
+
+.PHONY : src/pokemaze/models/objects/Wall.o
+
+# target to build an object file
+src/pokemaze/models/objects/Wall.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o
+.PHONY : src/pokemaze/models/objects/Wall.cpp.o
+
+src/pokemaze/models/objects/Wall.i: src/pokemaze/models/objects/Wall.cpp.i
+
+.PHONY : src/pokemaze/models/objects/Wall.i
+
+# target to preprocess a source file
+src/pokemaze/models/objects/Wall.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.i
+.PHONY : src/pokemaze/models/objects/Wall.cpp.i
+
+src/pokemaze/models/objects/Wall.s: src/pokemaze/models/objects/Wall.cpp.s
+
+.PHONY : src/pokemaze/models/objects/Wall.s
+
+# target to generate assembly for a file
+src/pokemaze/models/objects/Wall.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.s
+.PHONY : src/pokemaze/models/objects/Wall.cpp.s
+
+src/pokemaze/models/scene/Floor.o: src/pokemaze/models/scene/Floor.cpp.o
+
+.PHONY : src/pokemaze/models/scene/Floor.o
+
+# target to build an object file
+src/pokemaze/models/scene/Floor.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o
+.PHONY : src/pokemaze/models/scene/Floor.cpp.o
+
+src/pokemaze/models/scene/Floor.i: src/pokemaze/models/scene/Floor.cpp.i
+
+.PHONY : src/pokemaze/models/scene/Floor.i
+
+# target to preprocess a source file
+src/pokemaze/models/scene/Floor.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.i
+.PHONY : src/pokemaze/models/scene/Floor.cpp.i
+
+src/pokemaze/models/scene/Floor.s: src/pokemaze/models/scene/Floor.cpp.s
+
+.PHONY : src/pokemaze/models/scene/Floor.s
+
+# target to generate assembly for a file
+src/pokemaze/models/scene/Floor.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.s
+.PHONY : src/pokemaze/models/scene/Floor.cpp.s
+
+src/pokemaze/models/scene/Garage.o: src/pokemaze/models/scene/Garage.cpp.o
+
+.PHONY : src/pokemaze/models/scene/Garage.o
+
+# target to build an object file
+src/pokemaze/models/scene/Garage.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o
+.PHONY : src/pokemaze/models/scene/Garage.cpp.o
+
+src/pokemaze/models/scene/Garage.i: src/pokemaze/models/scene/Garage.cpp.i
+
+.PHONY : src/pokemaze/models/scene/Garage.i
+
+# target to preprocess a source file
+src/pokemaze/models/scene/Garage.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.i
+.PHONY : src/pokemaze/models/scene/Garage.cpp.i
+
+src/pokemaze/models/scene/Garage.s: src/pokemaze/models/scene/Garage.cpp.s
+
+.PHONY : src/pokemaze/models/scene/Garage.s
+
+# target to generate assembly for a file
+src/pokemaze/models/scene/Garage.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.s
+.PHONY : src/pokemaze/models/scene/Garage.cpp.s
+
+src/pokemaze/models/scene/Sky.o: src/pokemaze/models/scene/Sky.cpp.o
+
+.PHONY : src/pokemaze/models/scene/Sky.o
+
+# target to build an object file
+src/pokemaze/models/scene/Sky.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o
+.PHONY : src/pokemaze/models/scene/Sky.cpp.o
+
+src/pokemaze/models/scene/Sky.i: src/pokemaze/models/scene/Sky.cpp.i
+
+.PHONY : src/pokemaze/models/scene/Sky.i
+
+# target to preprocess a source file
+src/pokemaze/models/scene/Sky.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.i
+.PHONY : src/pokemaze/models/scene/Sky.cpp.i
+
+src/pokemaze/models/scene/Sky.s: src/pokemaze/models/scene/Sky.cpp.s
+
+.PHONY : src/pokemaze/models/scene/Sky.s
+
+# target to generate assembly for a file
+src/pokemaze/models/scene/Sky.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.s
+.PHONY : src/pokemaze/models/scene/Sky.cpp.s
+
+src/pokemaze/util/algebra/Bezier.o: src/pokemaze/util/algebra/Bezier.cpp.o
+
+.PHONY : src/pokemaze/util/algebra/Bezier.o
+
+# target to build an object file
+src/pokemaze/util/algebra/Bezier.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Bezier.cpp.o
+.PHONY : src/pokemaze/util/algebra/Bezier.cpp.o
+
+src/pokemaze/util/algebra/Bezier.i: src/pokemaze/util/algebra/Bezier.cpp.i
+
+.PHONY : src/pokemaze/util/algebra/Bezier.i
+
+# target to preprocess a source file
+src/pokemaze/util/algebra/Bezier.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Bezier.cpp.i
+.PHONY : src/pokemaze/util/algebra/Bezier.cpp.i
+
+src/pokemaze/util/algebra/Bezier.s: src/pokemaze/util/algebra/Bezier.cpp.s
+
+.PHONY : src/pokemaze/util/algebra/Bezier.s
+
+# target to generate assembly for a file
+src/pokemaze/util/algebra/Bezier.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Bezier.cpp.s
+.PHONY : src/pokemaze/util/algebra/Bezier.cpp.s
+
+src/pokemaze/util/algebra/Matrices.o: src/pokemaze/util/algebra/Matrices.cpp.o
+
+.PHONY : src/pokemaze/util/algebra/Matrices.o
+
+# target to build an object file
+src/pokemaze/util/algebra/Matrices.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Matrices.cpp.o
+.PHONY : src/pokemaze/util/algebra/Matrices.cpp.o
+
+src/pokemaze/util/algebra/Matrices.i: src/pokemaze/util/algebra/Matrices.cpp.i
+
+.PHONY : src/pokemaze/util/algebra/Matrices.i
+
+# target to preprocess a source file
+src/pokemaze/util/algebra/Matrices.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Matrices.cpp.i
+.PHONY : src/pokemaze/util/algebra/Matrices.cpp.i
+
+src/pokemaze/util/algebra/Matrices.s: src/pokemaze/util/algebra/Matrices.cpp.s
+
+.PHONY : src/pokemaze/util/algebra/Matrices.s
+
+# target to generate assembly for a file
+src/pokemaze/util/algebra/Matrices.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/algebra/Matrices.cpp.s
+.PHONY : src/pokemaze/util/algebra/Matrices.cpp.s
+
+src/pokemaze/util/io/IOUtils.o: src/pokemaze/util/io/IOUtils.cpp.o
+
+.PHONY : src/pokemaze/util/io/IOUtils.o
+
+# target to build an object file
+src/pokemaze/util/io/IOUtils.cpp.o:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/io/IOUtils.cpp.o
+.PHONY : src/pokemaze/util/io/IOUtils.cpp.o
+
+src/pokemaze/util/io/IOUtils.i: src/pokemaze/util/io/IOUtils.cpp.i
+
+.PHONY : src/pokemaze/util/io/IOUtils.i
+
+# target to preprocess a source file
+src/pokemaze/util/io/IOUtils.cpp.i:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/io/IOUtils.cpp.i
+.PHONY : src/pokemaze/util/io/IOUtils.cpp.i
+
+src/pokemaze/util/io/IOUtils.s: src/pokemaze/util/io/IOUtils.cpp.s
+
+.PHONY : src/pokemaze/util/io/IOUtils.s
+
+# target to generate assembly for a file
+src/pokemaze/util/io/IOUtils.cpp.s:
+	$(MAKE) -f CMakeFiles/pokemaze.dir/build.make CMakeFiles/pokemaze.dir/src/pokemaze/util/io/IOUtils.cpp.s
+.PHONY : src/pokemaze/util/io/IOUtils.cpp.s
 
 # Help Target
 help:
@@ -1298,6 +1838,9 @@ help:
 	@echo "... src/pokemaze/App.o"
 	@echo "... src/pokemaze/App.i"
 	@echo "... src/pokemaze/App.s"
+	@echo "... src/pokemaze/PokeMaze.o"
+	@echo "... src/pokemaze/PokeMaze.i"
+	@echo "... src/pokemaze/PokeMaze.s"
 	@echo "... src/pokemaze/controllers/ErrorController.o"
 	@echo "... src/pokemaze/controllers/ErrorController.i"
 	@echo "... src/pokemaze/controllers/ErrorController.s"
@@ -1307,6 +1850,9 @@ help:
 	@echo "... src/pokemaze/controllers/MouseController.o"
 	@echo "... src/pokemaze/controllers/MouseController.i"
 	@echo "... src/pokemaze/controllers/MouseController.s"
+	@echo "... src/pokemaze/engine/Collisions.o"
+	@echo "... src/pokemaze/engine/Collisions.i"
+	@echo "... src/pokemaze/engine/Collisions.s"
 	@echo "... src/pokemaze/engine/Display.o"
 	@echo "... src/pokemaze/engine/Display.i"
 	@echo "... src/pokemaze/engine/Display.s"
@@ -1316,6 +1862,9 @@ help:
 	@echo "... src/pokemaze/engine/Renderer.o"
 	@echo "... src/pokemaze/engine/Renderer.i"
 	@echo "... src/pokemaze/engine/Renderer.s"
+	@echo "... src/pokemaze/engine/player/WavPlayer.o"
+	@echo "... src/pokemaze/engine/player/WavPlayer.i"
+	@echo "... src/pokemaze/engine/player/WavPlayer.s"
 	@echo "... src/pokemaze/engine/projection/OrthographicProjection.o"
 	@echo "... src/pokemaze/engine/projection/OrthographicProjection.i"
 	@echo "... src/pokemaze/engine/projection/OrthographicProjection.s"
@@ -1328,6 +1877,15 @@ help:
 	@echo "... src/pokemaze/engine/text/TextRender.o"
 	@echo "... src/pokemaze/engine/text/TextRender.i"
 	@echo "... src/pokemaze/engine/text/TextRender.s"
+	@echo "... src/pokemaze/levels/Level.o"
+	@echo "... src/pokemaze/levels/Level.i"
+	@echo "... src/pokemaze/levels/Level.s"
+	@echo "... src/pokemaze/levels/Level1.o"
+	@echo "... src/pokemaze/levels/Level1.i"
+	@echo "... src/pokemaze/levels/Level1.s"
+	@echo "... src/pokemaze/levels/LevelFactory.o"
+	@echo "... src/pokemaze/levels/LevelFactory.i"
+	@echo "... src/pokemaze/levels/LevelFactory.s"
 	@echo "... src/pokemaze/models/BoundingBox.o"
 	@echo "... src/pokemaze/models/BoundingBox.i"
 	@echo "... src/pokemaze/models/BoundingBox.s"
@@ -1337,15 +1895,57 @@ help:
 	@echo "... src/pokemaze/models/SceneObject.o"
 	@echo "... src/pokemaze/models/SceneObject.i"
 	@echo "... src/pokemaze/models/SceneObject.s"
+	@echo "... src/pokemaze/models/Sphere.o"
+	@echo "... src/pokemaze/models/Sphere.i"
+	@echo "... src/pokemaze/models/Sphere.s"
 	@echo "... src/pokemaze/models/camera/Camera.o"
 	@echo "... src/pokemaze/models/camera/Camera.i"
 	@echo "... src/pokemaze/models/camera/Camera.s"
+	@echo "... src/pokemaze/models/camera/FixedCamera.o"
+	@echo "... src/pokemaze/models/camera/FixedCamera.i"
+	@echo "... src/pokemaze/models/camera/FixedCamera.s"
 	@echo "... src/pokemaze/models/camera/FreeCamera.o"
 	@echo "... src/pokemaze/models/camera/FreeCamera.i"
 	@echo "... src/pokemaze/models/camera/FreeCamera.s"
 	@echo "... src/pokemaze/models/camera/LookAtCamera.o"
 	@echo "... src/pokemaze/models/camera/LookAtCamera.i"
 	@echo "... src/pokemaze/models/camera/LookAtCamera.s"
+	@echo "... src/pokemaze/models/characters/AshKetchum.o"
+	@echo "... src/pokemaze/models/characters/AshKetchum.i"
+	@echo "... src/pokemaze/models/characters/AshKetchum.s"
+	@echo "... src/pokemaze/models/characters/Charizard.o"
+	@echo "... src/pokemaze/models/characters/Charizard.i"
+	@echo "... src/pokemaze/models/characters/Charizard.s"
+	@echo "... src/pokemaze/models/characters/Pikachu.o"
+	@echo "... src/pokemaze/models/characters/Pikachu.i"
+	@echo "... src/pokemaze/models/characters/Pikachu.s"
+	@echo "... src/pokemaze/models/objects/Pokeball.o"
+	@echo "... src/pokemaze/models/objects/Pokeball.i"
+	@echo "... src/pokemaze/models/objects/Pokeball.s"
+	@echo "... src/pokemaze/models/objects/Tree.o"
+	@echo "... src/pokemaze/models/objects/Tree.i"
+	@echo "... src/pokemaze/models/objects/Tree.s"
+	@echo "... src/pokemaze/models/objects/Wall.o"
+	@echo "... src/pokemaze/models/objects/Wall.i"
+	@echo "... src/pokemaze/models/objects/Wall.s"
+	@echo "... src/pokemaze/models/scene/Floor.o"
+	@echo "... src/pokemaze/models/scene/Floor.i"
+	@echo "... src/pokemaze/models/scene/Floor.s"
+	@echo "... src/pokemaze/models/scene/Garage.o"
+	@echo "... src/pokemaze/models/scene/Garage.i"
+	@echo "... src/pokemaze/models/scene/Garage.s"
+	@echo "... src/pokemaze/models/scene/Sky.o"
+	@echo "... src/pokemaze/models/scene/Sky.i"
+	@echo "... src/pokemaze/models/scene/Sky.s"
+	@echo "... src/pokemaze/util/algebra/Bezier.o"
+	@echo "... src/pokemaze/util/algebra/Bezier.i"
+	@echo "... src/pokemaze/util/algebra/Bezier.s"
+	@echo "... src/pokemaze/util/algebra/Matrices.o"
+	@echo "... src/pokemaze/util/algebra/Matrices.i"
+	@echo "... src/pokemaze/util/algebra/Matrices.s"
+	@echo "... src/pokemaze/util/io/IOUtils.o"
+	@echo "... src/pokemaze/util/io/IOUtils.i"
+	@echo "... src/pokemaze/util/io/IOUtils.s"
 .PHONY : help
 
 

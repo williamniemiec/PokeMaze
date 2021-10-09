@@ -88,12 +88,17 @@ include_directories(
 )
 
 set(SRC_FILES
+  src/pokemaze/util/algebra/Matrices.cpp
+  src/pokemaze/util/algebra/Bezier.cpp
+  src/pokemaze/util/io/IOUtils.cpp
   src/pokemaze/App.cpp
+  src/pokemaze/PokeMaze.cpp
   src/pokemaze/engine/Renderer.cpp
   src/pokemaze/engine/Engine.cpp
   src/pokemaze/controllers/ErrorController.cpp
   src/pokemaze/controllers/KeyboardController.cpp
   src/pokemaze/controllers/MouseController.cpp
+  src/pokemaze/engine/player/WavPlayer.cpp
   src/pokemaze/engine/projection/OrthographicProjection.cpp
   src/pokemaze/engine/projection/PerspectiveProjection.cpp
   src/pokemaze/engine/projection/Projection.cpp
@@ -101,10 +106,26 @@ set(SRC_FILES
   src/pokemaze/engine/Display.cpp
   src/pokemaze/models/camera/Camera.cpp
   src/pokemaze/models/camera/FreeCamera.cpp
+  src/pokemaze/models/camera/FixedCamera.cpp
   src/pokemaze/models/camera/LookAtCamera.cpp
   src/pokemaze/models/BoundingBox.cpp
   src/pokemaze/models/Point.cpp
+  src/pokemaze/models/Sphere.cpp
   src/pokemaze/models/SceneObject.cpp
+  src/pokemaze/engine/Collisions.cpp
+  src/pokemaze/levels/Level.cpp
+  src/pokemaze/levels/Level1.cpp
+  src/pokemaze/levels/LevelFactory.cpp
+  src/pokemaze/models/characters/AshKetchum.cpp
+  src/pokemaze/models/characters/Charizard.cpp
+  src/pokemaze/models/characters/Pikachu.cpp
+  src/pokemaze/models/objects/Pokeball.cpp
+  src/pokemaze/models/objects/Tree.cpp
+  src/pokemaze/models/objects/Wall.cpp
+  src/pokemaze/models/scene/Floor.cpp
+  src/pokemaze/models/scene/Garage.cpp
+  src/pokemaze/models/scene/Sky.cpp
+  
 )
 
   add_executable(${PROJECT_NAME} ${COMMON_HEADERS} ${SRC_FILES})

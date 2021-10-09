@@ -6,7 +6,7 @@ lib/glfw/examples/CMakeFiles/splitview.dir/__/deps/glad.c.o
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
 lib/glfw/examples/CMakeFiles/splitview.dir/splitview.c.o
- /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/examples/splitview.c
+ /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/glfw/examples/splitview.c
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
  lib/glfw/deps/linmath.h

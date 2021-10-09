@@ -6,7 +6,7 @@ lib/glfw/examples/CMakeFiles/heightmap.dir/__/deps/glad.c.o
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
 lib/glfw/examples/CMakeFiles/heightmap.dir/heightmap.c.o
- /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/examples/heightmap.c
+ /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/glfw/examples/heightmap.c
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
  lib/glfw/include/GLFW/glfw3.h

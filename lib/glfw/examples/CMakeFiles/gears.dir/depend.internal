@@ -6,7 +6,7 @@ lib/glfw/examples/CMakeFiles/gears.dir/__/deps/glad.c.o
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
 lib/glfw/examples/CMakeFiles/gears.dir/gears.c.o
- /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/examples/gears.c
+ /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/glfw/examples/gears.c
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/glad/glad.h
  lib/glfw/include/GLFW/glfw3.h

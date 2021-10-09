@@ -12,7 +12,7 @@ lib/glfw/examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o
  /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/deps/tinycthread.c
  /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/deps/tinycthread.h
 lib/glfw/examples/CMakeFiles/particles.dir/particles.c.o
- /home/williamniemiec/Documents/workspace/ufrgs/nRenderer/lib/glfw/examples/particles.c
+ /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/lib/glfw/examples/particles.c
  lib/glfw/deps/KHR/khrplatform.h
  lib/glfw/deps/getopt.h
  lib/glfw/deps/glad/glad.h
