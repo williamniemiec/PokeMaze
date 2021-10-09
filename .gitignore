@@ -5,6 +5,7 @@
 
 # Visual Code
 .vscode
+_deps/
 
 # Binaries
 bin/*
@@ -12,3 +13,4 @@ obj/*
 dist/*/data
 dist/*/src
 dist/*/*.exe
+Makefile
