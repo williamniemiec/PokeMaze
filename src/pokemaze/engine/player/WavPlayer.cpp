@@ -1,8 +1,5 @@
 #include "pokemaze/engine/player/WavPlayer.hpp"
 
-//#include <windows.h>
-//#include <mmsystem.h>
-
 using namespace pokemaze::engine::player;
 
 //-------------------------------------------------------------------------
@@ -11,6 +8,7 @@ using namespace pokemaze::engine::player;
 WavPlayer::WavPlayer(std::string music_file)
 {
     this->music_file = music_file;
+    this->music.openFromFile(music_file);
 }
 
 
@@ -20,9 +18,11 @@ WavPlayer::WavPlayer(std::string music_file)
 void WavPlayer::play()
 {
     //PlaySound(music_file.c_str(), NULL, SND_LOOP | SND_ASYNC);
+    music.play();
 }
 
 void WavPlayer::stop()
 {
     //PlaySound(NULL, NULL,SND_SYNC);
+    music.stop();
 }

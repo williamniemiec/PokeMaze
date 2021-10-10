@@ -54,7 +54,7 @@ Level1::Level1(Renderer* renderer, FixedCamera* fixed_camera)
 //-------------------------------------------------------------------------
 std::string Level1::get_soundtrack()
 {
-    return IOUtils::get_project_absolute_path() + "media\\pokemon-piano-theme.wav";
+    return IOUtils::get_project_absolute_path() + "media/pokemon-piano-theme.wav";
 }
 
 void Level1::build()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 namespace pokemaze { namespace engine { namespace player {
 
@@ -14,6 +15,7 @@ namespace pokemaze { namespace engine { namespace player {
     //-------------------------------------------------------------------------
     private:
         std::string music_file;
+        sf::Music music;
 
     
     //-------------------------------------------------------------------------

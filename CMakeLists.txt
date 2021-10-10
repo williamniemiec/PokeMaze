@@ -125,7 +125,6 @@ set(SRC_FILES
   src/pokemaze/models/scene/Floor.cpp
   src/pokemaze/models/scene/Garage.cpp
   src/pokemaze/models/scene/Sky.cpp
-  
 )
 
   add_executable(${PROJECT_NAME} ${COMMON_HEADERS} ${SRC_FILES})
@@ -134,7 +133,7 @@ set(SRC_FILES
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} comctl32.lib)
 elseif(UNIX)
-  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS})
+  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} sfml-audio)
 endif()
 
 
