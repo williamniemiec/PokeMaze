@@ -14,8 +14,8 @@
 Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, the player must first find the pikachu to clear the way to the Pokéball. Charizard (dragon) indicates where the Pokéball is.
 
 ## ✔ Requirements
-- Operating system: Windows
-- GLFW
+- [SFML library](https://www.sfml-dev.org/download.php)
+- [CMake](https://cmake.org/)
 
 ## 🎮 Controls
 |        Command        |Description|
