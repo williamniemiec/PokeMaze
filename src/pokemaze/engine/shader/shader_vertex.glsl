@@ -25,6 +25,13 @@ uniform mat4 projection;
 uniform int object_id;
 uniform vec4 bbox_min;
 uniform vec4 bbox_max;
+uniform float furFlowOffset;
+uniform float currentLayer;
+uniform float layers;
+uniform float furLength;
+uniform int has_fur;
+
+vec4 vGravity = vec4(0.0f, -2.0f, 0.0f, 1.0f);
 
 uniform sampler2D texture_0;
 
@@ -37,12 +44,6 @@ out vec3 vertex_color;
 
 void main()
 {
-    gl_Position = projection * view * model * model_coefficients;
-
-    vertex_color.x = -1.0;
-    vertex_color.y = -1.0;
-    vertex_color.z = -1.0;
-
     position_world = model * model_coefficients;
     position_model = model_coefficients;
 
@@ -52,26 +53,27 @@ void main()
     texcoords = texture_coefficients;
     texids = texture_ids;
 
-    vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
-    vec4 camera_position = inverse(view) * origin;
-
-    vec4 p = position_world;
-    vec4 n = normalize(normal);
-    vec4 l = normalize(vec4(-1.0,1.0,-1.0,0.0));
-    vec4 v = normalize(camera_position - p);
-    vec4 h = normalize(v+l);
-    vec4 r = -l + 2*n*dot(n,l);
-    vec3 I = vec3(1.0f,1.0f,1.0f);
-    vec3 Ia = vec3(0.2f,0.2f,0.2f);
-
-    if (object_id == PLANE)
+    if (has_fur == 1)
     {
-        float U = texcoords.x;
-        float V = texcoords.y;
+        // Extrude the surface by the normal by the gap
+        vec4 Pos = position_model + (normal * (currentLayer * (furLength / layers)));
+        // Translate into worldspace
+        Pos.w = 1.0;
+        vec4 P = (view*model * Pos);
 
-        vec3 Kd0 = texture(texture_0, vec2(U,V)).rgb;
-        float lambert = max(0,dot(n,l));
+        // As the layers gets closer to the tip, bend more
+        float layerNormalize = (currentLayer / layers);
+        vGravity = (vGravity * model);
+        float k = pow(layerNormalize, 3) * 0.08;
+        P = P + vGravity * k;
+        //if(currentLayer != 0){
+            //P = P + vec4(1.0f, 1.0f, 1.0f, 1.0f) * (furFlowOffset);
+        //}
 
-        vertex_color = Kd0 * (lambert + 0.6);
+        gl_Position = projection * P;
+    }
+    else
+    {
+        gl_Position = projection * view * model * model_coefficients;
     }
 }

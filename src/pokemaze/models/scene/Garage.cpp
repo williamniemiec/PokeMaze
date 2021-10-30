@@ -12,7 +12,7 @@ using namespace pokemaze::util::io;
 Garage::Garage(std::string name, glm::vec4 position, std::string filename, 
                GLenum rendering_mode)
         : SceneObject(name, position, filename, "", true, rendering_mode, 
-                      get_textures(), false)
+                      get_textures(), false, false)
 {
     door_opened = false;
     door_y = 3.5f;

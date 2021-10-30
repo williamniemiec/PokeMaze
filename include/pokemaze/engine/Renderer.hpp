@@ -20,15 +20,31 @@ namespace pokemaze { namespace engine {
     //		Attributes
     //-------------------------------------------------------------------------
     private:
-        GLuint program_id;
+        GLuint flat_program_id;
         GLint model_uniform;
         GLint view_uniform;
         GLint projection_uniform;
         GLint object_id_uniform;
         GLint bbox_min_uniform;
         GLint bbox_max_uniform;
+        GLuint texture_unit_0_uniform;
+        GLuint texture_unit_1_uniform;
         GLuint total_loaded_textures;
+        GLuint fur_texture;
+        GLuint fur_flow_offset_uniform;
+        GLuint current_layer_uniform;
+        GLuint layers_uniform;
+        GLuint fur_length_uniform;
+        GLuint has_fur_uniform;
+        GLuint uvscale_uniform;
         std::list<std::string> loaded_textures;
+        float fur_length;
+        int layers;
+        int fur_density;
+        int fur_pattern_num;
+        float fur_flow_offset;
+        bool increment;
+        GLuint textures[2];
 
 
     //-------------------------------------------------------------------------
@@ -90,6 +106,8 @@ namespace pokemaze { namespace engine {
     protected:
         GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
     private:
+        void init_fur();
+        void draw_fur(pokemaze::models::SceneObject* object);
         void render_bbox(pokemaze::models::BoundingBox* bbox);
         void load_shaders();
         GLuint load_vertex_shader(std::string filename);

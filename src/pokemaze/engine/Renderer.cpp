@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <obj_loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
+#include "pokemaze/engine/BMPProcessor.hpp"
+#include "pokemaze/engine/PNGProcessor.hpp"
 #include <wniemiec/io/cpp/Consolex.hpp>
 
 using namespace pokemaze::engine;
@@ -19,26 +21,52 @@ using namespace wniemiec::io::cpp;
 //-------------------------------------------------------------------------
 Renderer::Renderer()
 {
-    program_id = 0;
+    flat_program_id = 0;
     total_loaded_textures = 0;
     load_shaders();
+    init_fur();
 }
 
 
 //-------------------------------------------------------------------------
 //		Methods
 //-------------------------------------------------------------------------
+void Renderer::init_fur()
+{
+    fur_length = 0.1;
+    layers = 50;
+    fur_density = 50000;
+    fur_flow_offset = 0;
+    increment = false;
+    //std::string tiger_bmp = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/tiger.bmp";
+    std::string fur_png = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/furPattern.png";
+
+    //PNGProcessor pngprocess;
+    //BMPProcessor bmpprocess;
+    //textures[0] = bmpprocess.loadBitmap(tiger_bmp.c_str());
+	//textures[1] = pngprocess.createFurTextures(383832, 128, 20, fur_density, fur_png.c_str());
+    load_texture(fur_png, true);
+
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void Renderer::pre_render()
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);               // RGBA
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Resets Z-buffer
-    glUseProgram(program_id);
+    glUseProgram(flat_program_id);
 }
 
 void Renderer::render_object(SceneObject* object, GLuint model_id)
 {
     render_model(object->movement()->get_model_matrix(), model_id);
-    draw_virtual_object(object);
+    
+    if (object->has_fur())
+        draw_fur(object);
+    else
+        draw_virtual_object(object);
 }
 
 void Renderer::render_model(glm::mat4 model, GLuint object_id)
@@ -49,6 +77,7 @@ void Renderer::render_model(glm::mat4 model, GLuint object_id)
 
 void Renderer::draw_virtual_object(SceneObject* object)
 {
+    glUniform1i(has_fur_uniform, 0);
     glBindVertexArray(object->get_vertex_array_object());
 
     render_bbox(object->get_bounding_box());
@@ -82,6 +111,64 @@ void Renderer::render_bbox(BoundingBox* bbox)
     );
 }
 
+void Renderer::draw_fur(SceneObject* object)
+{
+    glUniform1i(has_fur_uniform, 1);
+    //glUseProgram(fur_program_id);
+	//rt3d::setUniformMatrix4fv(fur_program_id, "projection", glm::value_ptr(projection));
+	//rt3d::setUniformMatrix4fv(fur_program_id, "modelview", glm::value_ptr(mvStack.top()));
+	
+    // Pass through the total amount of layers
+	//GLuint uniformIndex = glGetUniformLocation(fur_program_id, "layers");
+	glUniform1f(layers_uniform, (float)layers);
+	// Pass through fur length 
+	//uniformIndex = glGetUniformLocation(fur_program_id, "furLength");
+	glUniform1f(fur_length_uniform, fur_length);
+	float num = 1;
+
+	// Assign textures
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, textures[fur_pattern_num]);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, textures[1]);
+	
+	for (int i = 0; i < layers; i++) {
+		// Pass through currentLayer
+		//uniformIndex = glGetUniformLocation(fur_program_id, "currentLayer");
+		glUniform1f(current_layer_uniform, (float)i);
+
+		// Determine the alpha and pass it through via UVScale
+		//uniformIndex = glGetUniformLocation(fur_program_id, "UVScale");
+		num = num - (1 / (float)layers);
+		if (num > 1) num = 1;
+		if (num < 0) num = 0;
+		glUniform1f(uvscale_uniform, num);
+
+		// Passthrough fur movement.
+		//uniformIndex = glGetUniformLocation(fur_program_id, "furFlowOffset");
+		if (fur_flow_offset > 0.01) {
+			increment = false;
+		}
+		else if (fur_flow_offset < -0.01) {
+			increment = true;
+		}
+		if(increment) fur_flow_offset += 0.00001;
+		else fur_flow_offset -= 0.00001;
+		glUniform1f(fur_flow_offset_uniform, fur_flow_offset * ((float)i / (float)layers));
+
+        glBindVertexArray(object->get_vertex_array_object());
+        render_bbox(object->get_bounding_box());
+		glDrawElements(
+            object->get_rendering_mode(),
+            object->get_total_indexes(),
+            GL_UNSIGNED_INT,
+            (void*) (object->get_first_index() * sizeof(GLuint))
+        );
+		glBindVertexArray(0);
+
+	}
+}
+
 void Renderer::render_view(glm::mat4 view)
 {
     glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
@@ -94,21 +181,21 @@ void Renderer::render_projection(glm::mat4 projection)
 
 GLuint Renderer::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id)
 {
-    GLuint program_id = glCreateProgram();
+    GLuint flat_program_id = glCreateProgram();
 
-    glAttachShader(program_id, vertex_shader_id);
-    glAttachShader(program_id, fragment_shader_id);
-    glLinkProgram(program_id);
+    glAttachShader(flat_program_id, vertex_shader_id);
+    glAttachShader(flat_program_id, fragment_shader_id);
+    glLinkProgram(flat_program_id);
     GLint linked_ok = GL_FALSE;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked_ok);
+    glGetProgramiv(flat_program_id, GL_LINK_STATUS, &linked_ok);
 
     if (linked_ok == GL_FALSE)
     {
         GLint log_length = 0;
-        glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &log_length);
+        glGetProgramiv(flat_program_id, GL_INFO_LOG_LENGTH, &log_length);
         GLchar* log = new GLchar[log_length];
 
-        glGetProgramInfoLog(program_id, log_length, &log_length, log);
+        glGetProgramInfoLog(flat_program_id, log_length, &log_length, log);
 
         Consolex::write_error("OpenGL linking of program failed.");
         Consolex::write_error("== Start of link log");
@@ -121,25 +208,36 @@ GLuint Renderer::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_sha
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
 
-    return program_id;
+    return flat_program_id;
 }
 
 void Renderer::load_shaders()
 {
-    GLuint vertex_shader_id = load_vertex_shader(IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_vertex.glsl");
-    GLuint fragment_shader_id = load_fragment_shader(IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_fragment.glsl");
+    GLuint flat_vertex_shader_id = load_vertex_shader(IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_vertex.glsl");
+    GLuint flat_fragment_shader_id = load_fragment_shader(IOUtils::get_project_absolute_path() + "src/pokemaze/engine/shader/shader_fragment.glsl");
 
-    if (program_id != 0)
-        glDeleteProgram(program_id);
+    if (flat_program_id != 0)
+        glDeleteProgram(flat_program_id);
+    
+    flat_program_id = create_gpu_program(flat_vertex_shader_id, flat_fragment_shader_id);
 
-    program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+    model_uniform = glGetUniformLocation(flat_program_id, "model");
+    view_uniform = glGetUniformLocation(flat_program_id, "view");
+    projection_uniform = glGetUniformLocation(flat_program_id, "projection");
+    object_id_uniform = glGetUniformLocation(flat_program_id, "object_id");
+    bbox_min_uniform = glGetUniformLocation(flat_program_id, "bbox_min");
+    bbox_max_uniform = glGetUniformLocation(flat_program_id, "bbox_max");
+    texture_unit_0_uniform = glGetUniformLocation(flat_program_id, "textureUnit0");
+    texture_unit_1_uniform = glGetUniformLocation(flat_program_id, "textureUnit1");
+    fur_flow_offset_uniform = glGetUniformLocation(flat_program_id, "furFlowOffset");
+    current_layer_uniform = glGetUniformLocation(flat_program_id, "currentLayer");
+    layers_uniform = glGetUniformLocation(flat_program_id, "layers");
+    fur_length_uniform = glGetUniformLocation(flat_program_id, "furLength");
+    has_fur_uniform = glGetUniformLocation(flat_program_id, "has_fur");
+    uvscale_uniform = glGetUniformLocation(flat_program_id, "UVScale");
 
-    model_uniform = glGetUniformLocation(program_id, "model");
-    view_uniform = glGetUniformLocation(program_id, "view");
-    projection_uniform = glGetUniformLocation(program_id, "projection");
-    object_id_uniform = glGetUniformLocation(program_id, "object_id");
-    bbox_min_uniform = glGetUniformLocation(program_id, "bbox_min");
-    bbox_max_uniform = glGetUniformLocation(program_id, "bbox_max");
+    glUniform1i(texture_unit_0_uniform, 0);
+    glUniform1i(texture_unit_1_uniform, 1);
 }
 
 GLuint Renderer::load_vertex_shader(std::string filename)
@@ -318,9 +416,9 @@ void Renderer::load_texture(std::string filename, bool is_3D)
         std::exit(EXIT_FAILURE);
     }
 
-    glUseProgram(program_id);
+    glUseProgram(flat_program_id);
     std::string texture_label = "texture_" + std::to_string(total_loaded_textures);
-    glUniform1i(glGetUniformLocation(program_id, texture_label.c_str()), total_loaded_textures);
+    glUniform1i(glGetUniformLocation(flat_program_id, texture_label.c_str()), total_loaded_textures);
     glUseProgram(0);
 
     GLuint texture_id;

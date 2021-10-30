@@ -14,8 +14,10 @@
 Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, the player must first find the pikachu to clear the way to the Pokéball. Charizard (dragon) indicates where the Pokéball is.
 
 ## ✔ Requirements
-- Operating system: Windows
+- Operating system: Ubuntu
 - GLFW
+- sudo apt-get install libsdl-image1.2-dev
+- sudo apt-get install libsdl-dev
 
 ## 🎮 Controls
 |        Command        |Description|

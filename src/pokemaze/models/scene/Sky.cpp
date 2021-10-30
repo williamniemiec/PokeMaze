@@ -12,7 +12,7 @@ using namespace pokemaze::util::io;
 Sky::Sky(std::string name, glm::vec4 position, std::string filename,
          GLenum rendering_mode)
         : SceneObject(name, position, filename, "", true, rendering_mode,
-                      get_textures(), true)
+                      get_textures(), true, false)
 {
 }
 

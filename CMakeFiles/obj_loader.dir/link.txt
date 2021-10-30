@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib/libobj_loader.a  CMakeFiles/obj_loader.dir/lib/obj_loader/glad.c.o CMakeFiles/obj_loader.dir/lib/obj_loader/stb_image.cpp.o CMakeFiles/obj_loader.dir/lib/obj_loader/tiny_obj_loader.cpp.o
+/usr/bin/ranlib lib/libobj_loader.a

@@ -76,6 +76,9 @@ add_library(obj_loader
   lib/obj_loader/tiny_obj_loader.cpp
 )
 
+set(SDL_DIR ${PROJECT_SOURCE_DIR}/lib/SDL)
+find_package(SDL REQUIRED)
+
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/bin)
 
 include_directories(
@@ -85,6 +88,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/lib/consolex/include
 	${PROJECT_SOURCE_DIR}/lib/KHR
   ${PROJECT_SOURCE_DIR}/lib/scheduler/include
+  ${SDL_INCLUDE_DIR}
 )
 
 set(SRC_FILES
@@ -104,6 +108,8 @@ set(SRC_FILES
   src/pokemaze/engine/projection/Projection.cpp
   src/pokemaze/engine/text/TextRender.cpp
   src/pokemaze/engine/Display.cpp
+  src/pokemaze/engine/PNGProcessor.cpp
+  src/pokemaze/engine/BMPProcessor.cpp
   src/pokemaze/models/camera/Camera.cpp
   src/pokemaze/models/camera/FreeCamera.cpp
   src/pokemaze/models/camera/FixedCamera.cpp
@@ -133,7 +139,7 @@ set(SRC_FILES
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} comctl32.lib)
 elseif(UNIX)
-  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} sfml-audio)
+  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} sfml-audio png ${SDL_LIBRARY})
 endif()
 
 

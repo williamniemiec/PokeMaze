@@ -12,7 +12,7 @@ using namespace pokemaze::util::algebra;
 SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::string filename, std::string mtl_path,
                          bool triangulate, GLenum rendering_mode,
-                         std::vector<std::string> textures, bool is_2D)
+                         std::vector<std::string> textures, bool is_2D, bool fur)
 {
     this->name = name;
     this->position = position;
@@ -20,6 +20,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->vertex_array_object_id = -1;
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
+    this->fur = fur;
     obj_movement = new Movement(this);
 
     load(filename, mtl_path, triangulate);
@@ -35,7 +36,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
                          std::vector<float> normal_coefficients,
                          std::vector<float> texture_coefficients,
                          std::vector<int> texture_id,
-                         std::vector<std::string> textures, bool is_2D)
+                         std::vector<std::string> textures, bool is_2D, bool fur)
 {
     this->name = name;
     this->position = position;
@@ -51,6 +52,7 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->texture_id = texture_id;
     this->textures = textures;
     this->has_only_2_dimensions = is_2D;
+    this->fur = fur;
     obj_movement = new Movement(this);
 }
 
@@ -257,13 +259,18 @@ SceneObject* SceneObject::create_copy()
 {
     return new SceneObject(name, position, rendering_mode, first_index, total_indexes, bounding_box,
                            indexes, model_coefficients, normal_coefficients,
-                           texture_coefficients, texture_id, textures, has_only_2_dimensions);
+                           texture_coefficients, texture_id, textures, has_only_2_dimensions, fur);
 
 }
 
 bool SceneObject::is_3D()
 {
     return !has_only_2_dimensions;
+}
+
+bool SceneObject::has_fur()
+{
+    return fur;
 }
 
 

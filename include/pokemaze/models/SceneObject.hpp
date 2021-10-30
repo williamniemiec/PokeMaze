@@ -91,6 +91,7 @@ namespace pokemaze { namespace models {
         size_t first_index;
         size_t total_indexes;
         bool has_only_2_dimensions;
+        bool fur;
 
 
     //-------------------------------------------------------------------------
@@ -99,7 +100,7 @@ namespace pokemaze { namespace models {
     protected:
         SceneObject(std::string name, glm::vec4 position, std::string filename,
                     std::string mtl_path, bool triangulate, GLenum rendering_mode,
-                    std::vector<std::string> textures, bool is_2D);
+                    std::vector<std::string> textures, bool is_2D, bool fur);
     private:
         SceneObject(std::string name, glm::vec4 position,
                     GLenum rendering_mode,
@@ -111,7 +112,7 @@ namespace pokemaze { namespace models {
                     std::vector<float> texture_coefficients,
                     std::vector<int> texture_id,
                     std::vector<std::string> textures,
-                    bool is_2D);
+                    bool is_2D, bool fur);
 
 
     //-------------------------------------------------------------------------
@@ -152,6 +153,7 @@ namespace pokemaze { namespace models {
          * @return      True if it is a 3D object; false otherwise
          */
         bool is_3D();
+        bool has_fur();
     private:
         void load(std::string filename, std::string mtl_path, bool triangulate);
 

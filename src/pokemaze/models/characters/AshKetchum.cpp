@@ -13,7 +13,7 @@ AshKetchum::AshKetchum(std::string name, glm::vec4 position,
                        std::string filename, std::string mtl_path,
                        GLenum rendering_mode)
         : SceneObject(name, position, filename, mtl_path, true,
-                      rendering_mode, get_textures(), false)
+                      rendering_mode, get_textures(), false, false)
 {
 }
 
