@@ -312,7 +312,7 @@ void Level1::draw_pikachu()
     virtual_scene["pikachu"]->movement()
             ->begin()
             ->translate(8.75f, -1.4f, -1.75f)
-            ->scale(0.1, 0.1, 0.1)
+            ->scale(0.2, 0.2, 0.2)
             ->rotate_y(PI)
             ->end();
     renderer->render_object(virtual_scene["pikachu"], PIKACHU);

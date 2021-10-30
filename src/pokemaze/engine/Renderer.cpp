@@ -34,7 +34,7 @@ Renderer::Renderer()
 void Renderer::init_fur()
 {
     fur_length = 0.1;
-    layers = 50;
+    layers = 70;
     fur_density = 50000;
     fur_flow_offset = 0;
     increment = false;
