@@ -137,7 +137,7 @@ set(SRC_FILES
   set_property(TARGET ${PROJECT_NAME} PROPERTY DEBUG_POSTFIX _d)
 
 if(WIN32)
-  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} comctl32.lib)
+  target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} comctl32.lib sfml-audio)
 elseif(UNIX)
   target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS} sfml-audio png ${SDL_LIBRARY})
 endif()
