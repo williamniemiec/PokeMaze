@@ -33,11 +33,11 @@ Renderer::Renderer()
 //-------------------------------------------------------------------------
 void Renderer::init_fur()
 {
-    fur_length = 0.1;
-    layers = 70;
-    fur_density = 50000;
-    fur_flow_offset = 0;
-    increment = false;
+    //fur_length = 0.1;
+    //layers = 70;
+    //fur_density = 50000;
+    //fur_flow_offset = 0;
+    //increment = false;
     //std::string tiger_bmp = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/tiger.bmp";
     std::string fur_png = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/furPattern.png";
 
@@ -120,10 +120,10 @@ void Renderer::draw_fur(SceneObject* object)
 	
     // Pass through the total amount of layers
 	//GLuint uniformIndex = glGetUniformLocation(fur_program_id, "layers");
-	glUniform1f(layers_uniform, (float)layers);
+	glUniform1f(layers_uniform, (float) object->get_layers());
 	// Pass through fur length 
 	//uniformIndex = glGetUniformLocation(fur_program_id, "furLength");
-	glUniform1f(fur_length_uniform, fur_length);
+	glUniform1f(fur_length_uniform, object->get_fur_length());
 	float num = 1;
 
 	// Assign textures
@@ -132,29 +132,32 @@ void Renderer::draw_fur(SceneObject* object)
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, textures[1]);
 	
-	for (int i = 0; i < layers; i++) {
+	for (int i = 0; i < object->get_layers(); i++) {
 		// Pass through currentLayer
 		//uniformIndex = glGetUniformLocation(fur_program_id, "currentLayer");
 		glUniform1f(current_layer_uniform, (float)i);
 
 		// Determine the alpha and pass it through via UVScale
 		//uniformIndex = glGetUniformLocation(fur_program_id, "UVScale");
-		num = num - (1 / (float)layers);
+		num = num - (1 / (float) object->get_layers());
 		if (num > 1) num = 1;
 		if (num < 0) num = 0;
 		glUniform1f(uvscale_uniform, num);
 
 		// Passthrough fur movement.
 		//uniformIndex = glGetUniformLocation(fur_program_id, "furFlowOffset");
-		if (fur_flow_offset > 0.01) {
-			increment = false;
+		if (object->get_fur_flow_offset() > 0.01) {
+			object->set_increment(false);
 		}
-		else if (fur_flow_offset < -0.01) {
-			increment = true;
+		else if (object->get_fur_flow_offset() < -0.01) {
+			object->set_increment(true);
 		}
-		if(increment) fur_flow_offset += 0.00001;
-		else fur_flow_offset -= 0.00001;
-		glUniform1f(fur_flow_offset_uniform, fur_flow_offset * ((float)i / (float)layers));
+		if(object->get_increment()) 
+            object->set_fur_flow_offset(object->get_fur_flow_offset() + 0.00001);
+		else 
+            object->set_fur_flow_offset(object->get_fur_flow_offset() - 0.00001);
+		
+        glUniform1f(fur_flow_offset_uniform, object->get_fur_flow_offset() * ((float)i / (float) object->get_layers()));
 
         glBindVertexArray(object->get_vertex_array_object());
         render_bbox(object->get_bounding_box());

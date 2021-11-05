@@ -38,13 +38,6 @@ namespace pokemaze { namespace engine {
         GLuint has_fur_uniform;
         GLuint uvscale_uniform;
         std::list<std::string> loaded_textures;
-        float fur_length;
-        int layers;
-        int fur_density;
-        int fur_pattern_num;
-        float fur_flow_offset;
-        bool increment;
-        GLuint textures[2];
 
 
     //-------------------------------------------------------------------------

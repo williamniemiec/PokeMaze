@@ -14,6 +14,7 @@ Floor::Floor(std::string name, glm::vec4 position, std::string filename,
         : SceneObject(name, position, filename, "", true, rendering_mode,
                       get_textures(), true, true)
 {
+    set_fur_length(0.5);
 }
 
 

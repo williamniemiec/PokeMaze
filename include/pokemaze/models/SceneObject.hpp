@@ -92,6 +92,11 @@ namespace pokemaze { namespace models {
         size_t total_indexes;
         bool has_only_2_dimensions;
         bool fur;
+        float fur_length = 0.1;
+        int layers = 70;
+        int fur_density = 50000;
+        float fur_flow_offset = 0;
+        bool increment = false;
 
 
     //-------------------------------------------------------------------------
@@ -196,5 +201,15 @@ namespace pokemaze { namespace models {
         std::vector<float> get_texture_coefficients();
         std::vector<int> get_textures_id();
         std::vector<std::string> get_textures();
+        float get_fur_length();
+        void set_fur_length(float length);
+        int get_layers();
+        void set_layers(int layers);
+        float get_fur_density();
+        void set_fur_density(int fur_density);
+        float get_fur_flow_offset();
+        void set_fur_flow_offset(float fur_flow_offset);
+        bool get_increment();
+        void set_increment(bool increment);
     };
 }}

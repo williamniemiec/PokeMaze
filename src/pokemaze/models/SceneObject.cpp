@@ -22,6 +22,11 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->has_only_2_dimensions = is_2D;
     this->fur = fur;
     obj_movement = new Movement(this);
+    fur_length = 0.1;
+    layers = 70;
+    fur_density = 50000;
+    fur_flow_offset = 0;
+    increment = false;
 
     load(filename, mtl_path, triangulate);
     build();
@@ -54,6 +59,11 @@ SceneObject::SceneObject(std::string name, glm::vec4 position,
     this->has_only_2_dimensions = is_2D;
     this->fur = fur;
     obj_movement = new Movement(this);
+    fur_length = 0.1;
+    layers = 70;
+    fur_density = 50000;
+    fur_flow_offset = 0;
+    increment = false;
 }
 
 
@@ -365,6 +375,56 @@ float SceneObject::get_position_z()
 BoundingBox* SceneObject::get_bounding_box()
 {
     return bounding_box;
+}
+
+float SceneObject::get_fur_length()
+{
+    return fur_length;
+}
+
+void SceneObject::set_fur_length(float length)
+{
+    fur_length = length;
+}
+
+int SceneObject::get_layers()
+{
+    return layers;
+}
+
+void SceneObject::set_layers(int layers)
+{
+    this->layers = layers;
+}
+
+float SceneObject::get_fur_density()
+{
+    return fur_density;
+}
+
+void SceneObject::set_fur_density(int fur_density)
+{
+    this->fur_density = fur_density;
+}
+
+float SceneObject::get_fur_flow_offset()
+{
+    return fur_flow_offset;
+}
+
+void SceneObject::set_fur_flow_offset(float fur_flow_offset)
+{
+    this->fur_flow_offset = fur_flow_offset;
+}
+
+bool SceneObject::get_increment()
+{
+    return increment;
+}
+
+void SceneObject::set_increment(bool increment)
+{
+    this->increment = increment;
 }
 
 
