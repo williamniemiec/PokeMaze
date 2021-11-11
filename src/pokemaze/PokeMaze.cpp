@@ -19,6 +19,11 @@
 #define CAMERA_DISTANCE 3.0f
 #define NEAR_PLANE -0.1f
 #define FAR_PLANE -150.0f
+#if defined(WIN32) && !defined(UNIX)
+#    define CLEAR_SHELL "cls"
+#else
+#    define CLEAR_SHELL "clear"
+#endif
 
 using namespace pokemaze;
 using namespace pokemaze::engine;
@@ -339,12 +344,10 @@ void PokeMaze::end_game()
 
 void PokeMaze::display_endgame_message()
 {
-    system("cls");
+    system(CLEAR_SHELL);
 
     if (pokeball_catched)
         std::cout << "CONGRATULATIONS! YOU WIN :D !!!" << std::endl;
     else
         std::cout << "SEE YOU LATER ;D !!!" << std::endl;
-
-    system("PAUSE");
 }

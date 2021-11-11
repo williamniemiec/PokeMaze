@@ -17,12 +17,10 @@ WavPlayer::WavPlayer(std::string music_file)
 //-------------------------------------------------------------------------
 void WavPlayer::play()
 {
-    //PlaySound(music_file.c_str(), NULL, SND_LOOP | SND_ASYNC);
     music.play();
 }
 
 void WavPlayer::stop()
 {
-    //PlaySound(NULL, NULL,SND_SYNC);
     music.stop();
 }

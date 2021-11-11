@@ -7,14 +7,16 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <obj_loader/stb_image.h>
 #include "pokemaze/util/io/IOUtils.hpp"
-#include "pokemaze/engine/BMPProcessor.hpp"
 #include "pokemaze/engine/PNGProcessor.hpp"
 #include <wniemiec/io/cpp/Consolex.hpp>
+
+#define FUR_DENSITY 10000
 
 using namespace pokemaze::engine;
 using namespace pokemaze::models;
 using namespace pokemaze::util::io;
 using namespace wniemiec::io::cpp;
+
 
 //-------------------------------------------------------------------------
 //		Constructor
@@ -33,23 +35,10 @@ Renderer::Renderer()
 //-------------------------------------------------------------------------
 void Renderer::init_fur()
 {
-    //fur_length = 0.1;
-    //layers = 70;
-    //fur_density = 50000;
-    //fur_flow_offset = 0;
-    //increment = false;
-    //std::string tiger_bmp = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/tiger.bmp";
     std::string fur_png = IOUtils::get_project_absolute_path() + "src/pokemaze/assets/furPattern.png";
-
-    //PNGProcessor pngprocess;
-    //BMPProcessor bmpprocess;
-    //textures[0] = bmpprocess.loadBitmap(tiger_bmp.c_str());
-	//textures[1] = pngprocess.createFurTextures(383832, 128, 20, fur_density, fur_png.c_str());
+    PNGProcessor pngprocess;
+    pngprocess.createFurTextures(383832, 128, 20, FUR_DENSITY, fur_png.c_str());
     load_texture(fur_png, true);
-
-	//glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::pre_render()
@@ -114,38 +103,17 @@ void Renderer::render_bbox(BoundingBox* bbox)
 void Renderer::draw_fur(SceneObject* object)
 {
     glUniform1i(has_fur_uniform, 1);
-    //glUseProgram(fur_program_id);
-	//rt3d::setUniformMatrix4fv(fur_program_id, "projection", glm::value_ptr(projection));
-	//rt3d::setUniformMatrix4fv(fur_program_id, "modelview", glm::value_ptr(mvStack.top()));
-	
-    // Pass through the total amount of layers
-	//GLuint uniformIndex = glGetUniformLocation(fur_program_id, "layers");
 	glUniform1f(layers_uniform, (float) object->get_layers());
-	// Pass through fur length 
-	//uniformIndex = glGetUniformLocation(fur_program_id, "furLength");
 	glUniform1f(fur_length_uniform, object->get_fur_length());
 	float num = 1;
 
-	// Assign textures
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_2D, textures[fur_pattern_num]);
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, textures[1]);
-	
 	for (int i = 0; i < object->get_layers(); i++) {
-		// Pass through currentLayer
-		//uniformIndex = glGetUniformLocation(fur_program_id, "currentLayer");
 		glUniform1f(current_layer_uniform, (float)i);
-
-		// Determine the alpha and pass it through via UVScale
-		//uniformIndex = glGetUniformLocation(fur_program_id, "UVScale");
 		num = num - (1 / (float) object->get_layers());
 		if (num > 1) num = 1;
 		if (num < 0) num = 0;
 		glUniform1f(uvscale_uniform, num);
 
-		// Passthrough fur movement.
-		//uniformIndex = glGetUniformLocation(fur_program_id, "furFlowOffset");
 		if (object->get_fur_flow_offset() > 0.01) {
 			object->set_increment(false);
 		}
@@ -160,15 +128,16 @@ void Renderer::draw_fur(SceneObject* object)
         glUniform1f(fur_flow_offset_uniform, object->get_fur_flow_offset() * ((float)i / (float) object->get_layers()));
 
         glBindVertexArray(object->get_vertex_array_object());
+        
         render_bbox(object->get_bounding_box());
-		glDrawElements(
+		
+        glDrawElements(
             object->get_rendering_mode(),
             object->get_total_indexes(),
             GL_UNSIGNED_INT,
             (void*) (object->get_first_index() * sizeof(GLuint))
         );
 		glBindVertexArray(0);
-
 	}
 }
 

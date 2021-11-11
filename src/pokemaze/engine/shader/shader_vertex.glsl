@@ -1,19 +1,5 @@
 #version 330 core
 
-#define SPHERE 0
-#define POKEBALL  1
-#define PLANE  2
-#define SKY    3
-#define PLAYER    4
-#define CHARIZARD 5
-#define PIKACHU 6
-#define WALL 7
-#define CUBE 8
-#define ZCUBE 9
-#define XCUBE 10
-#define XDOOR 11
-#define TREE 12
-
 layout (location = 0) in vec4 model_coefficients;
 layout (location = 1) in vec4 normal_coefficients;
 layout (location = 2) in vec2 texture_coefficients;
@@ -66,9 +52,9 @@ void main()
         vGravity = (vGravity * model);
         float k = pow(layerNormalize, 3) * 0.08;
         P = P + vGravity * k;
-        //if(currentLayer != 0){
-            //P = P + vec4(1.0f, 1.0f, 1.0f, 1.0f) * (furFlowOffset);
-        //}
+        if(currentLayer != 0){
+            P = P + vec4(1.0f, 1.0f, 1.0f, 1.0f) * (furFlowOffset);
+        }
 
         gl_Position = projection * P;
     }

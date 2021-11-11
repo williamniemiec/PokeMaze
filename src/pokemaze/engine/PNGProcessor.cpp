@@ -1,7 +1,7 @@
 #include "pokemaze/engine/PNGProcessor.hpp"
 
 // Randomizer provided from http://www.xbdev.net/directx3dx/specialX/Fur/index.php
-const float INV_RAND_MAX = 1.0 / (RAND_MAX + 1);
+const float INV_RAND_MAX = 1.0 / (RAND_MAX + 0);
 inline float rnd(float max = 1.0) { return max * INV_RAND_MAX * rand(); }
 inline float rnd(float min, float max) { return min + (max - min) * INV_RAND_MAX * rand(); }
 
@@ -159,7 +159,7 @@ GLuint PNGProcessor::createFurTextures(int seed, int size, int num, int density,
 }
 
 // Fur Strand Randomizer with PNG export
-GLuint PNGProcessor::createFurTextures(int seed, int size, int num, int density, const char* file_name)
+void PNGProcessor::createFurTextures(int seed, int size, int num, int density, const char* file_name)
 {
 	// Read PNG
 	readPNG(file_name);
@@ -185,7 +185,7 @@ GLuint PNGProcessor::createFurTextures(int seed, int size, int num, int density,
 		}
 	}
 	
-	/*
+	
 	
 	// Put dots randomly across the transparent images
 	for (int layer = 0; layer < m_NumLayers; layer++) {
@@ -197,8 +197,11 @@ GLuint PNGProcessor::createFurTextures(int seed, int size, int num, int density,
 			int xrand = rnd(0, m_Size) * 4;
 			int yrand = rnd(0, m_Size) * 4;
 
-			if (xrand > width)
-				continue;
+			//printf("%d\n", xrand);
+			//printf("%d\n", yrand);
+			//printf("%d\n", size);
+			//if (xrand > width)
+			//	continue;
 
 			
 			png_byte* png_row = row_pointers[yrand];
@@ -210,19 +213,19 @@ GLuint PNGProcessor::createFurTextures(int seed, int size, int num, int density,
 			data[((xrand *width + yrand) * 4)] = (GLubyte)(1.0f * 255.0f);
 		}
 	}
-	*/
+	
 	
 	// Write to PNG
 	writePNG(file_name);
 
 	// Bind texture and return it
-	GLuint texID;
+	/*GLuint texID;
 	glGenTextures(1, &texID);
 	
 	glBindTexture(GL_TEXTURE_2D, texID);
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-	return texID;
+	return texID;*/
 }
 

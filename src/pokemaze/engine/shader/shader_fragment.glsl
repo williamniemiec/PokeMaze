@@ -120,9 +120,6 @@ void main()
     else if (object_id == PLANE)
     {
         vec3 Kd0 = texture(texture_1, vec2(U,V)).rgb;
-        //float lambert = max(0,dot(n,l));
-
-        //color = Kd0 * (lambert + 0.6);
         vec4 baseColour = texture(texture_1, vec2(U,V));
         
         if(currentLayer > 0)
@@ -199,24 +196,6 @@ void main()
     }
     else if (object_id == CHARIZARD)
     {
-        /*vec3 Kd0;
-
-        if (texids.x == 0)
-            Kd0 = texture(texture_12, vec2(U,V)).rgb;
-        else if (texids.x == 1)
-            Kd0 = texture(texture_13, vec2(U,V)).rgb;
-        else
-            Kd0 = vec3(0.5,0.5,0.5);
-
-        float q = 60;
-        vec3 Ks = vec3(0.3f,0.3f,0.3f); // Specular reflectance
-        vec3 Ka = Ks/6;
-        float lambert = max(0,dot(n,l));
-
-        color = vec4(Kd0 * (lambert + 0.02) + Ka*Ia + Ks*I*pow(max(0,dot(n,h)),q),1.0);*/
-        //float lambert = max(0,dot(n,l));
-
-        //color = Kd0 * (lambert + 0.6);
         vec3 Kd0;
         vec4 baseColour;
 
@@ -230,7 +209,6 @@ void main()
             Kd0 = texture(texture_13, vec2(U,V)).rgb;
             baseColour = texture(texture_13, vec2(U,V));
         }
-        
         
         if(currentLayer > 0)
         {

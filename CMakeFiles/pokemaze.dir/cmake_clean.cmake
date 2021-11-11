@@ -4,7 +4,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/pokemaze.dir/src/pokemaze/controllers/ErrorController.cpp.o"
   "CMakeFiles/pokemaze.dir/src/pokemaze/controllers/KeyboardController.cpp.o"
   "CMakeFiles/pokemaze.dir/src/pokemaze/controllers/MouseController.cpp.o"
-  "CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o"
   "CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o"
   "CMakeFiles/pokemaze.dir/src/pokemaze/engine/Display.cpp.o"
   "CMakeFiles/pokemaze.dir/src/pokemaze/engine/Engine.cpp.o"

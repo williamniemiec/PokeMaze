@@ -109,7 +109,6 @@ set(SRC_FILES
   src/pokemaze/engine/text/TextRender.cpp
   src/pokemaze/engine/Display.cpp
   src/pokemaze/engine/PNGProcessor.cpp
-  src/pokemaze/engine/BMPProcessor.cpp
   src/pokemaze/models/camera/Camera.cpp
   src/pokemaze/models/camera/FreeCamera.cpp
   src/pokemaze/models/camera/FixedCamera.cpp
