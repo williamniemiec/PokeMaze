@@ -270,7 +270,7 @@ CMakeFiles/pokemaze.dir/all: lib/glfw/src/CMakeFiles/glfw.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pokemaze.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 63
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 64
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pokemaze.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : CMakeFiles/pokemaze.dir/rule
@@ -346,12 +346,12 @@ CMakeFiles/tinyfiledialogs.dir/clean:
 CMakeFiles/obj_loader.dir/all:
 	$(MAKE) -f CMakeFiles/obj_loader.dir/build.make CMakeFiles/obj_loader.dir/depend
 	$(MAKE) -f CMakeFiles/obj_loader.dir/build.make CMakeFiles/obj_loader.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=46,47,48 "Built target obj_loader"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=46,47,48,49 "Built target obj_loader"
 .PHONY : CMakeFiles/obj_loader.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/obj_loader.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/obj_loader.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : CMakeFiles/obj_loader.dir/rule
@@ -616,12 +616,12 @@ lib/glfw/examples/CMakeFiles/simple.dir/clean:
 lib/glfw/examples/CMakeFiles/particles.dir/all: lib/glfw/src/CMakeFiles/glfw.dir/all
 	$(MAKE) -f lib/glfw/examples/CMakeFiles/particles.dir/build.make lib/glfw/examples/CMakeFiles/particles.dir/depend
 	$(MAKE) -f lib/glfw/examples/CMakeFiles/particles.dir/build.make lib/glfw/examples/CMakeFiles/particles.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=49,50,51,52,53 "Built target particles"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=50,51,52,53 "Built target particles"
 .PHONY : lib/glfw/examples/CMakeFiles/particles.dir/all
 
 # Build rule for subdir invocation for target.
 lib/glfw/examples/CMakeFiles/particles.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 19
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 18
 	$(MAKE) -f CMakeFiles/Makefile2 lib/glfw/examples/CMakeFiles/particles.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : lib/glfw/examples/CMakeFiles/particles.dir/rule
@@ -730,7 +730,7 @@ lib/consolex/CMakeFiles/consolex.dir/all: _deps/googletest-build/googletest/CMak
 
 # Build rule for subdir invocation for target.
 lib/consolex/CMakeFiles/consolex.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 12
 	$(MAKE) -f CMakeFiles/Makefile2 lib/consolex/CMakeFiles/consolex.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : lib/consolex/CMakeFiles/consolex.dir/rule
@@ -753,12 +753,12 @@ _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: _deps/googletes
 _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=38 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=38,39 "Built target gmock_main"
 .PHONY : _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/rule
@@ -807,12 +807,12 @@ _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/clean:
 _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=41,42 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=42 "Built target gtest_main"
 .PHONY : _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles 0
 .PHONY : _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/rule
@@ -834,7 +834,7 @@ _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/clean:
 _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=39,40 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=40,41 "Built target gtest"
 .PHONY : _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.

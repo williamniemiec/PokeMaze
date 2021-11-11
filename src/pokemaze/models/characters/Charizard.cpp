@@ -27,7 +27,6 @@ Charizard::Charizard(std::string name, glm::vec4 position,
     offset_z = 0.0f;
 
     set_fur_length(0.1);
-    set_fur_density(500000);
 }
 
 

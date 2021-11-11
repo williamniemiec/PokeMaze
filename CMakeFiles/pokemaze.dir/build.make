@@ -278,22 +278,9 @@ CMakeFiles/pokemaze.dir/src/pokemaze/engine/PNGProcessor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pokemaze.dir/src/pokemaze/engine/PNGProcessor.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/engine/PNGProcessor.cpp -o CMakeFiles/pokemaze.dir/src/pokemaze/engine/PNGProcessor.cpp.s
 
-CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o: CMakeFiles/pokemaze.dir/flags.make
-CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o: src/pokemaze/engine/BMPProcessor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/engine/BMPProcessor.cpp
-
-CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/engine/BMPProcessor.cpp > CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.i
-
-CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/engine/BMPProcessor.cpp -o CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.s
-
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o: src/pokemaze/models/camera/Camera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/camera/Camera.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.i: cmake_force
@@ -306,7 +293,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o: src/pokemaze/models/camera/FreeCamera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/camera/FreeCamera.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.i: cmake_force
@@ -319,7 +306,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o: src/pokemaze/models/camera/FixedCamera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/camera/FixedCamera.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.i: cmake_force
@@ -332,7 +319,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.s: cmake_forc
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.o: src/pokemaze/models/camera/LookAtCamera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/camera/LookAtCamera.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.i: cmake_force
@@ -345,7 +332,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/LookAtCamera.cpp.s: cmake_for
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.o: src/pokemaze/models/BoundingBox.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/BoundingBox.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.i: cmake_force
@@ -358,7 +345,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/BoundingBox.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.o: src/pokemaze/models/Point.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/Point.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.i: cmake_force
@@ -371,7 +358,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/Point.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o: src/pokemaze/models/Sphere.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/Sphere.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.i: cmake_force
@@ -384,7 +371,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/Sphere.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.o: src/pokemaze/models/SceneObject.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/SceneObject.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.i: cmake_force
@@ -397,7 +384,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/SceneObject.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o: src/pokemaze/engine/Collisions.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/engine/Collisions.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.i: cmake_force
@@ -410,7 +397,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/engine/Collisions.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o: src/pokemaze/levels/Level.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/levels/Level.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.i: cmake_force
@@ -423,7 +410,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o: src/pokemaze/levels/Level1.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/levels/Level1.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.i: cmake_force
@@ -436,7 +423,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/levels/Level1.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o: src/pokemaze/levels/LevelFactory.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/levels/LevelFactory.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.i: cmake_force
@@ -449,7 +436,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/levels/LevelFactory.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o: src/pokemaze/models/characters/AshKetchum.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/characters/AshKetchum.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.i: cmake_force
@@ -462,7 +449,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/AshKetchum.cpp.s: cmake_f
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o: src/pokemaze/models/characters/Charizard.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/characters/Charizard.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.i: cmake_force
@@ -475,7 +462,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Charizard.cpp.s: cmake_fo
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o: src/pokemaze/models/characters/Pikachu.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/characters/Pikachu.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.i: cmake_force
@@ -488,7 +475,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/characters/Pikachu.cpp.s: cmake_forc
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o: src/pokemaze/models/objects/Pokeball.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/objects/Pokeball.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.i: cmake_force
@@ -501,7 +488,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Pokeball.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o: src/pokemaze/models/objects/Tree.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/objects/Tree.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.i: cmake_force
@@ -514,7 +501,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Tree.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o: src/pokemaze/models/objects/Wall.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/objects/Wall.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.i: cmake_force
@@ -527,7 +514,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/objects/Wall.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o: src/pokemaze/models/scene/Floor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/scene/Floor.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.i: cmake_force
@@ -540,7 +527,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Floor.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o: src/pokemaze/models/scene/Garage.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/scene/Garage.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.i: cmake_force
@@ -553,7 +540,7 @@ CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Garage.cpp.s: cmake_force
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o: CMakeFiles/pokemaze.dir/flags.make
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o: src/pokemaze/models/scene/Sky.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.o -c /home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/src/pokemaze/models/scene/Sky.cpp
 
 CMakeFiles/pokemaze.dir/src/pokemaze/models/scene/Sky.cpp.i: cmake_force
@@ -583,7 +570,6 @@ pokemaze_OBJECTS = \
 "CMakeFiles/pokemaze.dir/src/pokemaze/engine/text/TextRender.cpp.o" \
 "CMakeFiles/pokemaze.dir/src/pokemaze/engine/Display.cpp.o" \
 "CMakeFiles/pokemaze.dir/src/pokemaze/engine/PNGProcessor.cpp.o" \
-"CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o" \
 "CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o" \
 "CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o" \
 "CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o" \
@@ -626,7 +612,6 @@ bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/engine/projection/Projection.
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/engine/text/TextRender.cpp.o
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/engine/Display.cpp.o
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/engine/PNGProcessor.cpp.o
-bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/engine/BMPProcessor.cpp.o
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/Camera.cpp.o
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FreeCamera.cpp.o
 bin/pokemaze: CMakeFiles/pokemaze.dir/src/pokemaze/models/camera/FixedCamera.cpp.o
@@ -666,7 +651,7 @@ bin/pokemaze: /usr/lib/x86_64-linux-gnu/libXinerama.so
 bin/pokemaze: /usr/lib/x86_64-linux-gnu/libXxf86vm.so
 bin/pokemaze: /usr/lib/x86_64-linux-gnu/libXcursor.so
 bin/pokemaze: CMakeFiles/pokemaze.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Linking CXX executable bin/pokemaze"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/williamniemiec/Documents/workspace/ufrgs/PokeMaze/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Linking CXX executable bin/pokemaze"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pokemaze.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

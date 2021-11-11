@@ -1,6 +1,6 @@
-// PNG Writer, base code by Guillaume Cottenceau (http://zarb.org/~gc/html/libpng.html)
-// Working modification by Yoshimasa Niwa (https://gist.github.com/niw/5963798)
+// REFERENCE: https://gist.github.com/niw/5963798
 #pragma once
+
 #define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
 #include <obj_loader/glad.h>
@@ -20,5 +20,5 @@ private:
 	void writePNG(const char* file_name);
 public:
 	GLuint createFurTextures(int seed, int size, int num, int density, int texWidth, int texHeight);
-	GLuint createFurTextures(int seed, int size, int num, int density, const char* file_name);
+	void createFurTextures(int seed, int size, int num, int density, const char* file_name);
 };
