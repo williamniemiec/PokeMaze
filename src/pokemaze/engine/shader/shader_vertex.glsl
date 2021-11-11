@@ -66,9 +66,9 @@ void main()
         vGravity = (vGravity * model);
         float k = pow(layerNormalize, 3) * 0.08;
         P = P + vGravity * k;
-        //if(currentLayer != 0){
-            //P = P + vec4(1.0f, 1.0f, 1.0f, 1.0f) * (furFlowOffset);
-        //}
+        if(currentLayer != 0){
+            P = P + vec4(1.0f, 1.0f, 1.0f, 1.0f) * (furFlowOffset);
+        }
 
         gl_Position = projection * P;
     }
