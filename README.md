@@ -16,10 +16,18 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 ## ✔ Requirements
 - Operating system: Ubuntu
 - GLFW
-- sudo apt-get install libsdl-image1.2-dev
-- sudo apt-get install libsdl-dev
+- libpng
+- SDL
 - [SFML library](https://www.sfml-dev.org/download.php)
 - [CMake](https://cmake.org/)
+
+## Environment
+
+#### Ubuntu
+> sudo apt-get install libsfml-dev
+> sudo apt-get install libsdl-image1.2-dev
+> sudo apt-get install libsdl-dev
+> sudo apt-get install libpng-dev
 
 ## 🎮 Controls
 |        Command        |Description|
