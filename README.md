@@ -29,6 +29,12 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 > sudo apt-get install libsdl-dev
 > sudo apt-get install libpng-dev
 
+#### Run
+
+1. `cmake -G "Unix Makefiles"`
+2. `make`
+3. `./bin/pokemaze`
+
 ## 🎮 Controls
 |        Command        |Description|
 |----------------|-------------------------------|
