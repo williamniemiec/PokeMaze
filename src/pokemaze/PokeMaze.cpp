@@ -52,6 +52,7 @@ float PokeMaze::delta_time = 0.0f;
 PokeMaze::PokeMaze(int screen_width, int screen_height)
 {
     engine = new Engine(screen_width, screen_height);
+    current_level = 1;
     pikachu_catched = false;
     pokeball_catched = false;
     garage_door_touched = false;
@@ -78,7 +79,7 @@ void PokeMaze::build_game()
     set_perspective_projection();
 
     build_cameras();
-    build_level();
+    build_level(current_level);
 
     start_event_handlers();
 }
@@ -105,9 +106,21 @@ void PokeMaze::build_cameras()
     fixed_camera->look_to(-0.4f, 0.0f);
 }
 
-void PokeMaze::build_level()
+void PokeMaze::build_level(int n)
 {
-    level = LevelFactory::create_level_1(renderer, fixed_camera);
+    if (n == 1)
+    {
+        level = LevelFactory::create_level_1(renderer, fixed_camera); 
+    }
+    else if (n == 2)
+    {
+        level = LevelFactory::create_level_2(renderer, fixed_camera);
+    }
+    else if (n == 3)
+    {
+        level == LevelFactory::create_level_3(renderer, fixed_camera);
+    }
+
     level->build();
     level->play_soundtrack();
 
@@ -185,8 +198,18 @@ unsigned long PokeMaze::init_mouse_handler()
 
 void PokeMaze::start_game()
 {
-    while (engine->is_window_open() && !pokeball_catched)
+    while (engine->is_window_open() && !(pokeball_catched && current_level == 3))
     {
+        if (pokeball_catched)
+        {
+            pikachu_catched = false;
+            pokeball_catched = false;
+            garage_door_touched = false;
+            current_level++;
+            level->close();
+            build_level(current_level);
+        }
+
         renderer->pre_render();
 
         animation();

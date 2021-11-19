@@ -39,6 +39,7 @@ namespace pokemaze
         bool pikachu_catched;
         bool pokeball_catched;
         bool garage_door_touched;
+        int current_level;
         unsigned long keyboard_handler_id;
         unsigned long mouse_handler_id;
 
@@ -68,7 +69,7 @@ namespace pokemaze
         void build_game();
         void start_game();
         void end_game();
-        void build_level();
+        void build_level(int n);
         void animation();
         void set_perspective_projection();
         void set_orthographic_projection();
