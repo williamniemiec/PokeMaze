@@ -494,25 +494,25 @@ void Level2::draw_walls()
   renderer->render_object(walls[28], ZCUBE);
 
   walls[29]->movement()->begin()
-    ->translate(0.0f, 6.5f, 23.99f)
+    ->translate(0.0f, 6.5f, 22.99f)
     ->scale(46.0f, 8.0f, 1.0f)
     ->end();
   renderer->render_object(walls[29], XCUBE);
 
   walls[30]->movement()->begin()
-    ->translate(0.0f, 6.5f, -23.99f)
+    ->translate(0.0f, 6.5f, -22.99f)
     ->scale(46.0f, 8.0f, 1.0f)
     ->end();
   renderer->render_object(walls[30], XCUBE);
 
   walls[31]->movement()->begin()
-    ->translate(23.99f, 6.5f, 0.0f)
+    ->translate(22.99f, 6.5f, 0.0f)
     ->scale(1.0f, 8.0f, 46.0f)
     ->end();
   renderer->render_object(walls[31], ZCUBE);
 
   walls[32]->movement()->begin()
-    ->translate(-23.99f, 6.5f, 0.0f)
+    ->translate(-22.99f, 6.5f, 0.0f)
     ->scale(1.0f, 8.0f, 46.0f)
     ->end();
   renderer->render_object(walls[32], ZCUBE);

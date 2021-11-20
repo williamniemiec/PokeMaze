@@ -100,14 +100,14 @@ void Level3::build_sky()
 
 void Level3::build_ash()
 {
-  AshKetchum* ash = AshKetchum::create("Ash_Ketchum", -0.5f, -1.4f, 3.0f);
+  AshKetchum* ash = AshKetchum::create("Ash_Ketchum", 1.75f, -1.4f, -1.75f);
   renderer->load_object(ash);
   virtual_scene["ash_ketchum"] = ash;
 }
 
 void Level3::build_garage()
 {
-  SceneObject* garage_door = Garage::create("Garage", -2.5f, 1.60f, 10.25f);
+  SceneObject* garage_door = Garage::create("Garage", -12.25f, 1.60f, 0.0f);
   build_garage_door(garage_door);
   build_garage_ceiling(garage_door->create_copy());
 }
@@ -127,7 +127,7 @@ void Level3::build_garage_ceiling(SceneObject* garage_ceiling)
 
 void Level3::build_charizard()
 {
-  Charizard* charizard = Charizard::create("Charizard", 1.0f, 2.0f, -8.50f);
+  Charizard* charizard = Charizard::create("Charizard", 8.75f, 2.0f, 12.25f);
 
   renderer->load_object(charizard);
   virtual_scene["charizard"] = charizard;
@@ -135,14 +135,14 @@ void Level3::build_charizard()
 
 void Level3::build_pikachu()
 {
-  Pikachu* pikachu = Pikachu::create("Pikachu", -0.75f, -1.4f, 10.25f);
+  Pikachu* pikachu = Pikachu::create("Pikachu", -12.25f, -1.4f, 1.75f);
   renderer->load_object(pikachu);
   virtual_scene["pikachu"] = pikachu;
 }
 
 void Level3::build_pokeball()
 {
-  Pokeball* pokeball = Pokeball::create("Pokeball", 2.75f, 0.0f, -10.25f);
+  Pokeball* pokeball = Pokeball::create("Pokeball", 12.25f, 0.0f, 12.25f);
   renderer->load_object(pokeball);
   virtual_scene["pokeball"] = pokeball;
 }
@@ -151,7 +151,7 @@ void Level3::build_walls()
 {
   SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
 
-  for (int = 0; i < 33; i++)
+  for (int = 0; i < 35; i++)
   {
     wall = wall->create_copy();
     renderer->load_object(wall);
@@ -195,7 +195,7 @@ void Level3::draw_floor()
   virtual_scene["floor"]->movement()
     ->begin()
     ->translate(0.0f, -1.4f, 0.0f)
-    ->scale(23.5f, 10.5f, 23.5f)
+    ->scale(27.5f, 10.5f, 27.5f)
     ->end();
   renderer->render_object(virtual_scene["floor"], PLANE);
 }
@@ -203,36 +203,36 @@ void Level3::draw_floor()
 void Level3::draw_sky()
 {
   skies[0]->movement()->begin()
-    ->translate(0.0f, 4.0f, 23.0f)
+    ->translate(0.0f, 4.0f, 27.0f)
     ->rotate_x(PI / 2)
-    ->scale(23.0f, 0.0f, 5.0f)
+    ->scale(27.0f, 0.0f, 5.0f)
     ->end();
   renderer->render_object(skies[0], SKY);
 
   skies[1]->movement()->begin()
-    ->translate(0.0f, 4.0f, -23.0f)
+    ->translate(0.0f, 4.0f, -27.0f)
     ->rotate_x(PI / 2)
-    ->scale(23.0f, 0.0f, 5.0f)
+    ->scale(27.0f, 0.0f, 5.0f)
     ->end();
   renderer->render_object(skies[1], SKY);
 
   skies[2]->movement()->begin()
-    ->translate(23.0f, 4.0f, 0.0f)
+    ->translate(27.0f, 4.0f, 0.0f)
     ->rotate_y(PI / 2)->rotate_x(PI / 2)
-    ->scale(23.0f, 0.0f, 5.0f)
+    ->scale(27.0f, 0.0f, 5.0f)
     ->end();
   renderer->render_object(skies[2], SKY);
   
   skies[3]->movement()->begin()
-    ->translate(-23.0f, 4.0f, 0.0f)
+    ->translate(-27.0f, 4.0f, 0.0f)
     ->rotate_y(PI / 2)->rotate_x(PI / 2)
-    ->scale(23.0f, 0.0f, 5.0f)
+    ->scale(27.0f, 0.0f, 5.0f)
     ->end();
   renderer->render_object(skies[3], SKY);
 
   skies[4]->movement()->begin()
     ->translate(0.0f, 8.1f, 0.0f)
-    ->scale(23.0f, 10.0f, 23.0f)
+    ->scale(27.0f, 10.0f, 27.0f)
     ->end();
   renderer->render_object(skies[4], SKY);
 }
@@ -240,19 +240,19 @@ void Level3::draw_sky()
 void Level3::draw_tree()
 {
   trees[0]->movement()->begin()
-    ->translate(8.6f, -1.4f, 8.8f)
+    ->translate(12.25f, -1.4f, 12.25f)
     ->scale(0.5f, 0.5f, 0.5f)
     ->end();
   renderer->render_object(trees[0], TREE);
 
   trees[1]->movement()->begin()
-    ->translate(8.6f, -1.4f, 8.8f)
+    ->translate(-8.75f, -1.4f, 8.75f)
     ->scale(0.5f, 0.5f, 0.5f)
     ->end();
   renderer->render_object(trees[1], TREE);
 
   trees[2]->movement()->begin()
-    ->translate(8.6f, -1.4f, 8.8f)
+    ->translate(12.25f, -1.4f, -12.25f)
     ->scale(0.5f, 0.5f, 0.5f)
     ->end();
   renderer->render_object(trees[2], TREE);
@@ -264,7 +264,7 @@ void Level3::draw_garage(bool garage_door_touched)
   renderer->render_object(virtual_scene["garage_door"], XDOOR);
 
   virtual_scene["garage_ceiling"]->movement()->begin()
-    ->translate(8.625f, 1.5f, -1.5f)
+    ->translate(-12.25f, 1.5f, 2.0f)
     ->scale(3.75f, 0.5f, 3.5f)
     ->end();
   renderer->render_object(virtual_scene["garage_ceiling"], XDOOR);
@@ -289,7 +289,7 @@ void Level3::draw_charizard()
 void Level3::draw_pikachu()
 {
   virtual_scene["pikachu"]->movement()->begin()
-    ->translate(8.75f, -1.4f, -1.75f)
+    ->translate(-12.25f, -1.4f, 1.75f)
     ->scale(0.2, 0.2, 0.2)
     ->rotate_y(PI)
     ->end();
@@ -299,7 +299,7 @@ void Level3::draw_pikachu()
 void Level3::draw_pokeball()
 {
   virtual_scene["pokeball"]->movement()->begin()
-    ->translate(8.75f, 0.0f, 5.25f)
+    ->translate(12.25f, 0.0f, 12.25f)
     ->rotate_y((float) glfwGetTime() * 1.0f)
     ->rotate_z((float) glfwGetTime() * 0.5f)
     ->rotate_x((float) glfwGetTime() * 1.5f)
@@ -311,211 +311,223 @@ void Level3::draw_pokeball()
 void Level3::draw_walls()
 {
   walls[0]->movement()->begin()
-    ->translate(-7.75f, 1.0f, 10.0f)
-    ->scale(0.5f, 2.5f, 4.0f)
+    ->translate(-10.5f, 1.0f, 10.5f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[0], ZCUBE);
   
   walls[1]->movement()->begin()
-    ->translate(1.0f, 1.0f, 10.0f)
-    ->scale(0.5f, 2.5f, 4.0f)
+    ->translate(0.0f, 1.0f, 10.5f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[1], ZCUBE);
   
   walls[2]->movement()->begin()
-    ->translate(4.5f, 1.0f, 6.75f)
-    ->scale(0.5f, 2.5f, 3.5f)
+    ->translate(-7.0f, 1.0f, 7.0f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[2], ZCUBE);
 
   walls[3]->movement()->begin()
-    ->translate(8.25f, 1.0f, 7.0f)
+    ->translate(7.0f, 1.0f, 8.75f)
     ->scale(0.5f, 2.5f, 3.50f)
     ->end();
   renderer->render_object(walls[3], ZCUBE);
 
   walls[4]->movement()->begin()
-    ->translate(-8.5f, 1.0f, 3.5f)
-    ->scale(0.5f, 2.5f, 3.0f)
+    ->translate(3.5f, 1.0f, 3.5f)
+    ->scale(0.5f, 2.5f, 3.5f)
     ->end();
   renderer->render_object(walls[4], ZCUBE);
 
   walls[5]->movement()->begin()
-    ->translate(-5.25f, 1.0f, 3.5f)
-    ->scale(0.5f, 2.5f, 3.0f)
+    ->translate(10.5f, 1.0f, 0.0f)
+    ->scale(0.5f, 2.5f, 14.0f)
     ->end();
   renderer->render_object(walls[5], ZCUBE);
 
   walls[6]->movement()->begin()
-    ->translate(-2.25f, 1.0f, 1.75f)
-    ->scale(0.5f, 2.5f, 6.5f)
+    ->translate(-10.5f, 1.0f, 0.0f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[6], ZCUBE);
 
   walls[7]->movement()->begin()
-    ->translate(1.25f, 1.0f, 3.25f)
-    ->scale(0.5f, 2.5f, 3.0f)
+    ->translate(0.0f, 1.0f, 0.0f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[7], ZCUBE);
 
   walls[8]->movement()->begin()
-    ->translate(8.5f, 1.0f, -1.5f)
+    ->translate(-3.5f, 1.0f, -3.5f)
     ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[8], ZCUBE);
   
   walls[9]->movement()->begin()
-    ->translate(-8.5f, 1.0f, -5.0f)
-    ->scale(0.5f, 2.5f, 7.0f)
+    ->translate(7.0f, 1.0f, -1.75f)
+    ->scale(0.5f, 2.5f, 3.5f)
     ->end();
   renderer->render_object(walls[9], ZCUBE);
 
   walls[10]->movement()->begin()
-    ->translate(-2.25f, 1.0f, -8.5f)
-    ->scale(0.5f, 2.5f, 7.0f)
+    ->translate(-7.0f, 1.0f, -8.75f)
+    ->scale(0.5f, 2.5f, 3.5f)
     ->end();
   renderer->render_object(walls[10], ZCUBE);
 
   walls[11]->movement()->begin()
-    ->translate(1.0f, 1.0f, -3.25f)
+    ->translate(0.0f, 1.0f, -8.75f)
     ->scale(0.5f, 2.5f, 3.5f)
     ->end();
   renderer->render_object(walls[11], ZCUBE);
+
+  walls[12]->movement()->begin()
+    ->translate(-3.5f, 1.0f, -12.25f)
+    ->scale(0.5f, 2.5f, 3.5f)
+    ->end();
+  renderer->render_object(walls[12], ZCUBE);
+
+  walls[13]->movement()->begin()
+    ->translate(3.5f, 1.0f, -12.25f)
+    ->scale(0.5f, 2.5f, 3.5f)
+    ->end();
+  renderer->render_object(walls[13], ZCUBE);
 
   // --- SECRET WALL ---
   if (!pikachu_catched)
   {
     virtual_scene["secret_wall"]->movement()->begin()
-      ->translate(1.0f, 1.0f, -6.75f)
+      ->translate(10.5f, 1.0f, 8.75f)
       ->scale(0.5f, 2.5f, 3.5f)
       ->end();
     renderer->render_object(virtual_scene["secret_wall"], ZCUBE);
   }
 
-  walls[12]->movement()->begin()
-    ->translate(4.5f, 1.0f, -8.5f)
-    ->scale(0.5f, 2.5f, 7.0f)
-    ->end();
-  renderer->render_object(walls[12], ZCUBE);
-
-  walls[13]->movement()->begin()
-    ->translate(0.0f, 1.0f, 8.25f)
-    ->scale(9.0f, 2.5f, 0.5f)
-    ->end();
-  renderer->render_object(walls[13], XCUBE);
-
   walls[14]->movement()->begin()
-    ->translate(-10.25f, 1.0f, 2.0f)
+    ->translate(-1.75f, 1.0f, 10.5f)
     ->scale(3.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[14], XCUBE);
 
   walls[15]->movement()->begin()
-    ->translate(-7.0f, 1.0f, 4.75f)
-    ->scale(3.5f, 2.5f, 0.5f)
+    ->translate(8.75f, 1.0f, 10.5f)
+    ->scale(10.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[15], XCUBE);
 
   walls[16]->movement()->begin()
-    ->translate(-3.75f, 1.0f, 2.0f)
-    ->scale(3.0f, 2.5f, 0.5f)
+    ->translate(0.0f, 1.0f, 7.0f)
+    ->scale(7.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[16], XCUBE);
 
   walls[17]->movement()->begin()
-    ->translate(-0.5f, 1.0f, 4.75f)
-    ->scale(3.5f, 2.5f, 0.5f)
+    ->translate(-7.0f, 1.0f, 3.5f)
+    ->scale(14.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[17], XCUBE);
 
   walls[18]->movement()->begin()
-    ->translate(4.75f, 1.0f, 1.75f)
-    ->scale(7.5f, 2.5f, 0.5f)
+    ->translate(7.0f, 1.0f, 3.5f)
+    ->scale(7.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[18], XCUBE);
 
   walls[19]->movement()->begin()
-    ->translate(10.0f, 1.0f, 5.25f)
-    ->scale(4.0f, 2.5f, 0.5f)
+    ->translate(-5.25f, 1.0f, 0.0f)
+    ->scale(3.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[19], XCUBE);
 
   walls[20]->movement()->begin()
-    ->translate(-5.5f, 1.0f, -1.5f)
-    ->scale(6.5f, 2.5f, 0.5f)
+    ->translate(-8.75f, 1.0f, -3.5f)
+    ->scale(3.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[20], XCUBE);
 
   walls[21]->movement()->begin()
-    ->translate(6.5f, 1.0f, -1.75f)
-    ->scale(4.0f, 2.5f, 0.5f)
+    ->translate(1.75f, 1.0f, -3.5f)
+    ->scale(10.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[21], XCUBE);
 
   walls[22]->movement()->begin()
-    ->translate(-2.0f, 1.0f, -5.0f)
-    ->scale(6.0f, 2.5f, 0.5f)
+    ->translate(-7.0f, 1.0f, -7.0f)
+    ->scale(7.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[22], XCUBE);
 
   walls[23]->movement()->begin()
-    ->translate(-7.0f, 1.0f, -8.5f)
-    ->scale(3.0f, 2.5f, 0.5f)
+    ->translate(7.0f, 1.0f, -7.0f)
+    ->scale(7.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[23], XCUBE);
 
   walls[24]->movement()->begin()
-    ->translate(4.75f, 1.0f, -8.5f)
-    ->scale(7.5f, 2.5f, 0.5f)
+    ->translate(-8.75f, 1.0f, -10.5f)
+    ->scale(3.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[24], XCUBE);
 
-  // Bound obstacles
   walls[25]->movement()->begin()
-    ->translate(0.0f, 5.0f, 12.0f)
-    ->scale(24.0f, 6.5f, 0.5f)
+    ->translate(-1.75f, 1.0f, -10.5f)
+    ->scale(3.5f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[25], XCUBE);
 
   walls[26]->movement()->begin()
-    ->translate(0.0f, 5.0f, -12.0f)
-    ->scale(24.0f, 6.5f, 0.5f)
+    ->translate(10.5f, 1.0f, -10.5f)
+    ->scale(7.0f, 2.5f, 0.5f)
     ->end();
   renderer->render_object(walls[26], XCUBE);
 
+  // Bound obstacles
   walls[27]->movement()->begin()
-    ->translate(12.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 24.0f)
+    ->translate(0.0f, 5.0f, 14.0f)
+    ->scale(28.0f, 6.5f, 0.5f)
     ->end();
-  renderer->render_object(walls[27], ZCUBE);
+  renderer->render_object(walls[27], XCUBE);
 
   walls[28]->movement()->begin()
-    ->translate(-12.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 24.0f)
+    ->translate(0.0f, 5.0f, -14.0f)
+    ->scale(28.0f, 6.5f, 0.5f)
     ->end();
-  renderer->render_object(walls[28], ZCUBE);
+  renderer->render_object(walls[28], XCUBE);
 
   walls[29]->movement()->begin()
-    ->translate(0.0f, 6.5f, 23.99f)
-    ->scale(46.0f, 8.0f, 1.0f)
+    ->translate(14.0f, 5.0f, 0.0f)
+    ->scale(0.5f, 2.5f, 28.0f)
+    ->end();
+  renderer->render_object(walls[29], ZCUBE);
+
+  walls[30]->movement()->begin()
+    ->translate(-14.0f, 5.0f, 0.0f)
+    ->scale(0.5f, 2.5f, 28.0f)
+    ->end();
+  renderer->render_object(walls[30], ZCUBE);
+
+  walls[31]->movement()->begin()
+    ->translate(0.0f, 6.5f, 26.99f)
+    ->scale(54.0f, 8.0f, 1.0f)
     ->end();
   renderer->render_object(walls[29], XCUBE);
 
   walls[30]->movement()->begin()
-    ->translate(0.0f, 6.5f, -23.99f)
-    ->scale(46.0f, 8.0f, 1.0f)
+    ->translate(0.0f, 6.5f, -26.99f)
+    ->scale(54.0f, 8.0f, 1.0f)
     ->end();
   renderer->render_object(walls[30], XCUBE);
 
   walls[31]->movement()->begin()
-    ->translate(23.99f, 6.5f, 0.0f)
-    ->scale(1.0f, 8.0f, 46.0f)
+    ->translate(26.99f, 6.5f, 0.0f)
+    ->scale(1.0f, 8.0f, 54.0f)
     ->end();
   renderer->render_object(walls[31], ZCUBE);
 
   walls[32]->movement()->begin()
-    ->translate(-23.99f, 6.5f, 0.0f)
-    ->scale(1.0f, 8.0f, 46.0f)
+    ->translate(-26.99f, 6.5f, 0.0f)
+    ->scale(1.0f, 8.0f, 54.0f)
     ->end();
   renderer->render_object(walls[32], ZCUBE);
 }
