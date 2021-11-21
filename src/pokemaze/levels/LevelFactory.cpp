@@ -21,7 +21,7 @@ Level* LevelFactory::create_level_2(Renderer* renderer, FixedCamera* fixed_camer
     return new Level2(renderer, fixed_camera);
 }
 
-Level* LevelFactory::create_level_2(Renderer* renderer, FixedCamera* fixed_camera)
+Level* LevelFactory::create_level_3(Renderer* renderer, FixedCamera* fixed_camera)
 {
     return new Level3(renderer, fixed_camera);
 }

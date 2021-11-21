@@ -22,7 +22,7 @@ namespace pokemaze { namespace levels {
     public:
         static Level* create_level_1(pokemaze::engine::Renderer* renderer, 
                                      pokemaze::models::camera::FixedCamera* fixed_camera);
-        static Level* create_level_2(pokemaze::engine::Renderer* renderer,
+        static Level* create_level_2(pokemaze::engine::Renderer* renderer, 
                                      pokemaze::models::camera::FixedCamera* fixed_camera);
         static Level* create_level_3(pokemaze::engine::Renderer* renderer,
                                      pokemaze::models::camera::FixedCamera* fixed_camera);
