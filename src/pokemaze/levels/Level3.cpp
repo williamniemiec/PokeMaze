@@ -72,7 +72,7 @@ void Level3::build_floor()
 
 void Level3::build_tree()
 {
-  Tree* tree = Tree::create("Tree", 0.0f, -1.4f, 0.0f);
+  SceneObject* tree = Tree::create("Tree", 0.0f, -1.4f, 0.0f);
   
   for (int i = 0; i < 3; i++)
   {
@@ -151,7 +151,7 @@ void Level3::build_walls()
 {
   SceneObject* wall = Wall::create("Wall", 0.0f, 0.0f, 0.0f);
 
-  for (int = 0; i < 35; i++)
+  for (int i = 0; i < 35; i++)
   {
     wall = wall->create_copy();
     renderer->load_object(wall);
