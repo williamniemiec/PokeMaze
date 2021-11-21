@@ -108,6 +108,8 @@ void Level2::build_ash()
 void Level2::build_garage()
 {
   SceneObject* garage_door = Garage::create("Garage", -2.5f, 1.60f, 10.25f);
+  garage_door->movement()->begin()
+    ->rotate_y(PI / 2)->end();
   build_garage_door(garage_door);
   build_garage_ceiling(garage_door->create_copy());
 }
@@ -261,8 +263,8 @@ void Level2::draw_garage(bool garage_door_touched)
   renderer->render_object(virtual_scene["garage_door"], XDOOR);
 
   virtual_scene["garage_ceiling"]->movement()->begin()
-    ->translate(-1.75f, 1.5f, 10.25f)
-    ->scale(3.75f, 0.5f, 3.5f)
+    ->translate(-0.75f, 1.5f, 10.0f)
+    ->scale(3.5f, 0.5f, 3.75f)
     ->end();
   renderer->render_object(virtual_scene["garage_ceiling"], XDOOR);
 }
@@ -288,7 +290,7 @@ void Level2::draw_pikachu()
   virtual_scene["pikachu"]->movement()->begin()
     ->translate(-0.75f, -1.4f, 10.25f)
     ->scale(0.2, 0.2, 0.2)
-    ->rotate_y(PI)
+    ->rotate_y(3 * PI / 2)
     ->end();
   renderer->render_object(virtual_scene["pikachu"], PIKACHU);
 }
@@ -482,13 +484,13 @@ void Level2::draw_walls()
 
   walls[27]->movement()->begin()
     ->translate(12.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 24.0f)
+    ->scale(0.5f, 6.5f, 24.0f)
     ->end();
   renderer->render_object(walls[27], ZCUBE);
 
   walls[28]->movement()->begin()
     ->translate(-12.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 24.0f)
+    ->scale(0.5f, 6.5f, 24.0f)
     ->end();
   renderer->render_object(walls[28], ZCUBE);
 

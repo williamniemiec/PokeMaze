@@ -240,13 +240,13 @@ void Level3::draw_sky()
 void Level3::draw_tree()
 {
   trees[0]->movement()->begin()
-    ->translate(12.25f, -1.4f, 12.25f)
+    ->translate(-12.25f, -1.4f, 12.25f)
     ->scale(0.5f, 0.5f, 0.5f)
     ->end();
   renderer->render_object(trees[0], TREE);
 
   trees[1]->movement()->begin()
-    ->translate(-8.75f, -1.4f, 8.75f)
+    ->translate(-8.75f, -1.4f, -8.75f)
     ->scale(0.3f, 0.3f, 0.3f)
     ->end();
   renderer->render_object(trees[1], TREE);
@@ -336,7 +336,7 @@ void Level3::draw_walls()
 
   walls[4]->movement()->begin()
     ->translate(3.5f, 1.0f, 3.5f)
-    ->scale(0.5f, 2.5f, 3.5f)
+    ->scale(0.5f, 2.5f, 7.0f)
     ->end();
   renderer->render_object(walls[4], ZCUBE);
 
@@ -497,13 +497,13 @@ void Level3::draw_walls()
 
   walls[29]->movement()->begin()
     ->translate(14.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 28.0f)
+    ->scale(0.5f, 6.5f, 28.0f)
     ->end();
   renderer->render_object(walls[29], ZCUBE);
 
   walls[30]->movement()->begin()
     ->translate(-14.0f, 5.0f, 0.0f)
-    ->scale(0.5f, 2.5f, 28.0f)
+    ->scale(0.5f, 6.5f, 28.0f)
     ->end();
   renderer->render_object(walls[30], ZCUBE);
 

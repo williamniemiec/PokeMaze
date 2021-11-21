@@ -31,6 +31,7 @@ namespace pokemaze
         static pokemaze::engine::projection::Projection* projection;
         static bool free_mode;
         static bool pause;
+        static bool should_end_game;
         static float previous_time;
         static float delta_time;
         pokemaze::engine::Engine* engine;
