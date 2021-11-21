@@ -247,7 +247,7 @@ void Level2::draw_tree()
 
   trees[1]->movement()->begin()
     ->translate(6.6f, -1.4f, -10.25f)
-    ->scale(0.75f, 0.75f, 0.75f)
+    ->scale(0.45f, 0.45f, 0.45f)
     ->end();
   renderer->render_object(trees[1], TREE);
 }
@@ -256,13 +256,12 @@ void Level2::draw_garage(bool garage_door_touched)
 {
   virtual_scene["garage_door"]->movement()->begin()
     ->translate(-2.5f, 1.60f, 10.25f)
-    ->rotate_y(PI / 2)
     ->end();
   ((Garage*) virtual_scene["garage_door"])->animate(glfwGetTime(), garage_door_touched);
   renderer->render_object(virtual_scene["garage_door"], XDOOR);
 
   virtual_scene["garage_ceiling"]->movement()->begin()
-    ->translate(-8.75f, 1.5f, 10.25f)
+    ->translate(-1.75f, 1.5f, 10.25f)
     ->scale(3.75f, 0.5f, 3.5f)
     ->end();
   renderer->render_object(virtual_scene["garage_ceiling"], XDOOR);

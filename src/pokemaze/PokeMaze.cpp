@@ -114,10 +114,12 @@ void PokeMaze::build_level(int n)
     }
     else if (n == 2)
     {
+        fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, -0.5f, -1.4f, 3.0f);
         level = LevelFactory::create_level_2(renderer, fixed_camera);
     }
     else if (n == 3)
     {
+        fixed_camera = new FixedCamera("fixed_camera", 0.0f, 1.0f, 0.0f, 1.75f, -1.4f, 1.75f)
         level == LevelFactory::create_level_3(renderer, fixed_camera);
     }
 
@@ -198,7 +200,7 @@ unsigned long PokeMaze::init_mouse_handler()
 
 void PokeMaze::start_game()
 {
-    while (engine->is_window_open() && !(pokeball_catched && current_level == 3))
+    while (engine->is_window_open() && !(pokeball_catched && current_level > 3))
     {
         if (pokeball_catched)
         {
@@ -206,8 +208,11 @@ void PokeMaze::start_game()
             pokeball_catched = false;
             garage_door_touched = false;
             current_level++;
-            level->close();
-            build_level(current_level);
+            if (current_level <= 3)
+            {
+                level->close();
+                build_level(current_level);
+            }
         }
 
         renderer->pre_render();

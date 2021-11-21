@@ -247,13 +247,13 @@ void Level3::draw_tree()
 
   trees[1]->movement()->begin()
     ->translate(-8.75f, -1.4f, 8.75f)
-    ->scale(0.5f, 0.5f, 0.5f)
+    ->scale(0.3f, 0.3f, 0.3f)
     ->end();
   renderer->render_object(trees[1], TREE);
 
   trees[2]->movement()->begin()
     ->translate(12.25f, -1.4f, -12.25f)
-    ->scale(0.5f, 0.5f, 0.5f)
+    ->scale(0.4f, 0.4f, 0.4f)
     ->end();
   renderer->render_object(trees[2], TREE);
 }
