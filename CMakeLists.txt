@@ -120,6 +120,8 @@ set(SRC_FILES
   src/pokemaze/engine/Collisions.cpp
   src/pokemaze/levels/Level.cpp
   src/pokemaze/levels/Level1.cpp
+  src/pokemaze/levels/Level2.cpp
+  src/pokemaze/levels/Level3.cpp
   src/pokemaze/levels/LevelFactory.cpp
   src/pokemaze/models/characters/AshKetchum.cpp
   src/pokemaze/models/characters/Charizard.cpp
