@@ -25,8 +25,11 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 
 #### Ubuntu
 > sudo apt-get install libsfml-dev
+
 > sudo apt-get install libsdl-image1.2-dev
+
 > sudo apt-get install libsdl-dev
+
 > sudo apt-get install libpng-dev
 
 #### Run
