@@ -1,4 +1,4 @@
-<p align="center"><img alt="logo" src="https://github.com/williamniemiec/PokeMaze/blob/master/docs/img/logo/logo.png?raw=true" /></p>
+<p align="center"><img alt="logo" src="https://github.com/williamniemiec/PokeMaze/blob/v2.x/docs/img/logo/logo.png?raw=true" /></p>
 
 <h1 align='center'>PokeMaze</h1>
 <p align='center'>Maze game with Pokémon theme.</p>
@@ -24,13 +24,13 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 ## Environment
 
 #### Ubuntu
-> sudo apt-get install libsfml-dev
 
-> sudo apt-get install libsdl-image1.2-dev
-
-> sudo apt-get install libsdl-dev
-
-> sudo apt-get install libpng-dev
+```
+sudo apt-get install libsfml-dev
+sudo apt-get install libsdl-image1.2-dev
+sudo apt-get install libsdl-dev
+sudo apt-get install libpng-dev
+```
 
 #### Run
 
@@ -53,13 +53,13 @@ Simple Pokémon themed maze game. The goal is to get the Pokéball. To do this, 
 
 ## 🖼 Gallery
 
-![gif1](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif1.gif?raw=true)
+![gif1](https://github.com/williamniemiec/PokeMaze/blob/v2.x/docs/gif/gif1.gif?raw=true)
 
-![gif2](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif2.gif?raw=true)
+![gif2](https://github.com/williamniemiec/PokeMaze/blob/v2.x/docs/gif/gif2.gif?raw=true)
 
-![gif3](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif3.gif?raw=true)
+![gif3](https://github.com/williamniemiec/PokeMaze/blob/v2.x/docs/gif/gif3.gif?raw=true)
 
-![gif4](https://github.com/williamniemiec/PokeMaze/blob/master/docs/gif/gif4.gif?raw=true)
+![gif4](https://github.com/williamniemiec/PokeMaze/blob/v2.x/docs/gif/gif4.gif?raw=true)
 
 ## 🚩 Changelog
 Details about each version are documented in the [releases section](https://github.com/williamniemiec/PokeMaze/releases).
